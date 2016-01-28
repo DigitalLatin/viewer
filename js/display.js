@@ -1,0 +1,4 @@
+// Javascript styling functions
+$(function() {
+
+});
