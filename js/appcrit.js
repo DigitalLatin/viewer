@@ -178,18 +178,17 @@ var getLabel = function(val) {
 	}
 }
 
-// Execute after the document is loaded
-$(function() {
-	// If a section is specified, then show that one and load it up;
-	// otherwise load the first one.
-	if (section) {
-		section = $(section);
+var loadSection = function(id) {
+	$("tei-div.textpart").css("display", "none");
+	if (id) {
+		section = $(id);
 	} else {
 		section = $($("tei-div.textpart")[0]);
 	}
 	section.css("display", "block");
 
 	// Add Apparatus div
+	$("div#apparatus").remove();
 	$("tei-TEI").after("<div id=\"apparatus\" class=\"apparatus\"><h2>Apparatus</h2></div>");
 
 	// Set up app. crit.
@@ -202,7 +201,7 @@ $(function() {
 				if ($(escapeID(val)).length > 0) {
 					wit += "<span class=\"ref\" data-id=\"" + $(elt).attr("id") + "\" data-ref=\"" + val + "\">" + $(escapeID(val)).attr("n") + "</span>";
 				} else {
-					console.log("Can't find '" + val + "'");
+					//console.log("Can't find '" + val + "'");
 				}
 			});
 		}
@@ -211,7 +210,7 @@ $(function() {
 				if ($(escapeID(val)).length > 0) {
 					source += "<span class=\"ref\" data-id=\"" + $(elt).attr("id") + "\" data-ref=\"" + val + "\">" + $(escapeID(val)).attr("n") + "</span> ";
 				} else {
-					console.log("Can't find '" + val + "'");
+					//console.log("Can't find '" + val + "'");
 				}
 			});
 		}
@@ -353,21 +352,20 @@ $(function() {
 	if (window.location.search) {
 		//TODO: Allow user to load document recipes.
 	}
-	/*
-	$("span.source").each(function(i, elt) {
-		var source = $(elt);
-		if (source.children("*").length > 0) {
-			if (source.next("tei-note").length > 0) {
-				source = source.next("tei-note");
-			}
-			if (source.nextAll("span.source").length > 0) {
-				if (source.children("*").length > 0) {
-					source.children("*").last().append(":");
-				} else {
-					source.append(":");
-				}
-			}
-		}
-	});
-	*/
+}
+
+// Execute after the document is loaded
+$(function() {
+	// If a section is specified, then show that one and load it up;
+	// otherwise load the first one.
+	loadSection(section);
+
+	// Add event listeners to ToC
+	$("div#navigation a").click(function(evt) {
+		$(".clicked").removeClass("clicked");
+		var elt = $(evt.target).addClass("clicked");
+		$("span.apps").remove();
+		loadSection($(evt.target).attr("href"));
+		return false;
+	})
 });
