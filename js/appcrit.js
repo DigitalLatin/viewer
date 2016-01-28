@@ -1,3 +1,5 @@
+var section = window.location.hash;
+
 var swapLem = function(oldrdg) {
 	if (oldrdg[0].localName == "tei-rdg") { // swapLem is a no-op if we clicked a lem
 		var app = oldrdg.parents("tei-app").first();
@@ -151,7 +153,7 @@ var ttip = function(elt) {
 	};
 }
 var appToolTips = function() {
-	$("tei-l button").each(function(i, elt) {
+	section.find("tei-l button").each(function(i, elt) {
 		if ($(elt).tooltip("instance")) {
 			$(elt).tooltip("destroy");
 		}
@@ -164,10 +166,29 @@ var appToolTips = function() {
 }
 
 var escapeID = function(id) {
-	return id.replace(/\./g, "\\.");
+	return id.replace(/([\.,])/g, "\\$1");
 }
+
+var getLabel = function(val) {
+	var elt = $(escapeID(val));
+	if (elt.length > 0 && elt.attr("n")) {
+		return elt.attr("n");
+	} else {
+		return val.replace(/#/, '');
+	}
+}
+
 // Execute after the document is loaded
 $(function() {
+	// If a section is specified, then show that one and load it up;
+	// otherwise load the first one.
+	if (section) {
+		section = $(section);
+	} else {
+		section = $($("tei-div.textpart")[0]);
+	}
+	section.css("display", "block");
+
 	// Add Apparatus div
 	$("tei-TEI").after("<div id=\"apparatus\" class=\"apparatus\"><h2>Apparatus</h2></div>");
 
@@ -178,27 +199,29 @@ $(function() {
 		var source = "";
 		if ($(elt).attr("wit")) {
 			$(elt).attr("wit").split(/ /).forEach(function(val) {
-				wit += "<span class=\"ref\" data-id=\"" + $(elt).attr("id") + "\" data-ref=\"" + val + "\">" + $(escapeID(val)).attr("n") + "</span>";
-				if ($(escapeID(val)).length == 0) {
-					console.log("Can't find " + val);
+				if ($(escapeID(val)).length > 0) {
+					wit += "<span class=\"ref\" data-id=\"" + $(elt).attr("id") + "\" data-ref=\"" + val + "\">" + $(escapeID(val)).attr("n") + "</span>";
+				} else {
+					console.log("Can't find '" + val + "'");
 				}
 			});
 		}
 		if ($(elt).attr("source")) {
 			$(elt).attr("source").split(/ /).forEach(function(val) {
-				source += "<span class=\"ref\" data-id=\"" + $(elt).attr("id") + "\" data-ref=\"" + val + "\">" + $(escapeID(val)).attr("n") + "</span>";
-				/*if ($(escapeID(val)).length == 0) {
-					console.log("Can't find " + val);
-				}*/
+				if ($(escapeID(val)).length > 0) {
+					source += "<span class=\"ref\" data-id=\"" + $(elt).attr("id") + "\" data-ref=\"" + val + "\">" + $(escapeID(val)).attr("n") + "</span> ";
+				} else {
+					console.log("Can't find '" + val + "'");
+				}
 			});
 		}
 		$(elt).after(" <span class=\"source\">" + wit + " " + source + "</span>");
 	}
 
 	// Pull content into @copyOf elements
-	$("*[copyOf]").each(function(i, elt) {
+	section.find("*[copyOf]").each(function(i, elt) {
 		var e = $(elt);
-		e.html($(e.attr("copyOf")).clone().contents());
+		e.html($(escapeID(e.attr("copyOf"))).clone().contents());
 		// have to rewrite ids in copied content so there are no duplicates
 		e.find("*[id]").each(function(i, elt) {
 			$(elt).attr("copyOf", "#" + $(elt).attr("id"));
@@ -208,7 +231,7 @@ $(function() {
 		});
 	});
 
-	$("tei-app").each(function(i, elt) {
+	section.find("tei-app").each(function(i, elt) {
 		var app = $(elt).clone();
 		var n, lines
 		app.attr("id", "copy-" + app.attr("id"));
@@ -249,9 +272,9 @@ $(function() {
 	});
 
 	// Add line numbers
-	$("tei-l").each(function(i,elt){
+	section.find("tei-l").each(function(i,elt){
 		var e = $(elt);
-		if (Number(e.attr("n")) % 5 == 0 && (elt.parentElement.localName == "tei-ab" || elt.parentElement.localName == "tei-lem")) {
+		if (Number(e.attr("n")) % 5 == 0 && (elt.parentElement.localName == "tei-sp" || elt.parentElement.localName == "tei-ab" || elt.parentElement.localName == "tei-lem")) {
 			e.attr("data-lineno",e.attr("n"));
 		}
 		e.find("button.app").wrapAll("<span class=\"apps\"></span>");
@@ -261,7 +284,7 @@ $(function() {
 	appToolTips();
 
 	// Add apparatus dialogs
-	$("tei-text tei-app").each(function(i, elt) {
+	section.find("tei-app").each(function(i, elt) {
 		var dialog = $(elt).clone();
 		var content = $("<div/>", {
 			id: "dialog-" + dialog.attr("id").replace(/copy/, "dialog"),
@@ -322,11 +345,11 @@ $(function() {
 	$("span.ref").each(function(i, elt) {
 		$(elt).attr("title","");
 		$(elt).tooltip({
-			content: "<div class=\"ref\">" + $($(elt).attr("data-ref")).html() + "</div>",
+			content: "<div class=\"ref\">" + $(escapeID($(elt).attr("data-ref"))).html() + "</div>",
 		});
 	});
 	// Mark all lems as original
-	$("tei-lem").attr("data-basetext","");
+	section.find("tei-lem").attr("data-basetext","");
 	if (window.location.search) {
 		//TODO: Allow user to load document recipes.
 	}

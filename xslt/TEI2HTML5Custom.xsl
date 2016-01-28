@@ -43,4 +43,8 @@
     <xsl:copy-of select="."></xsl:copy-of>
   </xsl:template>
   
+  <xsl:template match="t:div[@type]">
+    <xsl:element name="tei-{local-name(.)}"><xsl:apply-templates select="@*"/><xsl:attribute name="class"><xsl:value-of select="@type"/></xsl:attribute><xsl:apply-templates select="node()"/></xsl:element>
+  </xsl:template>
+  
 </xsl:stylesheet>

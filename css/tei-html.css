@@ -256,10 +256,16 @@ tei-actor {
 }
 /* add */
 /* Could add other [place=] variations */
-tei-add {
+tei-add[place=above] {
   vertical-align: super;
 }
-tei-add[data-tei-place=below] {
+tei-add[place=inline]:before {
+  content: "«";
+}
+tei-add[place=inline]:after {
+  content: "»";
+}
+tei-add[place=below] {
   vertical-align: sub;
 }
 tei-addName {
@@ -785,6 +791,9 @@ tei-TEI tei-head {
 tei-body > tei-head {
   font-size: 180%;
   text-indent: -0.5em;
+}
+tei-div.textpart {
+  display: none;
 }
 tei-div > tei-head {
   font-size: 170%;
