@@ -16,7 +16,6 @@
   border: 1px solid #aaaaaa;
   background: #fafafa;
   /* reset text-indent for note with <l> ancestors. */
-tei-
   text-indent: 0;
   font-size: 85%;
   text-align: justify;
@@ -68,6 +67,26 @@ border-top:2px solid @border-color;
 */
   border: 1px dotted #aaaaaa;
 }
+.clicked {
+  font-weight: bold;
+}
+
+/* Navigation */
+div#navigation {
+  position: absolute;
+  top: 5em;
+  right: 100px;
+  font-size: 80%;
+}
+div#navigation h2 {
+  font-size: 120%;
+  margin: 0;
+}
+div#navigation ul {
+  list-style-type: none;
+  margin:0;
+  padding:0;
+}
 
 /* Apparatus */
 div.apparatus tei-app {
@@ -110,6 +129,8 @@ div.apparatus tei-app>tei-note {
   font-style: italic;
   margin-right: .5em;
 }
+
+
 /*TODO: figure out what to do with source lists.*/
 tei-div[type="sources"] {
   display:none;
@@ -120,8 +141,8 @@ tei-text button.app {
 }
 tei-text span.apps {
   display: inline;
-  float: right;
-  right: 15em;
+  position: absolute;
+  right: 33em;
 }
 
 /* Apparatus tooltips */
@@ -366,21 +387,21 @@ tei-attRef {
 tei-author {
   /* Empty Rule Set */
 }
-tei-titleStmt > author {
+tei-titleStmt > tei-author {
   display: block;
   margin-bottom: 1em;
 }
 tei-authority {
   /* Empty Rule Set */
 }
-tei-publicationStmt > availability {
+tei-publicationStmt > tei-availability {
   font-size: 80%;
 }
-tei-publicationStmt > availability:before {
+tei-publicationStmt > tei-availability:before {
   font-weight: bold;
   content: "Availability: ";
 }
-tei-publicationStmt > availability[data-tei-status]:before {
+tei-publicationStmt > tei-availability[data-tei-status]:before {
   font-weight: bold;
   content: "Availability (" attr(status) "): ";
 }
@@ -668,6 +689,9 @@ tei-date[data-tei-when]:empty:before {
   content: attr(when);
 }
 /* e */
+tei-editionStmt {
+  display:block;
+}
 tei-egXML {
   display: block;
   font-size: 80%;
@@ -1681,10 +1705,10 @@ tei-space:before {
 tei-span[data-tei-data-n]:before {
   content: attr(data-n);
 }
-tei-TEI span {
-  display: none;
+tei-TEI tei-span {
+  /*no rules yet */
 }
-tei-TEI egXML span {
+tei-TEI tei-egXML tei-span {
   display: inline;
 }
 tei-spanGrp {
@@ -1711,7 +1735,6 @@ tei-sponsor {
   margin-top: 0;
   margin-bottom: 0;
   /* Block element, maybe labeled  */
-tei-
 }
 tei-sponsor:before {
   font-weight: bold;
@@ -1805,7 +1828,7 @@ tei-table {
   border-spacing: 2px;
 }
 /* Why is this selector "TEI table" instead of just "table"? */
-tei-TEI table {
+tei-TEI tei-table {
   display: block;
   margin-top: 2em;
   margin-bottom: 2em;
@@ -1821,19 +1844,17 @@ tei-border-radius: 15px;
 tei-border: 1px solid black;
 tei-background:white;
 tei-*/
-tei-
   margin-top: 2em;
   margin-bottom: 2em;
   border-bottom: 1px solid #999;
 }
-tei-TEI > text {
+tei-TEI > tei-text {
   display: block;
   /*
 tei-border-radius: 15px;
 tei-border: 1px solid black;
 tei-background:white;
 tei-*/
-tei-
   line-height: 1.5;
 }
 tei-textClass {
@@ -1844,36 +1865,33 @@ tei-textDesc {
 }
 /* title */
 /* Need TEI ancestor to distinguish TEI title from HTML title */
-tei-TEI title {
+tei-TEI tei-title {
   display: inline;
 }
-tei-TEI title[data-tei-level=a] {
+tei-TEI tei-title[level=a] {
   quotes: "\201c" "\201d" "\2018" "\2019" "\201c" "\201d" "\2018" "\2019" "\201c" "\201d" "\2018" "\2019" "\201c" "\201d";
 }
-tei-TEI title[data-tei-level=a]:before {
+tei-TEI tei-title[level=a]:before {
   content: open-quote;
 }
-tei-TEI title[data-tei-level=a]:after {
+tei-TEI tei-title[level=a]:after {
   content: close-quote;
 }
-tei-TEI title[data-tei-level=a][data-tei-next]:after {
+tei-TEI tei-title[level=a][next]:after {
   content: "" !important;
 }
-tei-TEI title[data-tei-level=a][data-tei-prev]:before {
+tei-TEI tei-title[level=a][prev]:before {
   content: "" !important;
 }
-tei-title[data-tei-level=m] {
+tei-title[level=m] {
   font-style: italic;
 }
-tei-titleStmt > title {
+tei-titleStmt > tei-title {
   display: block;
   font-family: Arvo, sans-serif;
   font-weight: normal;
   font-weight: bold !important;
   font-size: 150%;
-}
-tei-titleStmt > editor:before {
-  content: "Edited by ";
 }
 tei-typeDesc {
   display: none;
@@ -1975,6 +1993,7 @@ tei-xr {
 tei-zone {
   /* Empty Rule Set */
 }
+
 /* styles for html shell and html elements in TEI (e.g.,<a> and <img>) */
 html > body {
   margin: 0;
@@ -2000,11 +2019,11 @@ img {
   padding-top: .5em;
   font-size: 12pt;
 }
-tei-a:link, a:visited, a:active {
+a:link, a:visited, a:active {
   color: #5f0000;
   text-decoration: none;
 }
-tei-a:hover {
+a:hover {
   color: #5f0000;
   text-decoration: underline;
 }
@@ -2064,4 +2083,7 @@ tei-width: 330px;
 .head-font {
   font-family: Arvo, sans-serif;
   font-weight: normal;
+}
+tei-text span {
+  display:none;
 }
