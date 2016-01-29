@@ -122,7 +122,9 @@ var applySource = function(source) {
 }
 var ttip = function(elt) {
 	return {
-		content: "<div class=\"apparatus\">" + $("#copy-" + $(elt).attr("data-app")).html() + "</div>",
+		content: function() {
+			return "<div class=\"apparatus\">" + $("#copy-" + $(elt).attr("data-app")).html() + "</div>";
+		},
 		open: function(event, ui) {
 			var app = $("#" + $(this).attr("data-app"));
 			app.addClass("highlight");
@@ -179,6 +181,7 @@ var getLabel = function(val) {
 }
 
 var loadSection = function(id) {
+	var stamp = Date.now();
 	$("tei-div.textpart").css("display", "none");
 	if (id) {
 		section = $(id);
@@ -196,27 +199,30 @@ var loadSection = function(id) {
 		// Find labels (@n) for items referenced via @wit and/or @source
 		var wit = "";
 		var source = "";
-		if ($(elt).attr("wit")) {
-			$(elt).attr("wit").split(/ /).forEach(function(val) {
+		var e = $(elt);
+		if (e.attr("wit")) {
+			e.attr("wit").split(/ /).forEach(function(val) {
 				if ($(escapeID(val)).length > 0) {
-					wit += "<span class=\"ref\" data-id=\"" + $(elt).attr("id") + "\" data-ref=\"" + val + "\">" + $(escapeID(val)).attr("n") + "</span>";
+					wit += "<span class=\"ref\" data-id=\"" + e.attr("id") + "\" data-ref=\"" + val + "\">" + $(escapeID(val)).attr("n") + "</span>";
 				} else {
 					//console.log("Can't find '" + val + "'");
 				}
 			});
 		}
-		if ($(elt).attr("source")) {
-			$(elt).attr("source").split(/ /).forEach(function(val) {
+		if (e.attr("source")) {
+			e.attr("source").split(/ /).forEach(function(val) {
 				if ($(escapeID(val)).length > 0) {
-					source += "<span class=\"ref\" data-id=\"" + $(elt).attr("id") + "\" data-ref=\"" + val + "\">" + $(escapeID(val)).attr("n") + "</span> ";
+					source += "<span class=\"ref\" data-id=\"" + e.attr("id") + "\" data-ref=\"" + val + "\">" + $(escapeID(val)).attr("n") + "</span> ";
 				} else {
 					//console.log("Can't find '" + val + "'");
 				}
 			});
 		}
-		$(elt).after(" <span class=\"source\">" + wit + " " + source + "</span>");
+		e.after(" <span class=\"source\">" + wit + " " + source + "</span>");
 	}
 
+	console.log(Date.now() - stamp);
+	stamp = Date.now();
 	// Pull content into @copyOf elements
 	section.find("*[copyOf]").each(function(i, elt) {
 		var e = $(elt);
@@ -229,12 +235,14 @@ var loadSection = function(id) {
 			$(elt).addClass("app-copy");
 		});
 	});
+	console.log("238: " + (Date.now() - stamp));
+	stamp = Date.now();
 
 	section.find("tei-app").each(function(i, elt) {
 		var app = $(elt).clone();
 		var n, lines
 		app.attr("id", "copy-" + app.attr("id"));
-		app.find("tei-lem,tei-rdg,tei-rdgGrp").each(witLabels);
+		//app.find("tei-lem,tei-rdg,tei-rdgGrp").each(witLabels);
 		if ((lines = app.find("tei-l")).length > 0) {
 			n = $(lines[0]).attr("n");
 			if (!n) {
@@ -269,6 +277,8 @@ var loadSection = function(id) {
 		app.find("tei-lem,tei-rdg").removeAttr("id");
 		$("div#apparatus").append(app);
 	});
+	console.log("280: " + (Date.now() - stamp));
+	stamp = Date.now();
 
 	// Add line numbers
 	section.find("tei-l").each(function(i,elt){
@@ -278,80 +288,62 @@ var loadSection = function(id) {
 		}
 		e.find("button.app").wrapAll("<span class=\"apps\"></span>");
 	});
+	console.log("291: " + (Date.now() - stamp));
+	stamp = Date.now();
 
 	// Add apparatus links
 	appToolTips();
+	console.log("296: " + (Date.now() - stamp));
+	stamp = Date.now();
 
 	// Add apparatus dialogs
-	section.find("tei-app").each(function(i, elt) {
-		var dialog = $(elt).clone();
-		var content = $("<div/>", {
-			id: "dialog-" + dialog.attr("id").replace(/copy/, "dialog"),
-			class: "dialog",
-			"data-exclude": dialog.attr("exclude")});
-		content.appendTo("body");
-		content.html(dialog.html());
-		if (dialog.attr("exclude")) {
-			dialog.attr("exclude").split(/ /).forEach(function(val) {
-				content.append($(val).html());
-			});
-		}
-		content.find("tei-lem,tei-rdg,tei-rdgGrp").each(witLabels);
-		content.find("*[id]").each(function(i, elt) {
-			$(elt).attr("data-id", $(elt).attr("id"));
+	$(".dialog")
+		.dialog({
+			autoOpen: false,
+			open: function(event) {
+				$("#" + $(this).attr("id").replace(/dialog/, "button")).tooltip("destroy");
+				$("#" + $(this).attr("id").replace(/dialog-/, "")).addClass("highlight");
+				$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").addClass("highlight");
+			},
+			close: function(event) {
+				$("#" + $(this).attr("id").replace(/dialog-/, "")).removeClass("highlight");
+				$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").removeClass("highlight");
+				var btn = $("#" + $(this).attr("id").replace(/dialog/, "button"))
+				if (btn.tooltip("instance")) {
+					btn.tooltip("destroy");
+				}
+				appToolTips();
+			}
 		});
-		content.find("*[id]").removeAttr("id");
-		content.find("tei-note[target]").each(function(i, elt) {
-			$(elt).attr("data-id", $(elt).attr("target").replace(/#/, ""));
-		});
-		if ($(elt).find("tei-l").length > 0) {
-			content.find("tei-lem,tei-rdg,tei-rdgGrp").remove();
-		}
-		content.find("tei-lem:empty").append("– ");
-		content.find("tei-rdg:empty").append("– ");
-		$("#dialog-" + dialog.attr("id").replace(/copy-/,""))
-			.dialog({
-				autoOpen: false,
-				open: function(event) {
-					$("#" + $(this).attr("id").replace(/dialog/, "button")).tooltip("destroy");
-					$("#" + $(this).attr("id").replace(/dialog-/, "")).addClass("highlight");
-					$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").addClass("highlight");
-				},
-				close: function(event) {
-					$("#" + $(this).attr("id").replace(/dialog-/, "")).removeClass("highlight");
-					$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").removeClass("highlight");
-					var btn = $("#" + $(this).attr("id").replace(/dialog/, "button"))
-					if (btn.tooltip("instance")) {
-						btn.tooltip("destroy");
-					}
-					appToolTips();
+		console.log("318: " + (Date.now() - stamp));
+		stamp = Date.now();
+		$(".dialog").find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function(i, elt) {
+			$(elt).click(function(evt) {
+				var rdg = $("#" + $(evt.currentTarget).attr("data-id"));
+				swapLem(rdg);
+				if (rdg.attr("copyOf")) {
+					swapLem($(rdg.attr("copyOf")));
+				}
+				if (rdg.attr("data-copy")) {
+					swapLem($(rdg.attr("data-copy")));
 				}
 			});
-			content.find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function(i, elt) {
-				$(elt).click(function(evt) {
-					var rdg = $("#" + $(evt.currentTarget).attr("data-id"));
-					swapLem(rdg);
-					if (rdg.attr("copyOf")) {
-						swapLem($(rdg.attr("copyOf")));
-					}
-					if (rdg.attr("data-copy")) {
-						swapLem($(rdg.attr("data-copy")));
-					}
-				});
-			});
-	});
+		});
+
+	console.log("333: " + (Date.now() - stamp));
+	stamp = Date.now();
+
 	// Link up sigla in the apparatus to bibliography
-	$("span.ref").each(function(i, elt) {
+	$("div#apparatus span.ref").each(function(i, elt) {
 		$(elt).attr("title","");
 		$(elt).tooltip({
-			content: "<div class=\"ref\">" + $(escapeID($(elt).attr("data-ref"))).html() + "</div>",
+			content: function() {
+				return "<div class=\"ref\">" + $(escapeID($(elt).attr("data-ref"))).html() + "</div>";
+			},
 		});
 	});
-	// Mark all lems as original
-	section.find("tei-lem").attr("data-basetext","");
-	if (window.location.search) {
-		//TODO: Allow user to load document recipes.
-	}
+	console.log("369: " + (Date.now() - stamp));
+	stamp = Date.now();
 }
 
 // Execute after the document is loaded
@@ -362,10 +354,15 @@ $(function() {
 
 	// Add event listeners to ToC
 	$("div#navigation a").click(function(evt) {
-		$(".clicked").removeClass("clicked");
+		$("div#navigation a.clicked").removeClass("clicked");
 		var elt = $(evt.target).addClass("clicked");
+		var stamp1 = Date.now();
 		$("span.apps").remove();
+		var stamp2 = Date.now();
+		console.log(stamp2 - stamp1);
 		loadSection($(evt.target).attr("href"));
+		var stamp3 = Date.now();
+		console.log(stamp3 - stamp2);
 		return false;
 	})
 });
