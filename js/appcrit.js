@@ -222,7 +222,6 @@ var loadSection = function(id) {
 	}
 
 	console.log(Date.now() - stamp);
-	stamp = Date.now();
 	// Pull content into @copyOf elements
 	section.find("*[copyOf]").each(function(i, elt) {
 		var e = $(elt);
@@ -235,8 +234,6 @@ var loadSection = function(id) {
 			$(elt).addClass("app-copy");
 		});
 	});
-	console.log("238: " + (Date.now() - stamp));
-	stamp = Date.now();
 
 	section.find("tei-app").each(function(i, elt) {
 		var app = $(elt).clone();
@@ -277,8 +274,6 @@ var loadSection = function(id) {
 		app.find("tei-lem,tei-rdg").removeAttr("id");
 		$("div#apparatus").append(app);
 	});
-	console.log("280: " + (Date.now() - stamp));
-	stamp = Date.now();
 
 	// Add line numbers
 	section.find("tei-l").each(function(i,elt){
@@ -288,13 +283,9 @@ var loadSection = function(id) {
 		}
 		e.find("button.app").wrapAll("<span class=\"apps\"></span>");
 	});
-	console.log("291: " + (Date.now() - stamp));
-	stamp = Date.now();
 
 	// Add apparatus links
 	appToolTips();
-	console.log("296: " + (Date.now() - stamp));
-	stamp = Date.now();
 
 	// Add apparatus dialogs
 	$(".dialog")
@@ -315,9 +306,7 @@ var loadSection = function(id) {
 				appToolTips();
 			}
 		});
-		console.log("318: " + (Date.now() - stamp));
-		stamp = Date.now();
-		$(".dialog").find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function(i, elt) {
+	$(".dialog").find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function(i, elt) {
 			$(elt).click(function(evt) {
 				var rdg = $("#" + $(evt.currentTarget).attr("data-id"));
 				swapLem(rdg);
@@ -330,8 +319,6 @@ var loadSection = function(id) {
 			});
 		});
 
-	console.log("333: " + (Date.now() - stamp));
-	stamp = Date.now();
 
 	// Link up sigla in the apparatus to bibliography
 	$("div#apparatus span.ref").each(function(i, elt) {
@@ -342,8 +329,6 @@ var loadSection = function(id) {
 			},
 		});
 	});
-	console.log("369: " + (Date.now() - stamp));
-	stamp = Date.now();
 }
 
 // Execute after the document is loaded
