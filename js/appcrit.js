@@ -192,143 +192,148 @@ var loadSection = function(id) {
 
 	// Add Apparatus div
 	$("div#apparatus").remove();
-	$("tei-TEI").after("<div id=\"apparatus\" class=\"apparatus\"><h2>Apparatus</h2></div>");
 
-	// Set up app. crit.
-	var witLabels = function(i, elt) {
-		// Find labels (@n) for items referenced via @wit and/or @source
-		var wit = "";
-		var source = "";
-		var e = $(elt);
-		if (e.attr("wit")) {
-			e.attr("wit").split(/ /).forEach(function(val) {
-				if ($(escapeID(val)).length > 0) {
-					wit += "<span class=\"ref\" data-id=\"" + e.attr("id") + "\" data-ref=\"" + val + "\">" + $(escapeID(val)).attr("n") + "</span>";
-				} else {
-					//console.log("Can't find '" + val + "'");
+	if (section.find("tei-app").length > 0) {
+		$("tei-TEI").after("<div id=\"apparatus\" class=\"apparatus\"><h2>Apparatus</h2></div>");
+		// Set up app. crit.
+		var witLabels = function(i, elt) {
+			// Find labels (@n) for items referenced via @wit and/or @source
+			var wit = "";
+			var source = "";
+			var e = $(elt);
+			if (e.attr("wit")) {
+				e.attr("wit").split(/ /).forEach(function(val) {
+					if ($(escapeID(val)).length > 0) {
+						wit += "<span class=\"ref\" data-id=\"" + e.attr("id") + "\" data-ref=\"" + val + "\">" + $(escapeID(val)).attr("n") + "</span>";
+					} else {
+						//console.log("Can't find '" + val + "'");
+					}
+				});
+			}
+			if (e.attr("source")) {
+				e.attr("source").split(/ /).forEach(function(val) {
+					if ($(escapeID(val)).length > 0) {
+						source += "<span class=\"ref\" data-id=\"" + e.attr("id") + "\" data-ref=\"" + val + "\">" + $(escapeID(val)).attr("n") + "</span> ";
+					} else {
+						//console.log("Can't find '" + val + "'");
+					}
+				});
+			}
+			e.after(" <span class=\"source\">" + wit + " " + source + "</span>");
+		}
+
+		console.log(Date.now() - stamp);
+		// Pull content into @copyOf elements
+		section.find("*[copyOf]").each(function(i, elt) {
+			var e = $(elt);
+			e.html($(escapeID(e.attr("copyOf"))).clone().contents());
+			// have to rewrite ids in copied content so there are no duplicates
+			e.find("*[id]").each(function(i, elt) {
+				$(elt).attr("copyOf", "#" + $(elt).attr("id"));
+				$(elt).attr("id", $(elt).attr("id") + Math.random().toString(36).substr(2));
+				$($(elt).attr("copyOf")).attr("data-copy", "#" + $(elt).attr("id"));
+				$(elt).addClass("app-copy");
+			});
+		});
+
+		section.find("tei-app").each(function(i, elt) {
+			var app = $(elt).clone();
+			var n, lines
+			app.attr("id", "copy-" + app.attr("id"));
+			//app.find("tei-lem,tei-rdg,tei-rdgGrp").each(witLabels);
+			if ((lines = app.find("tei-l")).length > 0) {
+				n = $(lines[0]).attr("n");
+				if (!n) {
+					n = $($(lines[0]).attr("copyOf")).attr("n");
+				}
+				if (lines.length > 1) {
+					if ($(lines[lines.length - 1]).attr("n")) {
+						n += "–" + $(lines[lines.length - 1]).attr("n");
+					} else {
+						n += "–" + $($(lines[lines.length - 1]).attr("copyOf")).attr("n");
+					}
+				}
+				var l = $(elt).find("tei-lem").find("tei-l");
+				if (l.length == 0) {
+					l = $(elt).next("tei-l,tei-app");
+				}
+				l.first().append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">…</button>");
+				app.find("tei-lem").remove();
+				app.find("tei-rdg").remove();
+			} else {
+				n = $(elt).parent("tei-l").attr("n");
+				if (!n) {
+					n = $($(elt).parent("tei-l").attr("copyOf")).attr("n");
+				}
+				$(elt).parent("tei-l").append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">…</button>");
+			}
+			app.find("tei-lem:empty").append("— ");
+			app.find("tei-rdg:empty").append("— ");
+			if ($("#app-l" + n).length == 0 || lines.length > 0) {
+				app.prepend("<span class=\"lem\" id=\"app-l" + n +"\">" + n + "</span>");
+			}
+			app.find("tei-lem,tei-rdg").removeAttr("id");
+			$("div#apparatus").append(app);
+		});
+
+		// Add line numbers
+		section.find("tei-l").each(function(i,elt){
+			var e = $(elt);
+			if (Number(e.attr("n")) % 5 == 0 && (elt.parentElement.localName == "tei-sp" || elt.parentElement.localName == "tei-ab" || elt.parentElement.localName == "tei-lem")) {
+				e.attr("data-lineno",e.attr("n"));
+			}
+			e.find("button.app").wrapAll("<span class=\"apps\"></span>");
+		});
+
+		// Add apparatus links
+		appToolTips();
+
+		// Add apparatus dialogs
+		$(".dialog")
+			.dialog({
+				autoOpen: false,
+				open: function(event) {
+					$("#" + $(this).attr("id").replace(/dialog/, "button")).tooltip("destroy");
+					$("#" + $(this).attr("id").replace(/dialog-/, "")).addClass("highlight");
+					$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").addClass("highlight");
+				},
+				close: function(event) {
+					$("#" + $(this).attr("id").replace(/dialog-/, "")).removeClass("highlight");
+					$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").removeClass("highlight");
+					var btn = $("#" + $(this).attr("id").replace(/dialog/, "button"))
+					if (btn.tooltip("instance")) {
+						btn.tooltip("destroy");
+					}
+					appToolTips();
 				}
 			});
-		}
-		if (e.attr("source")) {
-			e.attr("source").split(/ /).forEach(function(val) {
-				if ($(escapeID(val)).length > 0) {
-					source += "<span class=\"ref\" data-id=\"" + e.attr("id") + "\" data-ref=\"" + val + "\">" + $(escapeID(val)).attr("n") + "</span> ";
-				} else {
-					//console.log("Can't find '" + val + "'");
-				}
+		$(".dialog").find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function(i, elt) {
+				$(elt).click(function(evt) {
+					var rdg = $("#" + $(evt.currentTarget).attr("data-id"));
+					swapLem(rdg);
+					if (rdg.attr("copyOf")) {
+						swapLem($(rdg.attr("copyOf")));
+					}
+					if (rdg.attr("data-copy")) {
+						swapLem($(rdg.attr("data-copy")));
+					}
+				});
 			});
-		}
-		e.after(" <span class=\"source\">" + wit + " " + source + "</span>");
+
+
+		// Link up sigla in the apparatus to bibliography
+		$("div#apparatus span.ref").each(function(i, elt) {
+			$(elt).attr("title","");
+			$(elt).tooltip({
+				content: function() {
+					return "<div class=\"ref\">" + $(escapeID($(elt).attr("data-ref"))).html() + "</div>";
+				},
+			});
+		});
+	} else {
+		// View sources
+		
 	}
-
-	console.log(Date.now() - stamp);
-	// Pull content into @copyOf elements
-	section.find("*[copyOf]").each(function(i, elt) {
-		var e = $(elt);
-		e.html($(escapeID(e.attr("copyOf"))).clone().contents());
-		// have to rewrite ids in copied content so there are no duplicates
-		e.find("*[id]").each(function(i, elt) {
-			$(elt).attr("copyOf", "#" + $(elt).attr("id"));
-			$(elt).attr("id", $(elt).attr("id") + Math.random().toString(36).substr(2));
-			$($(elt).attr("copyOf")).attr("data-copy", "#" + $(elt).attr("id"));
-			$(elt).addClass("app-copy");
-		});
-	});
-
-	section.find("tei-app").each(function(i, elt) {
-		var app = $(elt).clone();
-		var n, lines
-		app.attr("id", "copy-" + app.attr("id"));
-		//app.find("tei-lem,tei-rdg,tei-rdgGrp").each(witLabels);
-		if ((lines = app.find("tei-l")).length > 0) {
-			n = $(lines[0]).attr("n");
-			if (!n) {
-				n = $($(lines[0]).attr("copyOf")).attr("n");
-			}
-			if (lines.length > 1) {
-				if ($(lines[lines.length - 1]).attr("n")) {
-					n += "–" + $(lines[lines.length - 1]).attr("n");
-				} else {
-					n += "–" + $($(lines[lines.length - 1]).attr("copyOf")).attr("n");
-				}
-			}
-			var l = $(elt).find("tei-lem").find("tei-l");
-			if (l.length == 0) {
-				l = $(elt).next("tei-l,tei-app");
-			}
-			l.first().append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">…</button>");
-			app.find("tei-lem").remove();
-			app.find("tei-rdg").remove();
-		} else {
-			n = $(elt).parent("tei-l").attr("n");
-			if (!n) {
-				n = $($(elt).parent("tei-l").attr("copyOf")).attr("n");
-			}
-			$(elt).parent("tei-l").append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">…</button>");
-		}
-		app.find("tei-lem:empty").append("— ");
-		app.find("tei-rdg:empty").append("— ");
-		if ($("#app-l" + n).length == 0 || lines.length > 0) {
-			app.prepend("<span class=\"lem\" id=\"app-l" + n +"\">" + n + "</span>");
-		}
-		app.find("tei-lem,tei-rdg").removeAttr("id");
-		$("div#apparatus").append(app);
-	});
-
-	// Add line numbers
-	section.find("tei-l").each(function(i,elt){
-		var e = $(elt);
-		if (Number(e.attr("n")) % 5 == 0 && (elt.parentElement.localName == "tei-sp" || elt.parentElement.localName == "tei-ab" || elt.parentElement.localName == "tei-lem")) {
-			e.attr("data-lineno",e.attr("n"));
-		}
-		e.find("button.app").wrapAll("<span class=\"apps\"></span>");
-	});
-
-	// Add apparatus links
-	appToolTips();
-
-	// Add apparatus dialogs
-	$(".dialog")
-		.dialog({
-			autoOpen: false,
-			open: function(event) {
-				$("#" + $(this).attr("id").replace(/dialog/, "button")).tooltip("destroy");
-				$("#" + $(this).attr("id").replace(/dialog-/, "")).addClass("highlight");
-				$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").addClass("highlight");
-			},
-			close: function(event) {
-				$("#" + $(this).attr("id").replace(/dialog-/, "")).removeClass("highlight");
-				$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").removeClass("highlight");
-				var btn = $("#" + $(this).attr("id").replace(/dialog/, "button"))
-				if (btn.tooltip("instance")) {
-					btn.tooltip("destroy");
-				}
-				appToolTips();
-			}
-		});
-	$(".dialog").find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function(i, elt) {
-			$(elt).click(function(evt) {
-				var rdg = $("#" + $(evt.currentTarget).attr("data-id"));
-				swapLem(rdg);
-				if (rdg.attr("copyOf")) {
-					swapLem($(rdg.attr("copyOf")));
-				}
-				if (rdg.attr("data-copy")) {
-					swapLem($(rdg.attr("data-copy")));
-				}
-			});
-		});
-
-
-	// Link up sigla in the apparatus to bibliography
-	$("div#apparatus span.ref").each(function(i, elt) {
-		$(elt).attr("title","");
-		$(elt).tooltip({
-			content: function() {
-				return "<div class=\"ref\">" + $(escapeID($(elt).attr("data-ref"))).html() + "</div>";
-			},
-		});
-	});
 }
 
 // Execute after the document is loaded
