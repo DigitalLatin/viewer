@@ -496,10 +496,10 @@ tei-castGroup {
 }
 tei-castItem {
   display: list-item;
-  list-style-type: none;
 }
 tei-castList {
   display: block;
+  list-style-type: none;
   margin-top: 1em;
   margin-bottom: 1em;
   margin-left: 2em;
@@ -944,9 +944,7 @@ tei-item {
 tei-cell item {
   margin-left: 1em;
 }
-tei-list[type="gloss"] > item {
-  margin-left: 2em;
-}
+
 /* j */
 tei-join {
   /* Empty Rule Set */
@@ -966,16 +964,10 @@ tei-l {
   display: block;
   width: 35em;
 }
-[data-lineno]:before {
+tei-l[data-lineno]:before {
   content: attr(data-lineno);
   position: absolute;
   left: 2em;
-}
-tei-list[type="gloss"] > tei-label {
-  display: block;
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-  font-weight: bold;
 }
 tei-lacunaEnd {
   /* Empty Rule Set */
@@ -1034,43 +1026,71 @@ tei-list {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
-}
-tei-item > list {
-  margin-top: 0;
-}
-/* Match only lists that are descendants of
-tei-text. Otherwise they show up in the header. */
-tei-text tei-list[data-tei-type=simple] {
   list-style-type: none;
 }
-tei-text tei-list[data-tei-type=bulleted] {
+tei-item > tei-list {
+  margin-top: 0;
+}
+tei-sourceDesc tei-list {
+  list-style-type: none;
+  list-style-position: outside;
+}
+tei-sourceDesc tei-list>tei-item {
+  display: list-item;
+}
+
+/* Match only lists that are descendants of
+tei-text. Otherwise they show up in the header. */
+tei-text tei-list[type=simple] {
+  list-style-type: none;
+}
+tei-text tei-list[type=bulleted] {
   list-style-type: disc;
 }
-tei-text tei-list[data-tei-type=ordered] {
+tei-text tei-list[type=ordered] {
   list-style-type: none;
   counter-reset: items 0;
 }
-tei-text tei-list[data-tei-type=ordered] > item {
+tei-text tei-list[type=ordered] > tei-item {
   display: list-item;
   margin-left: 0;
 }
-tei-item > tei-list[data-tei-type=ordered] {
+tei-item > tei-list[type=ordered] {
   margin-left: 1em;
 }
-tei-text tei-list[data-tei-type=ordered] > item:before {
+tei-text tei-list[type=ordered] > item:before {
   counter-increment: items 1;
   content: counter(items, decimal) ". ";
 }
-tei-text tei-list[data-tei-type=gloss] {
+tei-text tei-list[type=gloss] {
   list-style-type: none;
 }
-tei-item > tei-list[data-tei-type=ordered] {
+tei-list[type="gloss"] > tei-label {
+  display: block;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  font-weight: bold;
+}
+tei-list[type="gloss"] > tei-item {
+  margin-left: 2em;
+}
+tei-item > tei-list[type=ordered] {
   margin-left: 1em;
 }
-tei-listapp
+tei-listApp {
   display: block;
   margin: 1em;
   padding: 1em;
+}
+tei-listBibl {
+  display:block;
+  list-style-type: none;
+  list-style-position: outside;
+}
+tei-listWit {
+  display:block;
+  list-style-type: none;
+  list-style-position: outside;
 }
 tei-localName {
   /* Empty Rule Set */
@@ -1979,8 +1999,9 @@ tei-witEnd {
 tei-witStart {
   /* Empty Rule Set */
 }
-tei-witness {
-  /* Empty Rule Set */
+tei-listWit > tei-witness {
+  display: list-item;
+  list-style-position: outside;
 }
 tei-writing {
   /* Empty Rule Set */

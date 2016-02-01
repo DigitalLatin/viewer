@@ -27,6 +27,7 @@
             <xsl:for-each select="//t:div[@type='textpart']">
               <li><a href="#{@xml:id}"><xsl:value-of select="t:head"/></a></li>
             </xsl:for-each>
+            <li><a href="#sources">Sources</a></li>
           </ul>
         </div>
         <xsl:apply-templates/>
