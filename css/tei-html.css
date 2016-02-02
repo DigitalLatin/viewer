@@ -140,7 +140,9 @@ tei-div[type="sources"] {
 }
 
 tei-text button.app {
-  height: .5em
+  height: .5em;
+  font-size: 60%;
+  color: gray;
 }
 tei-text span.apps {
   display: inline;
