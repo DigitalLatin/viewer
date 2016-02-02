@@ -27,12 +27,11 @@
             <xsl:for-each select="//t:div[@type='textpart']">
               <li><a href="#{@xml:id}"><xsl:value-of select="t:head"/></a></li>
             </xsl:for-each>
+            <li><a href="#sources">Sources</a></li>
           </ul>
         </div>
         <xsl:apply-templates/>
-        <xsl:for-each select="//t:app">
-          <div></div>
-        </xsl:for-each>
+        <xsl:apply-templates select="//t:app" mode="makedialog"/>
       </body>
     </html>
   </xsl:template>
@@ -57,6 +56,13 @@
     <xsl:copy-of select="."></xsl:copy-of>
   </xsl:template>
   
+  <xsl:template match="t:ptr">
+    <xsl:element name="tei-ptr">
+      <xsl:apply-templates select="@*"/>
+      <a href="{@target}"><xsl:value-of select="substring-before(substring-after(@target, '://'), '/')"/></a>
+    </xsl:element>
+  </xsl:template>
+  
   <xsl:template match="t:div[@type]">
     <xsl:element name="tei-{local-name(.)}"><xsl:apply-templates select="@*"/><xsl:attribute name="class"><xsl:value-of select="@type"/></xsl:attribute><xsl:apply-templates select="node()"/></xsl:element>
   </xsl:template>
@@ -73,13 +79,30 @@
     </xsl:choose>
   </xsl:template>
   
+  <!-- Match special apparatus structures and insert HTML for them -->
   <xsl:template match="t:rdgGrp[@type='anteCorr']/t:rdg[1]"><xsl:element name="tei-{local-name(.)}"><xsl:attribute name="id" select="generate-id()"/><xsl:apply-templates select="@*"/><xsl:apply-templates select="node()"/></xsl:element><span> (corr.) </span>
   </xsl:template>
   
+  <!-- Add labels for conspectus librorum -->
+  <xsl:template match="t:witness[@n]">
+    <xsl:element name="tei-{local-name()}">
+      <xsl:apply-templates select="@*"/>
+      <span><xsl:value-of select="@n"/> = </span><xsl:apply-templates select="node()"/>
+    </xsl:element><xsl:if test="ancestor::t:witness and following-sibling::*[1]/local-name() = 'witness'"><span>, </span></xsl:if>
+  </xsl:template>
+  
+  <xsl:template match="t:sourceDesc//t:bibl[@n]">
+    <xsl:element name="tei-{local-name()}">
+      <xsl:apply-templates select="@*"/>
+      <span><xsl:value-of select="@n"/> = </span><xsl:apply-templates select="node()"/>
+    </xsl:element><xsl:if test="ancestor::t:bibl and following-sibling::*[1]/local-name() = 'bibl'"><span>, </span></xsl:if>
+  </xsl:template>
+  
+  <!-- Templates for generating apparatus dialogs -->
   <xsl:template match="t:app" mode="makedialog">
     <xsl:variable name="app"><xsl:apply-templates select="."/></xsl:variable>
-    <div id="dialog-{replace($app/tei-app/@id,'copy','dialog')}" class="dialog" data-exclude="{@exclude}">
-      <xsl:apply-templates select="$app" mode="dialog"/>
+    <div id="dialog-{replace($app/tei-app/@id,'copy','dialog')}" class="dialog" data-exclude="{@exclude}" style="display:none;">
+      <xsl:apply-templates select="$app/*" mode="dialog"/>
       <xsl:variable name="context" select="//t:TEI"/>
       <xsl:for-each select="tokenize(@exclude,'\s+')">
         <xsl:apply-templates select="$context/id(substring-after(current(),'#'))"/>
@@ -93,7 +116,7 @@
     </xsl:copy>
   </xsl:template>
   
-  <xsl:template match="*[id]" mode="dialog">
+  <xsl:template match="*[@id]" mode="dialog">
     <xsl:copy>
       <xsl:attribute name="data-id"><xsl:value-of select="@id"/></xsl:attribute>
       <xsl:copy-of select="@*[not(local-name(.) = 'id')]"/>
@@ -108,7 +131,7 @@
     </xsl:copy>
   </xsl:template>
   
-  <xsl:template match="tei-app[ancestor::tei-l]" mode="dialog"/>
+  <xsl:template match="tei-app[ancestor::tei-l]" mode="dialog" priority="100"/>
   
   <xsl:template match="tei-lem[not(node())]|tei-rdg[not(node())]"><span>— </span></xsl:template>
   
