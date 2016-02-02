@@ -116,6 +116,9 @@ div.apparatus tei-app>tei-lem {
 div.apparatus tei-app tei-rdg {
   display: inline;
 }
+div.apparatus tei-app tei-rdg:before {
+  content: " ";
+}
 div.apparatus tei-rdgGrp {
   display: inline;
 }
@@ -160,6 +163,9 @@ tei-text span.apps {
 }
 .ui-tooltip-content div.apparatus tei-rdg {
   display: inline;
+}
+.ui-tooltip-content div.apparatus tei-rdg:before {
+  content: " ";
 }
 .ui-tooltip-content div.apparatus tei-rdgGrp {
   display: inline;
