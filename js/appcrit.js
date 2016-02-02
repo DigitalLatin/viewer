@@ -182,7 +182,7 @@ var getLabel = function(val) {
 
 var loadSection = function(id) {
 	var stamp = Date.now();
-	$("tei-div.textpart").css("display", "none");
+	$("tei-div.textpart,tei-sourceDesc").css("display", "none");
 	if (id) {
 		section = $(id);
 	} else {
@@ -222,7 +222,6 @@ var loadSection = function(id) {
 			e.after(" <span class=\"source\">" + wit + " " + source + "</span>");
 		}
 
-		console.log(Date.now() - stamp);
 		// Pull content into @copyOf elements
 		section.find("*[copyOf]").each(function(i, elt) {
 			var e = $(elt);
@@ -234,7 +233,6 @@ var loadSection = function(id) {
 				$($(elt).attr("copyOf")).attr("data-copy", "#" + $(elt).attr("id"));
 				$(elt).addClass("app-copy");
 			});
-		});
 
 		section.find("tei-app").each(function(i, elt) {
 			var app = $(elt).clone();
@@ -289,8 +287,9 @@ var loadSection = function(id) {
 		appToolTips();
 
 		// Add apparatus dialogs
-		$(".dialog")
-			.dialog({
+		$("button.app").each(function(i, elt) {
+			var d = $("#dialog-" + $(elt).attr("data-app"));
+			d.dialog({
 				autoOpen: false,
 				open: function(event) {
 					$("#" + $(this).attr("id").replace(/dialog/, "button")).tooltip("destroy");
@@ -307,19 +306,19 @@ var loadSection = function(id) {
 					appToolTips();
 				}
 			});
-		$(".dialog").find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function(i, elt) {
-				$(elt).click(function(evt) {
-					var rdg = $("#" + $(evt.currentTarget).attr("data-id"));
-					swapLem(rdg);
-					if (rdg.attr("copyOf")) {
-						swapLem($(rdg.attr("copyOf")));
-					}
-					if (rdg.attr("data-copy")) {
-						swapLem($(rdg.attr("data-copy")));
-					}
+			d.find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function(i, elt) {
+					$(elt).click(function(evt) {
+						var rdg = $("#" + escapeID($(evt.currentTarget).attr("data-id")));
+						swapLem(rdg);
+						if (rdg.attr("copyOf")) {
+							swapLem($(rdg.attr("copyOf")));
+						}
+						if (rdg.attr("data-copy")) {
+							swapLem($(rdg.attr("data-copy")));
+						}
+					});
 				});
-			});
-
+		});
 
 		// Link up sigla in the apparatus to bibliography
 		$("div#apparatus span.ref").each(function(i, elt) {
@@ -332,7 +331,7 @@ var loadSection = function(id) {
 		});
 	} else {
 		// View sources
-		
+
 	}
 }
 
@@ -346,13 +345,8 @@ $(function() {
 	$("div#navigation a").click(function(evt) {
 		$("div#navigation a.clicked").removeClass("clicked");
 		var elt = $(evt.target).addClass("clicked");
-		var stamp1 = Date.now();
 		$("span.apps").remove();
-		var stamp2 = Date.now();
-		console.log(stamp2 - stamp1);
 		loadSection($(evt.target).attr("href"));
-		var stamp3 = Date.now();
-		console.log(stamp3 - stamp2);
 		return false;
 	})
 });
