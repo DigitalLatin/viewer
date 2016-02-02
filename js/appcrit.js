@@ -233,6 +233,7 @@ var loadSection = function(id) {
 				$($(elt).attr("copyOf")).attr("data-copy", "#" + $(elt).attr("id"));
 				$(elt).addClass("app-copy");
 			});
+		});
 
 		section.find("tei-app").each(function(i, elt) {
 			var app = $(elt).clone();
