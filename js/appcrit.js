@@ -196,31 +196,6 @@ var loadSection = function(id) {
 	if (section.find("tei-app").length > 0) {
 		$("tei-TEI").after("<div id=\"apparatus\" class=\"apparatus\"><h2>Apparatus</h2></div>");
 		// Set up app. crit.
-		var witLabels = function(i, elt) {
-			// Find labels (@n) for items referenced via @wit and/or @source
-			var wit = "";
-			var source = "";
-			var e = $(elt);
-			if (e.attr("wit")) {
-				e.attr("wit").split(/ /).forEach(function(val) {
-					if ($(escapeID(val)).length > 0) {
-						wit += "<span class=\"ref\" data-id=\"" + e.attr("id") + "\" data-ref=\"" + val + "\">" + $(escapeID(val)).attr("n") + "</span>";
-					} else {
-						//console.log("Can't find '" + val + "'");
-					}
-				});
-			}
-			if (e.attr("source")) {
-				e.attr("source").split(/ /).forEach(function(val) {
-					if ($(escapeID(val)).length > 0) {
-						source += "<span class=\"ref\" data-id=\"" + e.attr("id") + "\" data-ref=\"" + val + "\">" + $(escapeID(val)).attr("n") + "</span> ";
-					} else {
-						//console.log("Can't find '" + val + "'");
-					}
-				});
-			}
-			e.after(" <span class=\"source\">" + wit + " " + source + "</span>");
-		}
 
 		// Pull content into @copyOf elements
 		section.find("*[copyOf]").each(function(i, elt) {
@@ -239,7 +214,6 @@ var loadSection = function(id) {
 			var app = $(elt).clone();
 			var n, lines
 			app.attr("id", "copy-" + app.attr("id"));
-			//app.find("tei-lem,tei-rdg,tei-rdgGrp").each(witLabels);
 			if ((lines = app.find("tei-l")).length > 0) {
 				n = $(lines[0]).attr("n");
 				if (!n) {
@@ -256,7 +230,7 @@ var loadSection = function(id) {
 				if (l.length == 0) {
 					l = $(elt).next("tei-l,tei-app");
 				}
-				l.first().append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">…</button>");
+				l.first().append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
 				app.find("tei-lem").remove();
 				app.find("tei-rdg").remove();
 			} else {
@@ -264,7 +238,7 @@ var loadSection = function(id) {
 				if (!n) {
 					n = $($(elt).parent("tei-l").attr("copyOf")).attr("n");
 				}
-				$(elt).parent("tei-l").append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">…</button>");
+				$(elt).parent("tei-l").append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
 			}
 			app.find("tei-lem:empty").append("— ");
 			app.find("tei-rdg:empty").append("— ");

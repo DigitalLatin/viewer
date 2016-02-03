@@ -38,7 +38,11 @@
   
   <xsl:template match="*" xml:space="preserve"><xsl:element name="tei-{local-name(.)}"><xsl:apply-templates select="@*"/><xsl:apply-templates select="node()"/></xsl:element></xsl:template>
   
-  <xsl:template match="t:app|t:lem|t:rdg" xml:space="preserve"><xsl:element name="tei-{local-name(.)}"><xsl:attribute name="id" select="generate-id()"/><xsl:apply-templates select="@*"/><xsl:apply-templates select="node()"/></xsl:element><span class="source"><xsl:text> </xsl:text><xsl:call-template name="sources"><xsl:with-param name="id" select="generate-id()"/></xsl:call-template></span></xsl:template>
+  <xsl:template match="t:app|t:lem|t:rdg">
+    <xsl:variable name="id"><xsl:choose>
+      <xsl:when test="@xml:id"><xsl:value-of select="@xml:id"/></xsl:when>
+      <xsl:otherwise><xsl:value-of select="generate-id()"/></xsl:otherwise>
+    </xsl:choose></xsl:variable><xsl:element name="tei-{local-name(.)}"><xsl:attribute name="id" select="$id"/><xsl:apply-templates select="@*"/><xsl:apply-templates select="node()"/></xsl:element><xsl:if test="@wit or @source"><span class="source"><xsl:text> </xsl:text><xsl:call-template name="sources"><xsl:with-param name="id" select="$id"/></xsl:call-template></span></xsl:if></xsl:template>
   
   <xsl:template match="@xml:id">
     <xsl:attribute name="id"><xsl:value-of select="."/></xsl:attribute>
@@ -133,7 +137,7 @@
   
   <xsl:template match="tei-app[ancestor::tei-l]" mode="dialog" priority="100"/>
   
-  <xsl:template match="tei-lem[not(node())]|tei-rdg[not(node())]"><span>— </span></xsl:template>
+  <xsl:template match="tei-lem[not(node()) and not(@copyOf)]|tei-rdg[not(node()) and not(@copyOf)]" mode="dialog" priority="100"><span>— </span></xsl:template>
   
   <xsl:template name="sources">
     <xsl:param name="id"/>
