@@ -137,7 +137,9 @@ tei-div[type="sources"] {
 }
 
 tei-text button.app {
-  height: .5em
+  height: .5em;
+  font-size: 60%;
+  color: gray;
 }
 tei-text span.apps {
   display: inline;
@@ -173,6 +175,21 @@ tei-text span.apps {
   display: inline;
   font-style: italic;
   margin-right: .3em;
+}
+/* lists in tooltips */
+.ui-tooltip-content tei-listWit {
+  display: inline;
+  margin: 0;
+}
+.ui-tooltip-content tei-listBibl {
+  display: inline;
+  margin: 0;
+}
+.ui-tooltip-content tei-witness {
+  display: inline;
+}
+.ui-tooltip-content tei-bibl {
+  display: inline;
 }
 .highlight {
   background: yellow;
@@ -1033,9 +1050,12 @@ tei-item > tei-list {
 }
 tei-sourceDesc tei-list {
   list-style-type: none;
-  list-style-position: outside;
 }
-tei-sourceDesc tei-list>tei-item {
+tei-sourceDesc > tei-list > tei-head {
+  font-size: 140%;
+  font-weight: bold;
+}
+tei-sourceDesc tei-list > tei-item {
   display: list-item;
 }
 
@@ -1082,15 +1102,43 @@ tei-listApp {
   margin: 1em;
   padding: 1em;
 }
+
+/* sourceDesc lists */
 tei-listBibl {
   display:block;
   list-style-type: none;
-  list-style-position: outside;
+  margin-left: .5 em;
+  margin-top: .5em;
+}
+tei-listBibl > tei-head {
+  font-size: 120%;
+  font-weight: bold;
+}
+tei-listBibl > tei-bibl {
+  display: list-item;
+  margin-left: .5em;
 }
 tei-listWit {
   display:block;
   list-style-type: none;
-  list-style-position: outside;
+  margin-left: .5em;
+}
+tei-listWit > tei-head {
+  font-size: 120%;
+  font-weight: bold;
+}
+tei-listWit > tei-witness {
+  display: list-item;
+  margin-left: .5em;
+}
+tei-witness > tei-listWit {
+  display: inline;
+}
+tei-witness > tei-listWit > tei-head {
+  display: inline;
+}
+tei-witness > tei-listWit > tei-witness {
+  display: inline;
 }
 tei-localName {
   /* Empty Rule Set */
@@ -1994,10 +2042,6 @@ tei-witEnd {
 }
 tei-witStart {
   /* Empty Rule Set */
-}
-tei-listWit > tei-witness {
-  display: list-item;
-  list-style-position: outside;
 }
 tei-writing {
   /* Empty Rule Set */
