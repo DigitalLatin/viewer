@@ -332,10 +332,7 @@ tei-altIdent {
   /* Empty Rule Set */
 }
 tei-altIdentifier {
-  display: block;
-}
-tei-altIdentifier:before {
-  content: "Alternate ID: ";
+  /* Empty Rule Set */
 }
 tei-am {
   /* Empty Rule Set */
@@ -610,9 +607,7 @@ tei-colloc {
   /* Empty Rule Set */
 }
 tei-colophon {
-  display: block;
-  margin-top: 1em;
-  margin-bottom: 1em;
+  font-style: italic;
 }
 tei-cond {
   /* Empty Rule Set */
@@ -712,6 +707,9 @@ tei-epigraph {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
+}
+tei-explicit {
+  font-style: italic;
 }
 tei-fileDesc > extent {
   display: none;
@@ -872,12 +870,14 @@ tei-height {
 tei-heraldry {
   /* Empty Rule Set */
 }
-tei-hi[data-tei-rend="caps"] {
+tei-hi[rend="caps"] {
   font-weight:bold;
+}
+tei-hi[rend="italic"] {
+  font-style: italic;
 }
 tei-hi {
   /* GLS: do we want to bold this or change the background color? */
-tei-
 }
 tei-history {
   /* Empty Rule Set */
@@ -920,7 +920,7 @@ tei-incident {
   /* Empty Rule Set */
 }
 tei-incipit {
-  /* Empty Rule Set */
+  font-style: italic;
 }
 tei-index {
   /* Empty Rule Set */
@@ -1102,7 +1102,7 @@ tei-location {
   /* Empty Rule Set */
 }
 tei-locus {
-  /* Empty Rule Set */
+  display: none;
 }
 tei-locusGrp {
   /* Empty Rule Set */
@@ -1168,10 +1168,8 @@ tei-mood {
 tei-move {
   /* not sure, block, maybe just ital, maybe in parenths*/
 }
-tei-msContents .block-margins {
-  display: block;
-  margin-top: 1em;
-  margin-bottom: 1em;
+tei-msContents {
+  /* inline */
 }
 tei-msDesc {
   /* block with space above, below */
@@ -1414,9 +1412,7 @@ tei-pron {
   /* Empty Rule Set */
 }
 tei-provenance {
-  display: block;
-  margin-top: 0;
-  margin-bottom: 0;
+  /* inline */
 }
 tei-ptr {
   /* dunno */
