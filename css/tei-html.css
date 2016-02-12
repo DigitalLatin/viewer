@@ -1135,7 +1135,8 @@ tei-listWit > tei-head {
 }
 tei-listWit > tei-witness {
   display: list-item;
-  margin-left: .5em;
+  margin-left: 2em;
+  text-indent: -1.1em;
 }
 tei-witness > tei-listWit {
   display: inline;
@@ -1468,8 +1469,9 @@ tei-pron {
 tei-provenance {
   /* inline */
 }
-tei-ptr {
-  /* dunno */
+tei-ptr a {
+  color: #5f0000;
+  text-decoration: none;
 }
 tei-pubPlace {
   /* Empty Rule Set */
@@ -1555,7 +1557,8 @@ tei-recordingStmt {
   /* Empty Rule Set */
 }
 tei-ref {
-  /*include link if target */
+  color: #5f0000;
+  text-decoration: none;
 }
 tei-region {
   /* Empty Rule Set */

@@ -14,10 +14,8 @@
       <head>
         <link rel="stylesheet" href="{$base}css/tei-html.css"/>
         <link rel="stylesheet" href="{$base}js/jquery-ui-1.11.4.custom/jquery-ui.css"/>
-        <script type="text/javascript">
-          <xsl:for-each select="distinct-values(//*/local-name())">
-            var tei_<xsl:value-of select="."/> = document.registerElement("tei-<xsl:value-of select="."/>");</xsl:for-each>
-        </script>
+        <script type="text/javascript" src="js/webcomponents.min.js"></script>
+        <xsl:copy-of select="t:register-elements(distinct-values(//*/local-name()))"/>
         <script type="text/javascript" src="{$base}js/jquery/jquery-1.11.3.js"></script>
         <script type="text/javascript" src="{$base}js/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
         <script type="text/javascript" src="{$base}js/display.js"></script>
@@ -48,5 +46,5 @@
   <xsl:template match="@*">
     <xsl:copy-of select="."></xsl:copy-of>
   </xsl:template>
-    
+
 </xsl:stylesheet>

@@ -28,6 +28,7 @@
         <xsl:apply-templates select="//t:app" mode="makedialog"/>
     </xsl:template>
     
+    <!-- Whitespace Handling -->
     <!-- Return a tree with ignoreable whitespace removed-->
     <xsl:template match="*" mode="kill-ws">
         <xsl:copy>
@@ -66,55 +67,20 @@
         <xsl:variable name="header"><xsl:apply-templates select="*" mode="kill-ws"/></xsl:variable>
         <xsl:element name="tei-teiHeader"><xsl:copy-of select="@*"/><xsl:apply-templates select="$header/*"/></xsl:element>
     </xsl:template>
-        
+    
     <xsl:template match="t:app">
         <xsl:variable name="app"><xsl:apply-templates select="*" mode="kill-ws"/></xsl:variable>
         <xsl:variable name="id"><xsl:choose>
             <xsl:when test="@xml:id"><xsl:value-of select="@xml:id"/></xsl:when>
             <xsl:otherwise><xsl:value-of select="generate-id(.)"/></xsl:otherwise>
         </xsl:choose></xsl:variable><xsl:element name="tei-app"><xsl:attribute name="id" select="$id"/><xsl:apply-templates select="@*[not(local-name() = 'id')]"/><xsl:apply-templates select="$app/*"/></xsl:element>
-        </xsl:template>
+    </xsl:template>
+    <!-- End Whitespace Handling -->
     
     <xsl:template match="t:lem|t:rdg"><xsl:variable name="id"><xsl:choose>
         <xsl:when test="@xml:id"><xsl:value-of select="@xml:id"/></xsl:when>
         <xsl:otherwise><xsl:value-of select="generate-id()"/></xsl:otherwise>
     </xsl:choose></xsl:variable><xsl:element name="tei-{local-name(.)}"><xsl:attribute name="id" select="$id"/><xsl:apply-templates select="@*[not(local-name() = 'id')]"/><xsl:apply-templates select="node()"/></xsl:element><xsl:if test="@wit or @source"><span class="source"><xsl:text> </xsl:text><xsl:call-template name="sources"><xsl:with-param name="id" select="$id"/></xsl:call-template></span></xsl:if></xsl:template>
-    
-    <xsl:template match="t:ptr">
-        <tei-ptr>
-            <xsl:apply-templates select="@*"/>
-            <xsl:for-each select="tokenize(@target, '\s+')">
-                <a href="{.}"><xsl:value-of select="substring-before(substring-after(., '://'), '/')"/></a><xsl:if test="position() != last()"><span>, </span></xsl:if>
-            </xsl:for-each>
-        </tei-ptr>
-    </xsl:template>
-    
-    <!-- Embed an html:a[@href] inside t:ref for each @target. If there is a single target,
-         wrap the contents of the ref in html:a[@href], otherwise, print the contents and 
-         append a list of targets, like ptr.
-    -->
-    <xsl:template match="t:ref">
-        <xsl:element name="tei-ref">
-            <xsl:apply-templates select="@*"/>
-            <xsl:choose>
-                <xsl:when test="contains(@target, ' ')">
-                    <xsl:apply-templates select="."/>
-                    <span>[</span>
-                    <xsl:for-each select="tokenize(@target, '\s+')">
-                        <a href="{.}"><xsl:value-of select="substring-before(substring-after(., '://'), '/')"/></a><xsl:if test="position() != last()"><span>, </span></xsl:if>
-                    </xsl:for-each>
-                    <span>]</span>
-                </xsl:when>
-                <xsl:otherwise>
-                    <a href="{@target}"><xsl:apply-templates select="node()"/></a>
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:element>
-    </xsl:template>
-    
-    <xsl:template match="t:div[@type]">
-        <xsl:element name="tei-{local-name(.)}"><xsl:apply-templates select="@*"/><xsl:attribute name="class"><xsl:value-of select="@type"/></xsl:attribute><xsl:apply-templates select="node()"/></xsl:element>
-    </xsl:template>
     
     <xsl:template match="t:titleStmt/t:editor">
         <xsl:element name="tei-{local-name(.)}"><xsl:attribute name="id" select="generate-id()"/><xsl:apply-templates select="@*"/><xsl:apply-templates select="node()"/></xsl:element><xsl:choose>
