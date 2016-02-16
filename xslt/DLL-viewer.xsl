@@ -238,5 +238,35 @@
         <xsl:for-each select="$sources"><span class="ref" data-id="{$id}" data-ref="{.}"><xsl:value-of select="$context/id(substring-after(current(),'#'))/@n"/></span>
         </xsl:for-each>
     </xsl:template>
+  
+  <xsl:function name="t:register-elements-impl">
+    <xsl:param name="list"/>
+    <script type="text/javascript">
+      <xsl:for-each select="$list">
+        <xsl:choose>
+          <xsl:when test=". = 'ref'">
+        var tei_<xsl:value-of select="."/>_proto = Object.create(HTMLElement.prototype);
+        tei_<xsl:value-of select="."/>_proto.createdCallback = function() {
+          this.onclick = function(evt) {
+            window.location = evt.target.getAttribute("target");
+          }
+        }
+        var tei_<xsl:value-of select="."/> = document.registerElement("tei-<xsl:value-of select="."/>", {prototype: tei_<xsl:value-of select="."/>_proto});
+      </xsl:when>
+      <xsl:when test=". = 'ptr'">
+        tei_<xsl:value-of select="."/>_proto = Object.create(HTMLElement.prototype);
+        tei_<xsl:value-of select="."/>_proto.createdCallback = function() {
+          var shadow = this.createShadowRoot();
+          var link = document.createElement('a');
+          link.innerHTML = '<style>a {color: #5f0000; text-decoration: none;}</style>' + this.getAttribute("target").replace(/https?:\/\/([^/]+)\/.*/, "$1");
+          link.href = this.getAttribute("target");
+          shadow.appendChild(link);
+        }
+        var tei_<xsl:value-of select="."/> = document.registerElement("tei-<xsl:value-of select="."/>", {prototype: tei_<xsl:value-of select="."/>_proto});
+          </xsl:when>
+        </xsl:choose>
+        var tei_<xsl:value-of select="."/> = document.registerElement("tei-<xsl:value-of select="."/>");</xsl:for-each>
+    </script>
+  </xsl:function>
     
 </xsl:stylesheet>

@@ -548,7 +548,6 @@ tei-cell {
 tei-border-left: 2px solid @border-color;
 tei-border-top:2px solid @border-color;
 tei-*/
-tei-
   border: 1px dotted #aaaaaa;
   width: 100%;
 }
@@ -809,7 +808,6 @@ tei-graph {
   /* Empty for now */
 }
 tei-graphic {
-  display: none;
 }
 tei-group {
   /* Empty Rule Set */
@@ -870,7 +868,6 @@ tei-figure > tei-head {
   border: 1px solid #aaaaaa;
   background: #fafafa;
   /* reset text-indent for note with <l> ancestors. */
-tei-
   text-indent: 0;
   font-size: 85%;
   text-align: justify;
@@ -1293,7 +1290,6 @@ tei-note {
 }
 tei-notesStmt {
   /* do we want to box each individual <note> if they're in a <notesStmt>? */
-tei-
   display: none;
 }
 tei-num {
@@ -1737,7 +1733,6 @@ tei-signed {
   display: block;
   margin-top: 2em;
   /*should make name a block when contained within  */
-tei-
 }
 tei-soCalled {
   quotes: "\201c" "\201d" "\2018" "\2019" "\201c" "\201d" "\2018" "\2019" "\201c" "\201d" "\2018" "\2019" "\201c" "\201d";
