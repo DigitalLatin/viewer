@@ -240,8 +240,6 @@ var loadSection = function(id) {
 				}
 				$(elt).parent("tei-l").append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
 			}
-			app.find("tei-lem:empty").append("— ");
-			app.find("tei-rdg:empty").append("— ");
 			if ($("#app-l" + n).length == 0 || lines.length > 0) {
 				app.prepend("<span class=\"lem\" id=\"app-l" + n +"\">" + n + "</span>");
 			}
@@ -312,6 +310,16 @@ var loadSection = function(id) {
 
 // Execute after the document is loaded
 $(function() {
+
+	if (!document.registerElement) {
+		$("tei-ptr").each(function(i, elt) {
+			var e = $(elt);
+			e.html('<a href="' + e.attr("target") + '">' + e.attr("target").replace(/https?:\/\/([^/]+)\/.*/, "$1") + '</a>');
+		});
+		$("tei-ref").click(function(evt) {
+			window.location = $(evt.target).attr("target");
+		});
+	}
 	// If a section is specified, then show that one and load it up;
 	// otherwise load the first one.
 	loadSection(section);

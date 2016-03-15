@@ -1,35 +1,37 @@
-var tei_TEI = document.registerElement("tei-TEI");
-var tei_teiHeader = document.registerElement("tei-teiHeader");
-var tei_fileDesc = document.registerElement("tei-fileDesc");
-var tei_titleStmt = document.registerElement("tei-titleStmt");
-var tei_title = document.registerElement("tei-title");
-var tei_publicationStmt = document.registerElement("tei-publicationStmt");
-var tei_p = document.registerElement("tei-p");
-var tei_sourceDesc = document.registerElement("tei-sourceDesc");
-var tei_listWit = document.registerElement("tei-listWit");
-var tei_head = document.registerElement("tei-head");
-var tei_witness = document.registerElement("tei-witness");
-var tei_listBibl = document.registerElement("tei-listBibl");
-var tei_bibl = document.registerElement("tei-bibl");
-var tei_text = document.registerElement("tei-text");
-var tei_body = document.registerElement("tei-body");
-var TEIDiv = Object.create(HTMLDivElement.prototype);
-var tei_div = document.registerElement("tei-div", {
-  prototype: TEIDiv,
-});
-var tei_l = document.registerElement("tei-l");
-tei_l.localName = "l";
-var TEIApp = Object.create(HTMLSpanElement.prototype);
-var tei_app = document.registerElement("tei-app", { prototype: TEIApp});
-var TEILem = Object.create(HTMLSpanElement.prototype);
-var tei_lem = document.registerElement("tei-lem", {prototype: TEILem});
-var tei_rdgGrp = document.registerElement("tei-rdgGrp");
-var tei_rdg = document.registerElement("tei-rdg");
-var tei_wit = document.registerElement("tei-wit");
-var tei_note = document.registerElement("tei-note");
-var tei_secl = document.registerElement("tei-secl");
-var tei_choice = document.registerElement("tei-choice");
-var tei_abbr = document.registerElement("tei-abbr");
-var tei_expan = document.registerElement("tei-expan");
-var tei_ref = document.registerElement("tei-ref");
-var tei_surplus = document.registerElement("tei-surplus");
+var TEI_CE = {
+  registerAll: function(names) {
+    for (var name of names) {
+      var proto = Object.create(HTMLElement.prototype);
+      if (TEI_CE[name]) {
+        TEI_CE[name].call(TEI_CE[name], proto);
+      }
+      document.registerElement("tei-" + name, {prototype: proto});
+    }
+  },
+  ptr: function(proto) {
+    proto.createdCallback = function() {
+      var shadow = this.createShadowRoot();
+      var link = document.createElement('a');
+      link.innerHTML = this.getAttribute("target").replace(/https?:\/\/([^/]+)\/.*/, "$1");
+      link.href = this.getAttribute("target");
+      shadow.appendChild(link);
+    }
+  },
+  ref: function(proto) {
+    proto.createdCallback = function() {
+      this.onclick = function(evt) {
+        window.location = evt.target.getAttribute("target");
+      }
+    }
+  },
+  img: function(proto) {
+    proto.createdCallback = function() {
+      var shadow = this.createShadowRoot();
+      var img = document.createElement('img');
+      img.src = this.getAttribute("url");
+      img.width = this.getAttribute("width");
+      img.height = this.getAttribute("height");
+      shadow.apprendChild(img);
+    }
+  }
+}

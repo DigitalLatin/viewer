@@ -1465,9 +1465,12 @@ tei-pron {
 tei-provenance {
   /* inline */
 }
-tei-ptr a {
+tei-ptr::shadow a {
   color: #5f0000;
   text-decoration: none;
+}
+tei-ptr::shadow a::after {
+  content: " ";
 }
 tei-pubPlace {
   /* Empty Rule Set */
@@ -1914,7 +1917,6 @@ tei-background:white;
 tei-*/
   margin-top: 2em;
   margin-bottom: 2em;
-  border-bottom: 1px solid #999;
 }
 tei-TEI > tei-text {
   display: block;

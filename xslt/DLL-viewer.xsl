@@ -80,7 +80,11 @@
     <xsl:template match="t:lem|t:rdg"><xsl:variable name="id"><xsl:choose>
         <xsl:when test="@xml:id"><xsl:value-of select="@xml:id"/></xsl:when>
         <xsl:otherwise><xsl:value-of select="generate-id()"/></xsl:otherwise>
-    </xsl:choose></xsl:variable><xsl:element name="tei-{local-name(.)}"><xsl:attribute name="id" select="$id"/><xsl:apply-templates select="@*[not(local-name() = 'id')]"/><xsl:apply-templates select="node()"/></xsl:element><xsl:if test="@wit or @source"><span class="source"><xsl:text> </xsl:text><xsl:call-template name="sources"><xsl:with-param name="id" select="$id"/></xsl:call-template></span></xsl:if></xsl:template>
+    </xsl:choose></xsl:variable><xsl:element name="tei-{local-name(.)}"><xsl:attribute name="id" select="$id"/><xsl:apply-templates select="@*[not(local-name() = 'id')]"/><xsl:apply-templates select="node()"/></xsl:element><xsl:if test="@wit or @source"><span class="source"><xsl:if test="empty(node()) and not(@copyOf)"><xsl:text> om.</xsl:text></xsl:if><xsl:text> </xsl:text><xsl:call-template name="sources"><xsl:with-param name="id" select="$id"/></xsl:call-template></span></xsl:if></xsl:template>
+    
+    <xsl:template match="t:div[@type]">		
+        <xsl:element name="tei-{local-name(.)}"><xsl:apply-templates select="@*"/><xsl:attribute name="class"><xsl:value-of select="@type"/></xsl:attribute><xsl:apply-templates select="node()"/></xsl:element>		
+    </xsl:template>
     
     <xsl:template match="t:titleStmt/t:editor">
         <xsl:element name="tei-{local-name(.)}"><xsl:attribute name="id" select="generate-id()"/><xsl:apply-templates select="@*"/><xsl:apply-templates select="node()"/></xsl:element><xsl:choose>
@@ -225,9 +229,7 @@
     </xsl:template>
     
     <xsl:template match="tei-app[ancestor::tei-l]" mode="dialog" priority="100"/>
-    
-    <xsl:template match="tei-lem[not(node()) and not(@copyOf)]|tei-rdg[not(node()) and not(@copyOf)]" mode="dialog" priority="100"><span>— </span></xsl:template>
-    
+        
     <xsl:template name="sources">
         <xsl:param name="id"/>
         <xsl:variable name="wits" select="tokenize(normalize-space(@wit),'\s+')"/>
@@ -238,35 +240,5 @@
         <xsl:for-each select="$sources"><span class="ref" data-id="{$id}" data-ref="{.}"><xsl:value-of select="$context/id(substring-after(current(),'#'))/@n"/></span>
         </xsl:for-each>
     </xsl:template>
-  
-  <xsl:function name="t:register-elements-impl">
-    <xsl:param name="list"/>
-    <script type="text/javascript">
-      <xsl:for-each select="$list">
-        <xsl:choose>
-          <xsl:when test=". = 'ref'">
-        var tei_<xsl:value-of select="."/>_proto = Object.create(HTMLElement.prototype);
-        tei_<xsl:value-of select="."/>_proto.createdCallback = function() {
-          this.onclick = function(evt) {
-            window.location = evt.target.getAttribute("target");
-          }
-        }
-        var tei_<xsl:value-of select="."/> = document.registerElement("tei-<xsl:value-of select="."/>", {prototype: tei_<xsl:value-of select="."/>_proto});
-      </xsl:when>
-      <xsl:when test=". = 'ptr'">
-        tei_<xsl:value-of select="."/>_proto = Object.create(HTMLElement.prototype);
-        tei_<xsl:value-of select="."/>_proto.createdCallback = function() {
-          var shadow = this.createShadowRoot();
-          var link = document.createElement('a');
-          link.innerHTML = '<style>a {color: #5f0000; text-decoration: none;}</style>' + this.getAttribute("target").replace(/https?:\/\/([^/]+)\/.*/, "$1");
-          link.href = this.getAttribute("target");
-          shadow.appendChild(link);
-        }
-        var tei_<xsl:value-of select="."/> = document.registerElement("tei-<xsl:value-of select="."/>", {prototype: tei_<xsl:value-of select="."/>_proto});
-          </xsl:when>
-        </xsl:choose>
-        var tei_<xsl:value-of select="."/> = document.registerElement("tei-<xsl:value-of select="."/>");</xsl:for-each>
-    </script>
-  </xsl:function>
-    
+      
 </xsl:stylesheet>
