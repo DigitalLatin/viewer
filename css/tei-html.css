@@ -163,6 +163,9 @@ tei-text span.apps {
 .ui-tooltip-content div.apparatus tei-rdg {
   display: inline;
 }
+.ui-tooltip-content div.apparatus tei-rdg::before {
+  content: " ";
+}
 .ui-tooltip-content div.apparatus tei-rdgGrp {
   display: inline;
 }
