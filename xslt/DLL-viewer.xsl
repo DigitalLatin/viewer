@@ -78,11 +78,7 @@
     <xsl:template match="t:lem|t:rdg"><xsl:variable name="id"><xsl:choose>
         <xsl:when test="@xml:id"><xsl:value-of select="@xml:id"/></xsl:when>
         <xsl:otherwise><xsl:value-of select="generate-id()"/></xsl:otherwise>
-    </xsl:choose></xsl:variable><xsl:element name="tei-{local-name(.)}"><xsl:attribute name="id" select="$id"/><xsl:apply-templates select="@*[not(local-name() = 'id')]"/><xsl:apply-templates select="node()"/></xsl:element><xsl:if test="@wit or @source"><span class="source"><xsl:if test="empty(node()) and not(@copyOf)"><xsl:text> om.</xsl:text></xsl:if><xsl:text> </xsl:text><xsl:call-template name="sources"><xsl:with-param name="id" select="$id"/></xsl:call-template></span></xsl:if></xsl:template>
-    
-    <xsl:template match="t:div[@type]">		
-        <xsl:element name="tei-{local-name(.)}"><xsl:apply-templates select="@*"/><xsl:attribute name="class"><xsl:value-of select="@type"/></xsl:attribute><xsl:apply-templates select="node()"/></xsl:element>		
-    </xsl:template>
+    </xsl:choose></xsl:variable><xsl:element name="tei-{local-name(.)}"><xsl:attribute name="id" select="$id"/><xsl:apply-templates select="@*[not(local-name() = 'id')]"/><xsl:apply-templates select="node()"/></xsl:element><xsl:if test="@wit or @source"><span class="source"><xsl:text> </xsl:text><xsl:call-template name="sources"><xsl:with-param name="id" select="$id"/></xsl:call-template></span></xsl:if></xsl:template>
     
     <xsl:template match="t:ptr">
         <tei-ptr>
@@ -263,7 +259,9 @@
     </xsl:template>
     
     <xsl:template match="tei-app[ancestor::tei-l]" mode="dialog" priority="100"/>
-        
+    
+    <xsl:template match="tei-lem[not(node()) and not(@copyOf)]|tei-rdg[not(node()) and not(@copyOf)]" mode="dialog" priority="100"><span>— </span></xsl:template>
+    
     <xsl:template name="sources">
         <xsl:param name="id"/>
         <xsl:variable name="wits" select="tokenize(normalize-space(@wit),'\s+')"/>
@@ -274,4 +272,5 @@
         <xsl:for-each select="$sources"><span class="ref" data-id="{$id}" data-ref="{.}"><xsl:value-of select="$context/id(substring-after(current(),'#'))/@n"/></span>
         </xsl:for-each>
     </xsl:template>
+    
 </xsl:stylesheet>
