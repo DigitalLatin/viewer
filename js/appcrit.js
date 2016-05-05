@@ -217,15 +217,25 @@ var loadSection = function(id) {
 			if ((lines = app.find("tei-l")).length > 0) {
 				n = $(lines[0]).attr("n");
 				if (!n) {
-					n = $($(lines[0]).attr("copyOf")).attr("n");
+					n = $($(lines[0]).attr("copyof")).attr("n");
 				}
 				if (lines.length > 1) {
-					if ($(lines[lines.length - 1]).attr("n")) {
-						n += "–" + $(lines[lines.length - 1]).attr("n");
+					if ($(lines[0]).attr("n")) {
+						if ($(lines[lines.length - 1]).attr("n")) {
+							n += "–" + $(lines[lines.length - 1]).attr("n");
+						} else {
+							for (var i = lines.length - 1; i >= 0; i--) {
+								if ($(lines[i]).attr("n")) {
+									n += "–" + $(lines[i]).attr("n");
+									break;
+								}
+							}
+						}
 					} else {
-						n += "–" + $($(lines[lines.length - 1]).attr("copyOf")).attr("n");
+							n += "–" + $($(lines[lines.length - 1]).attr("copyof")).attr("n");
 					}
 				}
+
 				var l = $(elt).find("tei-lem").find("tei-l");
 				if (l.length == 0) {
 					l = $(elt).next("tei-l,tei-app");
@@ -234,11 +244,11 @@ var loadSection = function(id) {
 				app.find("tei-lem").remove();
 				app.find("tei-rdg").remove();
 			} else {
-				n = $(elt).parent("tei-l").attr("n");
+				n = $(elt).parents("tei-l").attr("n");
 				if (!n) {
-					n = $($(elt).parent("tei-l").attr("copyOf")).attr("n");
+					n = $($(elt).parents("tei-l").attr("copyOf")).attr("n");
 				}
-				$(elt).parent("tei-l").append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
+				$(elt).parents("tei-l").append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
 			}
 			if ($("#app-l" + n).length == 0 || lines.length > 0) {
 				app.prepend("<span class=\"lem\" id=\"app-l" + n +"\">" + n + "</span>");
@@ -248,9 +258,10 @@ var loadSection = function(id) {
 		});
 
 		// Add line numbers
+		var parents = ["tei-sp", "tei-ab", "tei-div", "tei-lem"];
 		section.find("tei-l").each(function(i,elt){
 			var e = $(elt);
-			if (Number(e.attr("n")) % 5 == 0 && (elt.parentElement.localName == "tei-sp" || elt.parentElement.localName == "tei-ab" || elt.parentElement.localName == "tei-lem")) {
+			if (Number(e.attr("n")) % 5 == 0 && (parents.indexOf(elt.parentElement.localName) >= 0)) {
 				e.attr("data-lineno",e.attr("n"));
 			}
 			e.find("button.app").wrapAll("<span class=\"apps\"></span>");
