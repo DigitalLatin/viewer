@@ -4,7 +4,7 @@
   xmlns:t="http://www.tei-c.org/ns/1.0"
   exclude-result-prefixes="xs t"
   version="2.0">
-  <xsl:output indent="no" omit-xml-declaration="yes" method="html"/>
+  <xsl:output indent="no" omit-xml-declaration="yes" method="xml"/>
   <xsl:param name="base"></xsl:param><!-- http://digitallatin.github.io/viewer/ -->
   <xsl:include href="DLL-viewer.xsl"/>
   
@@ -35,14 +35,17 @@
   <xsl:template match="*" xml:space="preserve"><xsl:element name="tei-{local-name(.)}"><xsl:apply-templates select="@*"/><xsl:apply-templates select="node()"/></xsl:element></xsl:template>
     
   <xsl:template match="@xml:id">
+    <xsl:copy/>
     <xsl:attribute name="id"><xsl:value-of select="."/></xsl:attribute>
   </xsl:template>
   
   <xsl:template match="@xml:lang">
+    <xsl:copy/>
     <xsl:attribute name="lang"><xsl:value-of select="."/></xsl:attribute>
   </xsl:template>
   
   <xsl:template match="@xml:space">
+    <xsl:copy/>
     <xsl:attribute name="xml-space"><xsl:value-of select="."/></xsl:attribute>
   </xsl:template>
   

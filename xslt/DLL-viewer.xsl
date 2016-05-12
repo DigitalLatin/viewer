@@ -106,7 +106,7 @@
     <xsl:template match="t:altIdentifier"><span> olim </span><tei-altIdentifier><xsl:apply-templates select="node()|@*"/></tei-altIdentifier></xsl:template>
     
     <!-- Re-order msDesc's content, so physical description comes before contents -->
-    <xsl:template match="t:msDesc">
+    <!--<xsl:template match="t:msDesc">
         <tei-msDesc>
             <xsl:choose>
                 <xsl:when test="t:p"><xsl:apply-templates/></xsl:when>
@@ -120,7 +120,7 @@
                 </xsl:otherwise>
             </xsl:choose>
         </tei-msDesc>
-    </xsl:template>
+    </xsl:template>-->
     
     <xsl:template match="t:support">
         <xsl:call-template name="make-element"/><span>, </span>
