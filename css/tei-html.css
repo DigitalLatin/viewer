@@ -116,6 +116,9 @@ div.apparatus tei-app>tei-lem {
 div.apparatus tei-app tei-rdg {
   display: inline;
 }
+div.apparatus tei-app tei-rdg:before {
+  content: " ";
+}
 div.apparatus tei-rdgGrp {
   display: inline;
 }
@@ -163,7 +166,7 @@ tei-text span.apps {
 .ui-tooltip-content div.apparatus tei-rdg {
   display: inline;
 }
-.ui-tooltip-content div.apparatus tei-rdg::before {
+.ui-tooltip-content div.apparatus tei-rdg:before {
   content: " ";
 }
 .ui-tooltip-content div.apparatus tei-rdgGrp {
@@ -545,7 +548,6 @@ tei-cell {
 tei-border-left: 2px solid @border-color;
 tei-border-top:2px solid @border-color;
 tei-*/
-tei-
   border: 1px dotted #aaaaaa;
   width: 100%;
 }
@@ -703,6 +705,12 @@ tei-custodialHist {
 tei-date[data-tei-when]:empty:before {
   content: attr(when);
 }
+tei-del[rend=erasure]:before {
+  content: "⟦";
+}
+tei-del[rend=erasure]:after {
+  content: "⟧";
+}
 /* e */
 tei-editionStmt {
   display:block;
@@ -806,7 +814,6 @@ tei-graph {
   /* Empty for now */
 }
 tei-graphic {
-  display: none;
 }
 tei-group {
   /* Empty Rule Set */
@@ -867,7 +874,6 @@ tei-figure > tei-head {
   border: 1px solid #aaaaaa;
   background: #fafafa;
   /* reset text-indent for note with <l> ancestors. */
-tei-
   text-indent: 0;
   font-size: 85%;
   text-align: justify;
@@ -1132,7 +1138,8 @@ tei-listWit > tei-head {
 }
 tei-listWit > tei-witness {
   display: list-item;
-  margin-left: .5em;
+  margin-left: 2em;
+  text-indent: -1.1em;
 }
 tei-witness > tei-listWit {
   display: inline;
@@ -1289,7 +1296,6 @@ tei-note {
 }
 tei-notesStmt {
   /* do we want to box each individual <note> if they're in a <notesStmt>? */
-tei-
   display: none;
 }
 tei-num {
@@ -1556,7 +1562,8 @@ tei-recordingStmt {
   /* Empty Rule Set */
 }
 tei-ref {
-  /*include link if target */
+  color: #5f0000;
+  text-decoration: none;
 }
 tei-region {
   /* Empty Rule Set */
@@ -1735,7 +1742,6 @@ tei-signed {
   display: block;
   margin-top: 2em;
   /*should make name a block when contained within  */
-tei-
 }
 tei-soCalled {
   quotes: "\201c" "\201d" "\2018" "\2019" "\201c" "\201d" "\2018" "\2019" "\201c" "\201d" "\2018" "\2019" "\201c" "\201d";
