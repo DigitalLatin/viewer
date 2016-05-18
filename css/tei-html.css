@@ -705,6 +705,12 @@ tei-custodialHist {
 tei-date[data-tei-when]:empty:before {
   content: attr(when);
 }
+tei-del[rend=erasure]:before {
+  content: "⟦";
+}
+tei-del[rend=erasure]:after {
+  content: "⟧";
+}
 /* e */
 tei-editionStmt {
   display:block;
