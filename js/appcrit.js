@@ -102,7 +102,6 @@ var swapLem = function(oldrdg) {
 					});
 				}
 			}
-			appToolTips();
 		}
 	}
 };
@@ -138,7 +137,7 @@ var ttip = function(elt) {
 		open: function(event, ui) {
 			var app = $("#" + $(this).attr("data-app"));
 			app.addClass("highlight");
-			if (app.find(">tei-lem").length == 0) {
+			if (app.children("tei-lem").length == 0) {
 				var exclude = app.attr("exclude");
 				if (exclude) {
 					exclude.split(/ /).forEach(function(val) {
@@ -152,7 +151,7 @@ var ttip = function(elt) {
 			var app = $("#" + $(this).attr("data-app"));
 			app.find("hr").remove();
 			app.removeClass("highlight");
-			if (app.find(">tei-lem").length == 0) {
+			if (app.children("tei-lem").length == 0) {
 				var exclude = app.attr("exclude")
 				if (exclude) {
 					exclude.split(/ /).forEach(function(val) {
@@ -165,7 +164,7 @@ var ttip = function(elt) {
 	};
 }
 var appToolTips = function() {
-	section.find("tei-l button").each(function(i, elt) {
+	section.find("button.app").each(function(i, elt) {
 		if ($(elt).tooltip("instance")) {
 			$(elt).tooltip("destroy");
 		}
