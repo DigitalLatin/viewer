@@ -415,10 +415,7 @@ var loadSection = function(id) {
 				},
 			});
 		});
-	} else {
-		// View sources
-
-	}
+	} 
 }
 
 var loadData = function(data) {
