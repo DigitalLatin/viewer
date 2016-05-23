@@ -151,6 +151,10 @@ tei-text span.apps {
 }
 
 /* Apparatus tooltips */
+div.apparatus span.lineref {
+  display: none;
+}
+
 .ui-tooltip-content div.apparatus span.source {
   font-style: italic;
   font-weight: normal;
@@ -158,6 +162,9 @@ tei-text span.apps {
 }
 .ui-tooltip-content div.apparatus>span.lem {
   display: none;
+}
+.ui-tooltip-content div.apparatus>span.lineref {
+  display: inline;
 }
 .ui-tooltip-content div.apparatus tei-lem {
   font-weight: bold;
@@ -704,12 +711,6 @@ tei-custodialHist {
 /* d */
 tei-date[data-tei-when]:empty:before {
   content: attr(when);
-}
-tei-del[rend=erasure]:before {
-  content: "⟦";
-}
-tei-del[rend=erasure]:after {
-  content: "⟧";
 }
 /* e */
 tei-editionStmt {

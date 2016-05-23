@@ -267,6 +267,7 @@ var addSigla = function(i, elt) {
 		var wit = "";
 		var source = "";
 		var corr = "";
+		var lines = "";
 		var e = $(elt);
 		e.attr("data-id", e.attr("id"));
 		e.removeAttr("id");
@@ -287,18 +288,6 @@ var addSigla = function(i, elt) {
 			e.attr("source").split(/ /).forEach(function(val) {
 				source += " <span class=\"ref\" data-id=\"" + e.attr("data-id") + "\" data-ref=\"" + val + "\">" + refLabel(val) + "</span> ";
 			});
-		}
-		// Deal with omissions
-		if (elt.childNodes.length == 0) {
-			if ($(elt.parentElement).attr("type") == "lineOmission") {
-				var lem = $(elt.parentElement).find("tei-lem");
-				if (lem.find("tei-l").length > 1) {
-					status += "<span class=\"ref\" data-id=\"" + lem.attr("data-id") + "\">ll. " + lem.find("tei-l:first-child").attr("n") + "–" + lem.find("tei-l:last-child").attr("n") + "</span>";
-				} else {
-					status += "<span class=\"ref\" data-id=\"" + lem.attr("data-id") + "\">l. " + lem.find("tei-l").attr("n") + "</span>";
-				}
-
-			}
 		}
 		if ((wit + source + corr).length > 0) {
 			$(elt).after(" <span class=\"source\">" + wit + source + corr + "</span>");
@@ -356,6 +345,16 @@ var loadSection = function(id) {
 				lem.html(lem.text().replace(/\n/g, " ").replace(/^(\S+) .+ (\S+)/, "$1...$2"));
 			}
 			app.find("tei-lem,tei-rdg,tei-rdggrp").each(addSigla);
+			if (app.find(">tei-lem:empty,>tei-rdg:empty,>tei-rdgGrp>tei-rdg:empty").length > 0 && app.find("tei-l").length > 0) {
+				var lines;
+				var lem = app.children("tei-lem");
+				if (lem.find("tei-l").length > 1) {
+					lines = "<span class=\"ref lineref\" data-id=\"" + lem.attr("data-id") + "\">ll. " + lem.find("tei-l:first-child").attr("n") + "–" + lem.find("tei-l:last-child").attr("n") + "</span> ";
+				} else {
+					lines = "<span class=\"ref lineref\" data-id=\"" + lem.attr("data-id") + "\">l. " + lem.find("tei-l").attr("n") + "</span> ";
+				}
+				app.prepend(lines);
+			}
 			if ((lines = app.find("tei-l")).length > 0) {
 				n = $(lines[0]).attr("n");
 				if (!n) {
