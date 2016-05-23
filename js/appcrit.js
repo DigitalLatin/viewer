@@ -198,14 +198,14 @@ var appToolTips = function() {
 				if ($(elt).find("tei-l").length > 0) {
 					d.find("tei-lem,tei-rdg,tei-rdgGrp").remove();
 				}
-				d.find("tei-lem:empty").append("– ");
-				d.find("tei-rdg:empty").append("– ");
+				d.find("tei-lem:empty").append("om. ");
+				d.find("tei-rdg:empty").append("om. ");
 				d.find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function(i, elt) {
 					$(elt).click(function(evt) {
 						var rdg = $("#" + escapeID($(evt.currentTarget).attr("data-id")));
 						swapLem(rdg);
-						if (rdg.attr("copyOf")) {
-							swapLem($(rdg.attr("copyOf")));
+						if (rdg.attr("data-copyFrom")) {
+							swapLem($(rdg.attr("data-copyFrom")));
 						}
 						if (rdg.attr("data-copy")) {
 							swapLem($(rdg.attr("data-copy")));
@@ -257,35 +257,39 @@ var refLabel = function(ref) {
 	}
 }
 
+var witOrSource = function(elt) {
+	return elt.attr("wit")?elt.attr("wit"):elt.attr("source");
+}
+
 // Set up app. crit.
-var witLabels = function(i, elt) {
+var addSigla = function(i, elt) {
 	if (elt.parentElement) {
 		// Find labels (@n) for items referenced via @wit and/or @source
 		var wit = "";
 		var source = "";
-		var status = "";
+		var corr = "";
 		var e = $(elt);
-		if (elt.localName == "tei-rdggrp" && e.attr("type") && e.attr("type").match(/corr/i)) {
-			e.find("tei-rdg:not(:first-child)").remove();
-		}
 		e.attr("data-id", e.attr("id"));
 		e.removeAttr("id");
+		// Add note for corrections
+		if (elt.localName == "tei-rdggrp" && e.attr("type") && e.attr("type").match(/corr/i)) {
+			var rdg = e.children("tei-rdg:not(:first-child)");
+			corr = "<span class=\"ref\" data-id=\"" + $(rdg).attr("id") + "\" data-ref=\"" + witOrSource(rdg) + "\">(corr. " + refLabel(witOrSource(rdg)) + ")</span>"
+			rdg.remove();
+		}
+		// Add witness sigla
 		if (e.attr("wit")) {
 			e.attr("wit").split(/ /).forEach(function(val) {
 				wit += "<span class=\"ref\" data-id=\"" + e.attr("data-id") + "\" data-ref=\"" + val + "\">" + refLabel(val) + "</span>";
 			});
 		}
+		// Add source references
 		if (e.attr("source")) {
 			e.attr("source").split(/ /).forEach(function(val) {
-				source += "<span class=\"ref\" data-id=\"" + e.attr("data-id") + "\" data-ref=\"" + val + "\">" + refLabel(val) + "</span> ";
+				source += " <span class=\"ref\" data-id=\"" + e.attr("data-id") + "\" data-ref=\"" + val + "\">" + refLabel(val) + "</span> ";
 			});
 		}
-		if (elt.localName == "tei-rdg" && elt.parentElement.localName == "tei-rdggrp") {
-			var p = e.parent();
-			if (p.attr("type") && p.attr("type").match(/corr/i)) {
-				status = "(corr.) ";
-			}
-		}
+		// Deal with omissions
 		if (elt.childNodes.length == 0) {
 			if ($(elt.parentElement).attr("type") == "lineOmission") {
 				var lem = $(elt.parentElement).find("tei-lem");
@@ -296,10 +300,26 @@ var witLabels = function(i, elt) {
 				}
 
 			}
-			status += " om. ";
 		}
-		$(elt).after(" <span class=\"source\">" + status + wit + " " + source + "</span>");
+		if ((wit + source + corr).length > 0) {
+			$(elt).after(" <span class=\"source\">" + wit + source + corr + "</span>");
+		}
 	}
+}
+
+var copy = function(elt) {
+	var e = $(elt);
+	e.html($(escapeID(e.attr("copyof"))).html());
+	// have to rewrite ids in copied content so there are no duplicates
+	e.find("*[id]").each(function(i, elt) {
+		$(elt).attr("data-copyFrom", "#" + $(elt).attr("id"));
+		$(elt).attr("id", generateId());
+		$($(elt).attr("data-copyFrom")).attr("data-copy", "#" + $(elt).attr("id"));
+		$(elt).addClass("app-copy");
+	});
+	e.find("*[copyof]").each(function(i, elt) {
+		copy(elt);
+	});
 }
 
 var loadSection = function(id) {
@@ -320,22 +340,23 @@ var loadSection = function(id) {
 
 		// Pull content into @copyOf elements
 		section.find("*[copyOf]").each(function(i, elt) {
-			var e = $(elt);
-			e.html($(escapeID(e.attr("copyOf"))).clone().contents());
-			// have to rewrite ids in copied content so there are no duplicates
-			e.find("*[id]").each(function(i, elt) {
-				$(elt).attr("copyOf", "#" + $(elt).attr("id"));
-				$(elt).attr("id", generateId());
-				$($(elt).attr("copyOf")).attr("data-copy", "#" + $(elt).attr("id"));
-				$(elt).addClass("app-copy");
-			});
+			copy(elt);
 		});
 
 		section.find("tei-app").each(function(i, elt) {
 			var app = $(elt).clone();
 			var n, lines
 			app.attr("id", "copy-" + app.attr("id"));
-			app.find("tei-lem,tei-rdg,tei-rdgGrp").each(witLabels);
+			// clean up descendant apps
+			var lem = app.children("tei-lem");
+			if (lem.find("tei-app").length > 0) {
+				lem.find("tei-rdg,tei-rdggrp,tei-note").remove();
+				lem.find("tei-lem").removeAttr("wit").removeAttr("source");
+			}
+			if (lem.children("tei-l").length == 0) {
+				lem.html(lem.text().replace(/\n/g, " ").replace(/^(\S+) .+ (\S+)/, "$1...$2"));
+			}
+			app.find("tei-lem,tei-rdg,tei-rdggrp").each(addSigla);
 			if ((lines = app.find("tei-l")).length > 0) {
 				n = $(lines[0]).attr("n");
 				if (!n) {
@@ -353,8 +374,8 @@ var loadSection = function(id) {
 					l = $(elt).next("tei-l,tei-app");
 				}
 				l.first().append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
-				app.find("tei-lem").remove();
-				app.find("tei-rdg").remove();
+				app.find("tei-lem:not(:empty)").remove();
+				app.find("tei-rdg:not(:empty)").remove();
 			} else {
 				n = $(elt).parent("tei-l").attr("n");
 				if (!n) {
@@ -362,8 +383,8 @@ var loadSection = function(id) {
 				}
 				$(elt).parent("tei-l").append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
 			}
-			app.find("tei-lem:empty").append("— ");
-			app.find("tei-rdg:empty").append("— ");
+			app.find("tei-lem:empty").append("om. ");
+			app.find("tei-rdg:empty").append("om. ");
 			if ($("#app-l" + n).length == 0 || lines.length > 0) {
 				app.prepend("<span class=\"lem\" id=\"app-l" + n +"\">" + n + "</span>");
 			}
