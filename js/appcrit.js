@@ -282,6 +282,9 @@ var addSigla = function(i, elt) {
 			e.attr("wit").split(/ /).forEach(function(val) {
 				wit += "<span class=\"ref\" data-id=\"" + e.attr("data-id") + "\" data-ref=\"" + val + "\">" + refLabel(val) + "</span>";
 			});
+			e.siblings("witDetail[target=\"" + e.attr("id") + "\"][wit=\"" + val + "\"]").each(function(i, elt) {
+				wit += " (" + e.innerHTML + ")";
+			});
 		}
 		// Add source references
 		if (e.attr("source")) {
