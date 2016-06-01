@@ -281,6 +281,9 @@ var addSigla = function(i, elt) {
 		if (e.attr("wit")) {
 			e.attr("wit").split(/ /).forEach(function(val) {
 				wit += "<span class=\"ref\" data-id=\"" + e.attr("data-id") + "\" data-ref=\"" + val + "\">" + refLabel(val) + "</span>";
+				e.siblings("tei-witDetail[target=\"" + e.attr("data-id") + "\"][wit=\"" + val + "\"]").each(function(i, elt) {
+					wit += " (" + elt.innerHTML + ") ";
+				});
 			});
 		}
 		// Add source references
@@ -375,11 +378,11 @@ var loadSection = function(id) {
 				app.find("tei-lem:not(:empty)").remove();
 				app.find("tei-rdg:not(:empty)").remove();
 			} else {
-				n = $(elt).parent("tei-l").attr("n");
+				n = $(elt).parents("tei-l").attr("n");
 				if (!n) {
-					n = $($(elt).parent("tei-l").attr("copyOf")).attr("n");
+					n = $($(elt).parents("tei-l").attr("copyOf")).attr("n");
 				}
-				$(elt).parent("tei-l").append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
+				$(elt).parents("tei-l").append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
 			}
 			app.find("tei-lem:empty").append("om. ");
 			app.find("tei-rdg:empty").append("om. ");
