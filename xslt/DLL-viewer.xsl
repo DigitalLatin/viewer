@@ -228,8 +228,18 @@
         </xsl:copy>
     </xsl:template>
     
-    <xsl:template match="tei-app[ancestor::tei-l]" mode="dialog" priority="100"/>
-        
+    <xsl:template match="tei-app" mode="dialog" priority="100">
+      <xsl:choose>
+        <xsl:when test="count(.//tei-l) = 1">
+          <span data-id="{tei-lem/@id}">l. <xsl:value-of select="tei-lem//tei-l[not(@copyOf)]/@n"/></span>
+        </xsl:when>
+        <xsl:when test="count(.//tei-l) gt 1">
+          <span data-id="{tei-lem/@id}">ll. <xsl:value-of select="(tei-lem//tei-l[not(@copyOf)])[1]/@n"/>-<xsl:value-of select="(tei-lem//tei-l[not(@copyOf)])[last()]/@n"/></span>
+        </xsl:when>
+      </xsl:choose>
+      <xsl:apply-templates select="tei-rdg|tei-rdgGrp|tei-note|tei-wit|span" mode="dialog"/>
+    </xsl:template>
+  
     <xsl:template name="sources">
         <xsl:param name="id"/>
         <xsl:variable name="wits" select="tokenize(normalize-space(@wit),'\s+')"/>

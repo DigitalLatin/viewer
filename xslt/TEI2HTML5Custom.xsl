@@ -33,6 +33,8 @@
   </xsl:template>
   
   <xsl:template match="*" xml:space="preserve"><xsl:element name="tei-{local-name(.)}"><xsl:apply-templates select="@*"/><xsl:apply-templates select="node()"/></xsl:element></xsl:template>
+  
+  <xsl:template match="*[@n and not(@xml:id)]"><xsl:element name="tei-{local-name(.)}"><xsl:apply-templates select="@*"/><xsl:attribute name="id"></xsl:attribute><xsl:apply-templates select="node()"/></xsl:element></xsl:template>
     
   <xsl:template match="@xml:id">
     <xsl:copy/>

@@ -1,5 +1,15 @@
 var section = window.location.hash;
 
+var genId = 0;
+
+var generateId = function(prefix) {
+	if (prefix) {
+		return prefix + genId++;
+	} else {
+		return "id" + genId++;
+	}
+}
+
 var swapLem = function(oldrdg) {
 	if (oldrdg[0].localName == "tei-rdg") { // swapLem is a no-op if we clicked a lem
 		var app = oldrdg.parents("tei-app").first();
@@ -92,7 +102,6 @@ var swapLem = function(oldrdg) {
 					});
 				}
 			}
-			appToolTips();
 		}
 	}
 };
@@ -128,7 +137,7 @@ var ttip = function(elt) {
 		open: function(event, ui) {
 			var app = $("#" + $(this).attr("data-app"));
 			app.addClass("highlight");
-			if (app.find(">tei-lem").length == 0) {
+			if (app.children("tei-lem").length == 0) {
 				var exclude = app.attr("exclude");
 				if (exclude) {
 					exclude.split(/ /).forEach(function(val) {
@@ -142,7 +151,7 @@ var ttip = function(elt) {
 			var app = $("#" + $(this).attr("data-app"));
 			app.find("hr").remove();
 			app.removeClass("highlight");
-			if (app.find(">tei-lem").length == 0) {
+			if (app.children("tei-lem").length == 0) {
 				var exclude = app.attr("exclude")
 				if (exclude) {
 					exclude.split(/ /).forEach(function(val) {
@@ -155,14 +164,72 @@ var ttip = function(elt) {
 	};
 }
 var appToolTips = function() {
-	section.find("tei-l button").each(function(i, elt) {
+	section.find("button.app").each(function(i, elt) {
 		if ($(elt).tooltip("instance")) {
 			$(elt).tooltip("destroy");
 		}
 		$(elt).attr("title","");
 		$(elt).tooltip(ttip(elt));
-		$(elt).click(function (){
-			$("#dialog-" + $(this).attr("data-app")).dialog("open");
+		$(elt).click(function (event) {
+			// Add apparatus dialogs
+			var d = $("#dialog-" + $(this).attr("data-app").replace(/dialog-/,""))
+			if (d.length == 0) {
+			  d = $("<div/>", {
+					id: "dialog-" + $(this).attr("data-app"),
+					class: "dialog",
+					"data-exclude": $("#" + $(this).attr("data-id")).attr("exclude")});
+				d.appendTo("body");
+				var content = $("#copy-" + $(this).attr("data-app")).clone();
+				content.find("span.lem").remove();
+				d.html(content.html());
+				if (content.attr("exclude")) {
+					content.attr("exclude").split(/ /).forEach(function(val) {
+						d.append($(val).html());
+					});
+				}
+				d.find("*[id]").each(function(i, elt) {
+					$(elt).attr("data-id", $(elt).attr("id"));
+				});
+				d.find("*[id]").removeAttr("id");
+				d.find("tei-note[target]").each(function(i, elt) {
+					$(elt).attr("data-id", $(elt).attr("target").replace(/#/, ""));
+				});
+				if ($(elt).find("tei-l").length > 0) {
+					d.find("tei-lem,tei-rdg,tei-rdgGrp").remove();
+				}
+				d.find("tei-lem:empty").append("om. ");
+				d.find("tei-rdg:empty").append("om. ");
+				d.find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function(i, elt) {
+					$(elt).click(function(evt) {
+						var rdg = $("#" + escapeID($(evt.currentTarget).attr("data-id")));
+						swapLem(rdg);
+						if (rdg.attr("data-copyFrom")) {
+							swapLem($(rdg.attr("data-copyFrom")));
+						}
+						if (rdg.attr("data-copy")) {
+							swapLem($(rdg.attr("data-copy")));
+						}
+					});
+				});
+				d.dialog({
+					autoOpen: false,
+					open: function(event) {
+						$("#" + $(this).attr("id").replace(/dialog/, "button")).tooltip("destroy");
+						$("#" + $(this).attr("id").replace(/dialog-/, "")).addClass("highlight");
+						$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").addClass("highlight");
+					},
+					close: function(event) {
+						$("#" + $(this).attr("id").replace(/dialog-/, "")).removeClass("highlight");
+						$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").removeClass("highlight");
+						var btn = $("#" + $(this).attr("id").replace(/dialog/, "button"));
+						if (btn.tooltip("instance")) {
+							btn.tooltip("destroy");
+						}
+						btn.tooltip(ttip(btn[0]));
+					}
+				});
+			}
+			d.dialog("open");
 		});
 	});
 }
@@ -180,13 +247,76 @@ var getLabel = function(val) {
 	}
 }
 
+var refLabel = function(ref) {
+	var elt = $(escapeID(ref));
+	if (elt.attr("n")) {
+		return elt.attr("n");
+	} else {
+		return elt.attr("id");
+	}
+}
+
+var witOrSource = function(elt) {
+	return elt.attr("wit")?elt.attr("wit"):elt.attr("source");
+}
+
+// Set up app. crit.
+var addSigla = function(i, elt) {
+	if (elt.parentElement) {
+		// Find labels (@n) for items referenced via @wit and/or @source
+		var wit = "";
+		var source = "";
+		var corr = "";
+		var lines = "";
+		var e = $(elt);
+		e.attr("data-id", e.attr("id"));
+		e.removeAttr("id");
+		// Add note for corrections
+		if (elt.localName == "tei-rdggrp" && e.attr("type") && e.attr("type").match(/corr/i)) {
+			var rdg = e.children("tei-rdg:not(:first-child)");
+			corr = "<span class=\"ref\" data-id=\"" + $(rdg).attr("id") + "\" data-ref=\"" + witOrSource(rdg) + "\">(corr. " + refLabel(witOrSource(rdg)) + ")</span>"
+			rdg.remove();
+		}
+		// Add witness sigla
+		if (e.attr("wit")) {
+			e.attr("wit").split(/ /).forEach(function(val) {
+				wit += "<span class=\"ref\" data-id=\"" + e.attr("data-id") + "\" data-ref=\"" + val + "\">" + refLabel(val) + "</span>";
+			});
+		}
+		// Add source references
+		if (e.attr("source")) {
+			e.attr("source").split(/ /).forEach(function(val) {
+				source += " <span class=\"ref\" data-id=\"" + e.attr("data-id") + "\" data-ref=\"" + val + "\">" + refLabel(val) + "</span> ";
+			});
+		}
+		if ((wit + source + corr).length > 0) {
+			$(elt).after(" <span class=\"source\">" + wit + source + corr + "</span>");
+		}
+	}
+}
+
+var copy = function(elt) {
+	var e = $(elt);
+	e.html($(escapeID(e.attr("copyof"))).html());
+	// have to rewrite ids in copied content so there are no duplicates
+	e.find("*[id]").each(function(i, elt) {
+		$(elt).attr("data-copyFrom", "#" + $(elt).attr("id"));
+		$(elt).attr("id", generateId());
+		$($(elt).attr("data-copyFrom")).attr("data-copy", "#" + $(elt).attr("id"));
+		$(elt).addClass("app-copy");
+	});
+	e.find("*[copyof]").each(function(i, elt) {
+		copy(elt);
+	});
+}
+
 var loadSection = function(id) {
 	var stamp = Date.now();
-	$("tei-div.textpart,tei-sourceDesc").css("display", "none");
+	$("tei-div[type=textpart],tei-sourceDesc").css("display", "none");
 	if (id) {
 		section = $(id);
 	} else {
-		section = $($("tei-div.textpart")[0]);
+		section = $($("tei-div[type=textpart]")[0]);
 	}
 	section.css("display", "block");
 
@@ -195,25 +325,36 @@ var loadSection = function(id) {
 
 	if (section.find("tei-app").length > 0) {
 		$("tei-TEI").after("<div id=\"apparatus\" class=\"apparatus\"><h2>Apparatus</h2></div>");
-		// Set up app. crit.
 
 		// Pull content into @copyOf elements
 		section.find("*[copyOf]").each(function(i, elt) {
-			var e = $(elt);
-			e.html($(escapeID(e.attr("copyOf"))).clone().contents());
-			// have to rewrite ids in copied content so there are no duplicates
-			e.find("*[id]").each(function(i, elt) {
-				$(elt).attr("copyOf", "#" + $(elt).attr("id"));
-				$(elt).attr("id", $(elt).attr("id") + Math.random().toString(36).substr(2));
-				$($(elt).attr("copyOf")).attr("data-copy", "#" + $(elt).attr("id"));
-				$(elt).addClass("app-copy");
-			});
+			copy(elt);
 		});
 
 		section.find("tei-app").each(function(i, elt) {
 			var app = $(elt).clone();
 			var n, lines
 			app.attr("id", "copy-" + app.attr("id"));
+			// clean up descendant apps
+			var lem = app.children("tei-lem");
+			if (lem.find("tei-app").length > 0) {
+				lem.find("tei-rdg,tei-rdggrp,tei-note").remove();
+				lem.find("tei-lem").removeAttr("wit").removeAttr("source");
+			}
+			if (lem.children("tei-l").length == 0) {
+				lem.html(lem.text().replace(/\n/g, " ").replace(/^(\S+) .+ (\S+)/, "$1...$2"));
+			}
+			app.find("tei-lem,tei-rdg,tei-rdggrp").each(addSigla);
+			if (app.find(">tei-lem:empty,>tei-rdg:empty,>tei-rdgGrp>tei-rdg:empty").length > 0 && app.find("tei-l").length > 0) {
+				var lines;
+				var lem = app.children("tei-lem");
+				if (lem.find("tei-l").length > 1) {
+					lines = "<span class=\"ref lineref\" data-id=\"" + lem.attr("data-id") + "\">ll. " + lem.find("tei-l:first-child").attr("n") + "–" + lem.find("tei-l:last-child").attr("n") + "</span> ";
+				} else {
+					lines = "<span class=\"ref lineref\" data-id=\"" + lem.attr("data-id") + "\">l. " + lem.find("tei-l").attr("n") + "</span> ";
+				}
+				app.prepend(lines);
+			}
 			if ((lines = app.find("tei-l")).length > 0) {
 				n = $(lines[0]).attr("n");
 				if (!n) {
@@ -231,8 +372,8 @@ var loadSection = function(id) {
 					l = $(elt).next("tei-l,tei-app");
 				}
 				l.first().append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
-				app.find("tei-lem").remove();
-				app.find("tei-rdg").remove();
+				app.find("tei-lem:not(:empty)").remove();
+				app.find("tei-rdg:not(:empty)").remove();
 			} else {
 				n = $(elt).parent("tei-l").attr("n");
 				if (!n) {
@@ -240,6 +381,8 @@ var loadSection = function(id) {
 				}
 				$(elt).parent("tei-l").append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
 			}
+			app.find("tei-lem:empty").append("om. ");
+			app.find("tei-rdg:empty").append("om. ");
 			if ($("#app-l" + n).length == 0 || lines.length > 0) {
 				app.prepend("<span class=\"lem\" id=\"app-l" + n +"\">" + n + "</span>");
 			}
@@ -248,9 +391,10 @@ var loadSection = function(id) {
 		});
 
 		// Add line numbers
+		var parents = ["tei-sp", "tei-ab", "tei-div", "tei-lem"];
 		section.find("tei-l").each(function(i,elt){
 			var e = $(elt);
-			if (Number(e.attr("n")) % 5 == 0 && (elt.parentElement.localName == "tei-sp" || elt.parentElement.localName == "tei-ab" || elt.parentElement.localName == "tei-lem")) {
+			if (Number(e.attr("n")) % 5 == 0 && (parents.indexOf(elt.parentElement.localName) >= 0)) {
 				e.attr("data-lineno",e.attr("n"));
 			}
 			e.find("button.app").wrapAll("<span class=\"apps\"></span>");
@@ -259,39 +403,7 @@ var loadSection = function(id) {
 		// Add apparatus links
 		appToolTips();
 
-		// Add apparatus dialogs
-		$("button.app").each(function(i, elt) {
-			var d = $("#dialog-" + $(elt).attr("data-app"));
-			d.dialog({
-				autoOpen: false,
-				open: function(event) {
-					$("#" + $(this).attr("id").replace(/dialog/, "button")).tooltip("destroy");
-					$("#" + $(this).attr("id").replace(/dialog-/, "")).addClass("highlight");
-					$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").addClass("highlight");
-				},
-				close: function(event) {
-					$("#" + $(this).attr("id").replace(/dialog-/, "")).removeClass("highlight");
-					$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").removeClass("highlight");
-					var btn = $("#" + $(this).attr("id").replace(/dialog/, "button"))
-					if (btn.tooltip("instance")) {
-						btn.tooltip("destroy");
-					}
-					appToolTips();
-				}
-			});
-			d.find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function(i, elt) {
-					$(elt).click(function(evt) {
-						var rdg = $("#" + escapeID($(evt.currentTarget).attr("data-id")));
-						swapLem(rdg);
-						if (rdg.attr("copyOf")) {
-							swapLem($(rdg.attr("copyOf")));
-						}
-						if (rdg.attr("data-copy")) {
-							swapLem($(rdg.attr("data-copy")));
-						}
-					});
-				});
-		});
+
 
 		// Link up sigla in the apparatus to bibliography
 		$("div#apparatus span.ref").each(function(i, elt) {
@@ -308,22 +420,38 @@ var loadSection = function(id) {
 	}
 }
 
-// Execute after the document is loaded
-$(function() {
-
-	if (!document.registerElement) {
-		$("tei-ptr").each(function(i, elt) {
-			var e = $(elt);
-			e.html('<a href="' + e.attr("target") + '">' + e.attr("target").replace(/https?:\/\/([^/]+)\/.*/, "$1") + '</a>');
+var loadData = function(data) {
+	$(data).find("tei-app,tei-rdgGrp").each(function(i, elt) {
+		var remove = [];
+		// Strip whitespace inside app
+		for (var i = 0; i < elt.childNodes.length; i ++) {
+			if (elt.childNodes[i].nodeType == Node.TEXT_NODE && !elt.childNodes[i].nodeValue.trim()) {
+				remove.push(elt.childNodes[i]);
+			}
+		}
+		remove.forEach(function(txt, index) {
+			elt.removeChild(txt);
 		});
-		$("tei-ref").click(function(evt) {
-			window.location = $(evt.target).attr("target");
-		});
-	}
+	});
+	// Add ids to app, lem, rdg, and rdgGrp if there are none
+	$(data).find("tei-app,tei-lem,tei-rdg,tei-rdgGrp").each(function(i, elt) {
+		var e = $(elt);
+		if (!e.attr("id")) {
+			e.attr("id",generateId());
+		}
+	});
+	document.getElementsByTagName("body")[0].appendChild(data);
 	// If a section is specified, then show that one and load it up;
 	// otherwise load the first one.
 	loadSection(section);
-
+	//Add navigation header
+	var nav = $("<div/>", {id:"navigation"});
+	nav.html("<h2>Contents:</h2><ul></ul>");
+	nav.appendTo("body");
+	$("tei-div[type=textpart]").each(function(i, elt) {
+		nav.find("ul").append("<li><a href=\"#" + $(elt).attr("id") + "\">" + $(elt).find("tei-head").html() + "</a></li>");
+	});
+	nav.find("ul").append("<li><a href=\"#sources\">Sources</a></li>");
 	// Add event listeners to ToC
 	$("div#navigation a").click(function(evt) {
 		$("div#navigation a.clicked").removeClass("clicked");
@@ -331,5 +459,5 @@ $(function() {
 		$("span.apps").remove();
 		loadSection($(evt.target).attr("href"));
 		return false;
-	})
-});
+	});
+}
