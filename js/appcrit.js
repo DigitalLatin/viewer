@@ -281,7 +281,7 @@ var addSigla = function(i, elt) {
 		if (e.attr("wit")) {
 			e.attr("wit").split(/ /).forEach(function(val) {
 				wit += "<span class=\"ref\" data-id=\"" + e.attr("data-id") + "\" data-ref=\"" + val + "\">" + refLabel(val) + "</span>";
-				e.siblings("tei-witDetail[target=\"" + e.attr("id") + "\"][wit=\"" + val + "\"]").each(function(i, elt) {
+				e.siblings("tei-witDetail[target=\"#" + e.attr("id") + "\"][wit=\"" + val + "\"]").each(function(i, elt) {
 					wit += " (" + e.innerHTML + ")";
 				});
 			});
