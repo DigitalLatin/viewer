@@ -281,7 +281,7 @@ var addSigla = function(i, elt) {
 		if (e.attr("wit")) {
 			e.attr("wit").split(/ /).forEach(function(val) {
 				wit += "<span class=\"ref\" data-id=\"" + e.attr("data-id") + "\" data-ref=\"" + val + "\">" + refLabel(val) + "</span>";
-				e.siblings("tei-witDetail[target=\"#" + e.attr("data-id") + "\"][wit=\"" + val + "\"]").each(function(i, elt) {
+				e.siblings("tei-witDetail[target=\"" + e.attr("data-id") + "\"][wit=\"" + val + "\"]").each(function(i, elt) {
 					wit += " (" + elt.innerHTML + ") ";
 				});
 			});
@@ -315,7 +315,7 @@ var copy = function(elt) {
 
 var loadSection = function(id) {
 	var stamp = Date.now();
-	$("tei-div[type=textpart],tei-sourceDesc").css("display", "none");
+	$("tei-div[type=textpart],tei-sourceDesc,tei-front").css("display", "none");
 	if (id) {
 		section = $(id);
 	} else {
@@ -451,10 +451,10 @@ var loadData = function(data) {
 	var nav = $("<div/>", {id:"navigation"});
 	nav.html("<h2>Contents:</h2><ul></ul>");
 	nav.appendTo("body");
+	nav.find("ul").append("<li><a href=\"#front\">Front Matter</a></li>");
 	$("tei-div[type=textpart]").each(function(i, elt) {
 		nav.find("ul").append("<li><a href=\"#" + $(elt).attr("id") + "\">" + $(elt).find("tei-head").html() + "</a></li>");
 	});
-	nav.find("ul").append("<li><a href=\"#sources\">Sources</a></li>");
 	// Add event listeners to ToC
 	$("div#navigation a").click(function(evt) {
 		$("div#navigation a.clicked").removeClass("clicked");
