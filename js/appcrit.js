@@ -42,6 +42,9 @@ var swapLem = function(oldrdg) {
 			//reacquire handles to newlem and newrdg in the altered DOM
 			newlem = $("#" + newlem.attr("id"));
 			newrdg = $("#" + newrdg.attr("id"));
+			newlem.find("button.app").each(function(i, elt) {
+				addToolTip(elt);
+			});
 			var l, btn;
 			if (app.find("tei-l").length > 0 && app.find("#button-" + app.attr("id").length == 0)) {
 				// the app doesn't contain the button clicked, i.e. not a line-containing app or one containing only a rdg
@@ -171,74 +174,77 @@ var ttip = function(elt) {
 		}
 	};
 }
-var appToolTips = function() {
-	section.find("button.app").each(function(i, elt) {
-		if ($(elt).tooltip("instance")) {
-			$(elt).tooltip("destroy");
-		}
-		$(elt).attr("title","");
-		$(elt).tooltip(ttip(elt));
-		$(elt).click(function (event) {
-			// Add apparatus dialogs
-			var d = $("#dialog-" + $(this).attr("data-app").replace(/dialog-/,""))
-			if (d.length == 0) {
-			  d = $("<div/>", {
-					id: "dialog-" + $(this).attr("data-app"),
-					class: "dialog",
-					"data-exclude": $("#" + $(this).attr("data-id")).attr("exclude")});
-				d.appendTo("body");
-				var content = $("#copy-" + $(this).attr("data-app")).clone();
-				content.find("span.lem").remove();
-				d.html(content.html());
-				if (content.attr("exclude")) {
-					content.attr("exclude").split(/ /).forEach(function(val) {
-						d.append($(val).html());
-					});
-				}
-				d.find("*[id]").each(function(i, elt) {
-					$(elt).attr("data-id", $(elt).attr("id"));
-				});
-				d.find("*[id]").removeAttr("id");
-				d.find("tei-note[target]").each(function(i, elt) {
-					$(elt).attr("data-id", $(elt).attr("target").replace(/#/, ""));
-				});
-				if ($(elt).find("tei-l").length > 0) {
-					d.find("tei-lem,tei-rdg,tei-rdgGrp").remove();
-				}
-				d.find("tei-lem:empty").append("om. ");
-				d.find("tei-rdg:empty").append("om. ");
-				d.find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function(i, elt) {
-					$(elt).click(function(evt) {
-						var rdg = $("#" + escapeID($(evt.currentTarget).attr("data-id")));
-						swapLem(rdg);
-						if (rdg.attr("data-copyFrom")) {
-							swapLem($(rdg.attr("data-copyFrom")));
-						}
-						if (rdg.attr("data-copy")) {
-							swapLem($(rdg.attr("data-copy")));
-						}
-					});
-				});
-				d.dialog({
-					autoOpen: false,
-					open: function(event) {
-						$("#" + $(this).attr("id").replace(/dialog/, "button")).tooltip("destroy");
-						$("#" + $(this).attr("id").replace(/dialog-/, "")).addClass("highlight");
-						$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").addClass("highlight");
-					},
-					close: function(event) {
-						$("#" + $(this).attr("id").replace(/dialog-/, "")).removeClass("highlight");
-						$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").removeClass("highlight");
-						var btn = $("#" + $(this).attr("id").replace(/dialog/, "button"));
-						if (btn.tooltip("instance")) {
-							btn.tooltip("destroy");
-						}
-						btn.tooltip(ttip(btn[0]));
-					}
+var addToolTip = function(elt) {
+	if ($(elt).tooltip("instance")) {
+		$(elt).tooltip("destroy");
+	}
+	$(elt).attr("title","");
+	$(elt).tooltip(ttip(elt));
+	$(elt).click(function (event) {
+		// Add apparatus dialogs
+		var d = $("#dialog-" + $(this).attr("data-app").replace(/dialog-/,""))
+		if (d.length == 0) {
+			d = $("<div/>", {
+				id: "dialog-" + $(this).attr("data-app"),
+				class: "dialog",
+				"data-exclude": $("#" + $(this).attr("data-id")).attr("exclude")});
+			d.appendTo("body");
+			var content = $("#copy-" + $(this).attr("data-app")).clone();
+			content.find("span.lem").remove();
+			d.html(content.html());
+			if (content.attr("exclude")) {
+				content.attr("exclude").split(/ /).forEach(function(val) {
+					d.append($(val).html());
 				});
 			}
-			d.dialog("open");
-		});
+			d.find("*[id]").each(function(i, elt) {
+				$(elt).attr("data-id", $(elt).attr("id"));
+			});
+			d.find("*[id]").removeAttr("id");
+			d.find("tei-note[target]").each(function(i, elt) {
+				$(elt).attr("data-id", $(elt).attr("target").replace(/#/, ""));
+			});
+			if ($(elt).find("tei-l").length > 0) {
+				d.find("tei-lem,tei-rdg,tei-rdgGrp").remove();
+			}
+			d.find("tei-lem:empty").append("om. ");
+			d.find("tei-rdg:empty").append("om. ");
+			d.find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function(i, elt) {
+				$(elt).click(function(evt) {
+					var rdg = $("#" + escapeID($(evt.currentTarget).attr("data-id")));
+					swapLem(rdg);
+					if (rdg.attr("data-copyFrom")) {
+						swapLem($(rdg.attr("data-copyFrom")));
+					}
+					if (rdg.attr("data-copy")) {
+						swapLem($(rdg.attr("data-copy")));
+					}
+				});
+			});
+			d.dialog({
+				autoOpen: false,
+				open: function(event) {
+					$("#" + $(this).attr("id").replace(/dialog/, "button")).tooltip("destroy");
+					$("#" + $(this).attr("id").replace(/dialog-/, "")).addClass("highlight");
+					$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").addClass("highlight");
+				},
+				close: function(event) {
+					$("#" + $(this).attr("id").replace(/dialog-/, "")).removeClass("highlight");
+					$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").removeClass("highlight");
+					var btn = $("#" + $(this).attr("id").replace(/dialog/, "button"));
+					if (btn.tooltip("instance")) {
+						btn.tooltip("destroy");
+					}
+					btn.tooltip(ttip(btn[0]));
+				}
+			});
+		}
+		d.dialog("open");
+	});
+}
+var appToolTips = function() {
+	section.find("button.app").each(function(i, elt) {
+		addToolTip(elt);
 	});
 }
 
