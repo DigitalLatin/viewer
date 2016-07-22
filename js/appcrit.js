@@ -102,6 +102,14 @@ var swapLem = function(oldrdg) {
 					});
 				}
 			}
+			if (newlem.attr("require")) {
+				newlem.attr("require").split(/ /).forEach(function(val) {
+					var req = $(val);
+					if (req[0].localName == "tei-rdg") {
+						swapLem(req);
+					}
+				});
+			}
 		}
 	}
 };
@@ -281,8 +289,8 @@ var addSigla = function(i, elt) {
 		if (e.attr("wit")) {
 			e.attr("wit").split(/ /).forEach(function(val) {
 				wit += "<span class=\"ref\" data-id=\"" + e.attr("data-id") + "\" data-ref=\"" + val + "\">" + refLabel(val) + "</span>";
-				e.siblings("tei-witDetail[target=\"" + e.attr("data-id") + "\"][wit=\"" + val + "\"]").each(function(i, elt) {
-					wit += " (" + elt.innerHTML + ") ";
+				$("tei-witDetail[target=\"#" + e.attr("data-id") + "\"][wit=\"" + val + "\"]").each(function(i, elt) {
+					wit += ", " + elt.innerHTML;
 				});
 			});
 		}
