@@ -147,7 +147,7 @@ tei-text button.app {
 tei-text span.apps {
   display: inline;
   position: absolute;
-  right: 33em;
+  right: 25%;
 }
 
 /* Apparatus tooltips */
