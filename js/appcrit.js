@@ -1,5 +1,5 @@
 var section = window.location.hash;
-
+var variantBlocks = "tei-l,tei-speaker,tei-p";
 var genId = 0;
 
 var generateId = function(prefix) {
@@ -46,20 +46,20 @@ var swapLem = function(oldrdg) {
 				addToolTip(elt);
 			});
 			var l, btn;
-			if (app.find("tei-l").length > 0 && app.find("#button-" + app.attr("id").length == 0)) {
-				// the app doesn't contain the button clicked, i.e. not a line-containing app or one containing only a rdg
-				l = newlem.find("tei-l").first();
+			if (app.find(variantBlocks).length > 0 && app.find("#button-" + app.attr("id").length == 0)) {
+				// the app doesn't contain the button clicked, e.g. not a line-containing app or one containing only a rdg
+				l = newlem.find(variantBlocks).first();
 				if (l.length == 0) {
-					l = newlem.parents("tei-l");
+					l = newlem.parents(variantBlocks);
 					if (l.length == 0) {
-						l = app.prev("tei-l,tei-app");
+						l = app.prev(variantBlocks + ",tei-app");
 						if (l.length > 0 && l[0].localName == "tei-app") {
-							l = l.find("tei-lem tei-l").last();
+							l = l.find("tei-lem " + variantBlocks).last();
 						}
 						if (l.length == 0) {
-							l = app.next("tei-l,tei-app");
+							l = app.next(variantBlocks + ",tei-app");
 							if (l.length > 0 && l[0].localName == "tei-app") {
-								l = l.find("tei-lem tei-l").first();
+								l = l.find("tei-lem " + variantBlocks).first();
 							}
 						}
 					}
@@ -77,18 +77,18 @@ var swapLem = function(oldrdg) {
 			var oldapp = newrdg.parent("tei-app");
 			if (oldapp.attr("id") != app.attr("id")) {
 				if (oldlem.find("#button-" + oldapp.attr("id")).length > 0) {
-					l = newrdg.parent("tei-app").find(">tei-lem tei-l");
+					l = newrdg.parent("tei-app").find(">tei-lem " + variantBlocks);
 					if (l.length == 0) {
-						l = newrdg.parents("tei-l");
+						l = newrdg.parents(variantBlocks);
 						if (l.length == 0) {
-							l = oldapp.prev("tei-l,tei-app");
+							l = oldapp.prev(variantBlocks + ",tei-app");
 							if (l.length > 0 && l[0].localName == "tei-app") {
-								l = l.find("tei-lem tei-l").last();
+								l = l.find("tei-lem " + variantBlocks).last();
 							}
 							if (l.length == 0) {
-								l = oldapp.next("tei-l,tei-app");
+								l = oldapp.next(variantBlocks + ",tei-app");
 								if (l[0].localName == "tei-app") {
-									l = l.find("tei-lem tei-l").first();
+									l = l.find("tei-lem " + variantBlocks).first();
 								}
 							}
 						}
@@ -152,11 +152,11 @@ var ttip = function(elt) {
 				var exclude = app.attr("exclude");
 				if (exclude) {
 					exclude.split(/ /).forEach(function(val) {
-						$(val).find("tei-l").addClass("highlight");
+						$(val).find(variantBlocks).addClass("highlight");
 					});
 				}
 			}
-			app.find("tei-l").addClass("highlight");
+			app.find(variantBlocks).addClass("highlight");
 		},
 		close: function(event, ui) {
 			var app = $("#" + $(this).attr("data-app"));
@@ -166,11 +166,11 @@ var ttip = function(elt) {
 				var exclude = app.attr("exclude")
 				if (exclude) {
 					exclude.split(/ /).forEach(function(val) {
-						$(val).find("tei-l").removeClass("highlight");
+						$(val).find(variantBlocks).removeClass("highlight");
 					});
 				}
 			}
-			app.find("tei-l").removeClass("highlight");
+			app.find(variantBlocks).removeClass("highlight");
 		}
 	};
 }
@@ -204,7 +204,7 @@ var addToolTip = function(elt) {
 			d.find("tei-note[target]").each(function(i, elt) {
 				$(elt).attr("data-id", $(elt).attr("target").replace(/#/, ""));
 			});
-			if ($(elt).find("tei-l").length > 0) {
+			if ($(elt).find(variantBlocks).length > 0) {
 				d.find("tei-lem,tei-rdg,tei-rdgGrp").remove();
 			}
 			d.find("tei-lem:empty").append("om. ");
@@ -226,11 +226,11 @@ var addToolTip = function(elt) {
 				open: function(event) {
 					$("#" + $(this).attr("id").replace(/dialog/, "button")).tooltip("destroy");
 					$("#" + $(this).attr("id").replace(/dialog-/, "")).addClass("highlight");
-					$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").addClass("highlight");
+					$("#" + $(this).attr("id").replace(/dialog-/, "")).find(variantBlocks).addClass("highlight");
 				},
 				close: function(event) {
 					$("#" + $(this).attr("id").replace(/dialog-/, "")).removeClass("highlight");
-					$("#" + $(this).attr("id").replace(/dialog-/, "")).find("tei-l").removeClass("highlight");
+					$("#" + $(this).attr("id").replace(/dialog-/, "")).find(variantBlocks).removeClass("highlight");
 					var btn = $("#" + $(this).attr("id").replace(/dialog/, "button"));
 					if (btn.tooltip("instance")) {
 						btn.tooltip("destroy");
@@ -281,7 +281,6 @@ var addSigla = function(i, elt) {
 		var wit = "";
 		var source = "";
 		var corr = "";
-		var lines = "";
 		var e = $(elt);
 		e.attr("data-id", e.attr("id"));
 		e.removeAttr("id");
@@ -350,7 +349,7 @@ var loadSection = function(id) {
 
 		section.find("tei-app").each(function(i, elt) {
 			var app = $(elt).clone();
-			var n, lines
+			var n, lines, unit;
 			app.attr("id", "copy-" + app.attr("id"));
 			// clean up descendant apps
 			var lem = app.children("tei-lem");
@@ -358,49 +357,64 @@ var loadSection = function(id) {
 				lem.find("tei-rdg,tei-rdggrp,tei-note").remove();
 				lem.find("tei-lem").removeAttr("wit").removeAttr("source");
 			}
-			if (lem.children("tei-l").length == 0) {
+			if (lem.children(variantBlocks).length == 0) {
 				lem.html(lem.text().replace(/\n/g, " ").replace(/^(\S+) .+ (\S+)/, "$1...$2"));
 			}
 			app.find("tei-lem,tei-rdg,tei-rdggrp").each(addSigla);
-			if (app.find(">tei-lem:empty,>tei-rdg:empty,>tei-rdgGrp>tei-rdg:empty").length > 0 && app.find("tei-l").length > 0) {
-				var lines;
+			if (app.find(">tei-lem:empty,>tei-rdg:empty,>tei-rdgGrp>tei-rdg:empty").length > 0 && app.find(variantBlocks).length > 0) {
+				var blocks;
 				var lem = app.children("tei-lem");
-				if (lem.find("tei-l").length > 1) {
-					lines = "<span class=\"ref lineref\" data-id=\"" + lem.attr("data-id") + "\">ll. " + lem.find("tei-l:first-child").attr("n") + "–" + lem.find("tei-l:last-child").attr("n") + "</span> ";
-				} else {
-					lines = "<span class=\"ref lineref\" data-id=\"" + lem.attr("data-id") + "\">l. " + lem.find("tei-l").attr("n") + "</span> ";
-				}
-				app.prepend(lines);
-			}
-			if ((lines = app.find("tei-l")).length > 0) {
-				n = $(lines[0]).attr("n");
-				if (!n) {
-					n = $($(lines[0]).attr("copyOf")).attr("n");
-				}
-				if (lines.length > 1) {
-					if ($(lines[lines.length - 1]).attr("n")) {
-						n += "–" + $(lines[lines.length - 1]).attr("n");
+				var children = lem.find(variantBlocks);
+			  unit = children[0].localName;
+				if (unit == "tei-l") {
+					if (children.length > 1) {
+						blocks = "<span class=\"ref lineref\" data-id=\"" + lem.attr("data-id") + "\">ll. " + lem.find(variantBlocks).first().attr("n") + "–" + lem.find(variantBlocks).last().attr("n") + "</span> ";
 					} else {
-						n += "–" + $($(lines[lines.length - 1]).attr("copyOf")).attr("n");
+						blocks = "<span class=\"ref lineref\" data-id=\"" + lem.attr("data-id") + "\">l. " + lem.find(variantBlocks).attr("n") + "</span> ";
 					}
 				}
-				var l = $(elt).find("tei-lem").find("tei-l");
+				if (unit == "tei-p") {
+					if (children.length > 1) {
+						blocks = "<span class=\"ref lineref\" data-id=\"" + lem.attr("data-id") + "\">" + lem.find(variantBlocks).first().attr("n") + "–" + lem.find(variantBlocks).last().attr("n") + "</span> ";
+					} else {
+						blocks = "<span class=\"ref lineref\" data-id=\"" + lem.attr("data-id") + "\">" + lem.find(variantBlocks).attr("n") + "</span> ";
+					}
+				}
+				if (unit == "tei-speaker") {
+						blocks = "<span class=\"ref lineref\" data-id=\"" + lem.attr("data-id") + "\">sp. </span> ";
+				}
+
+				app.prepend(blocks);
+			}
+			if ((blocks = app.find(variantBlocks)).length > 0) {
+				n = $(blocks[0]).attr("n");
+				if (!n) {
+					n = $($(blocks[0]).attr("copyOf")).attr("n");
+				}
+				if (blocks.length > 1) {
+					if ($(blocks[blocks.length - 1]).attr("n")) {
+						n += "–" + $(blocks[blocks.length - 1]).attr("n");
+					} else {
+						n += "–" + $($(blocks[blocks.length - 1]).attr("copyOf")).attr("n");
+					}
+				}
+				var l = $(elt).find("tei-lem").find(variantBlocks);
 				if (l.length == 0) {
-					l = $(elt).next("tei-l,tei-app");
+					l = $(elt).next(variantBlocks + ",tei-app");
 				}
 				l.first().append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
 				app.find("tei-lem:not(:empty)").remove();
 				app.find("tei-rdg:not(:empty)").remove();
 			} else {
-				n = $(elt).parents("tei-l").attr("n");
+				n = $(elt).parents(variantBlocks).attr("n");
 				if (!n) {
-					n = $($(elt).parents("tei-l").attr("copyOf")).attr("n");
+					n = $($(elt).parents(variantBlocks).attr("copyOf")).attr("n");
 				}
-				$(elt).parents("tei-l").append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
+				$(elt).parents(variantBlocks).append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
 			}
 			app.find("tei-lem:empty").append("om. ");
 			app.find("tei-rdg:empty").append("om. ");
-			if ($("#app-l" + n).length == 0 || lines.length > 0) {
+			if (n && $("#app-l" + n).length == 0 || blocks.length > 0) {
 				app.prepend("<span class=\"lem\" id=\"app-l" + n +"\">" + n + "</span>");
 			}
 			app.find("tei-lem,tei-rdg").removeAttr("id");
@@ -409,10 +423,10 @@ var loadSection = function(id) {
 
 		// Add line numbers
 		var parents = ["tei-sp", "tei-ab", "tei-div", "tei-lem"];
-		section.find("tei-l").each(function(i,elt){
+		section.find(variantBlocks).each(function(i,elt){
 			var e = $(elt);
 			if (Number(e.attr("n")) % 5 == 0 && (parents.indexOf(elt.parentElement.localName) >= 0)) {
-				e.attr("data-lineno",e.attr("n"));
+				e.attr("data-num",e.attr("n"));
 			}
 			e.find("button.app").wrapAll("<span class=\"apps\"></span>");
 		});

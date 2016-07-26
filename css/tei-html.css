@@ -991,8 +991,8 @@ tei-l {
   display: block;
   width: 35em;
 }
-tei-l[data-lineno]:before {
-  content: attr(data-lineno);
+tei-l[data-num]:before {
+  content: attr(data-num);
   position: absolute;
   left: 2em;
 }
@@ -1793,7 +1793,9 @@ tei-spanGrp {
   /* NOT SURE, look back on */
 }
 tei-speaker {
+  display:block;
   font-weight: bold;
+  height: 24px;
   margin-right: 0;
 }
 tei-specDesc {
