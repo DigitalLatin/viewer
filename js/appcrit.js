@@ -326,7 +326,11 @@ var copy = function(elt) {
 	});
 }
 
-var loadSection = function(id) {
+var copyEvents = function(elt1, elt2) {
+
+}
+
+var loadSection = function(id, ceteicean) {
 	var stamp = Date.now();
 	$("tei-div[type=textpart],tei-sourceDesc,tei-front").css("display", "none");
 	if (id) {
@@ -348,7 +352,12 @@ var loadSection = function(id) {
 		});
 
 		section.find("tei-app").each(function(i, elt) {
-			var app = $(elt).clone();
+			var app;
+			if (document.registerElement) {
+				app = $(elt.outerHTML);
+			} else {
+				app = $(elt).clone(true, true);
+			}
 			var n, lines, unit;
 			app.attr("id", "copy-" + app.attr("id"));
 			// clean up descendant apps
@@ -419,6 +428,7 @@ var loadSection = function(id) {
 			}
 			app.find("tei-lem,tei-rdg").removeAttr("id");
 			$("div#apparatus").append(app);
+
 		});
 
 		// Add line numbers
@@ -451,7 +461,7 @@ var loadSection = function(id) {
 	}
 }
 
-var loadData = function(data) {
+var loadData = function(data, ceteicean) {
 	$(data).find("tei-app,tei-rdgGrp").each(function(i, elt) {
 		var remove = [];
 		// Strip whitespace inside app
@@ -474,7 +484,7 @@ var loadData = function(data) {
 	document.getElementsByTagName("body")[0].appendChild(data);
 	// If a section is specified, then show that one and load it up;
 	// otherwise load the first one.
-	loadSection(section);
+	loadSection(section, ceteicean);
 	//Add navigation header
 	var nav = $("<div/>", {id:"navigation"});
 	nav.html("<h2>Contents:</h2><ul></ul>");
