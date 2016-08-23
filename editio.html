@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="css/tei-html.css">
+    <link rel="stylesheet" href="js/jquery-ui-1.11.4.custom/jquery-ui.css">
+    <script type="text/javascript" src="js/CETEI.js"></script>
+    <script type="text/javascript" src="js/jquery/jquery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/appcrit.js"></script>
+    <script type="text/javascript">
+      var c = new CETEI();
+      var app = new appcrit();
+      c.addBehaviors({"handlers":{
+        // Overrides the default ptr behavior, displaying a short link
+        "ptr": function() {
+          var self = this;
+          return function() {
+            var shadow = this.createShadowRoot();
+            var link = document.createElement("a");
+            link.innerHTML = this.getAttribute("target").replace(/https?:\/\/([^\/]+)\/.*/, "$1");
+            link.href = this.getAttribute("target");
+            shadow.appendChild(link);
+          }
+        }
+      }, "fallbacks": {
+        "ptr": function(elt) {
+          var content = document.createElement("a");
+          content.setAttribute("href", elt.getAttribute("target"));
+          content.innerHTML = elt.getAttribute("target").replace(/https?:\/\/([^\/]+)\/.*/, "$1");
+          elt.appendChild(content);
+          elt.addEventListener("click", function(event) {
+            window.location = this.getAttribute("target");
+          });
+        },
+        "ref": function(elt) {
+          $(elt).click(function() {
+            window.location = $(this).attr("target");
+          });
+        }
+      }});
+      c.getHTML5('https://raw.githubusercontent.com/sjhuskey/Calpurnius_Siculus/master/editio.xml', app.loadData());
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
