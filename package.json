@@ -1,20 +1,20 @@
 {
-  "name": "CETEIcean",
+  "name": "dll-viewer",
   "version": "0.0.0",
-  "description": "ODD-driven JavaScript library to load a TEI XML document and register it as HTML5 custom elements.",
-  "main": "dist/CETEI.js",
-  "jsnext:main": "src/CETEI.js",
+  "description": "Critical Edition viewer",
+  "main": "js/appcrit.js",
+  "jsnext:main": "src/appcrit.js",
   "keywords": [
     "TEI",
     "XML",
     "HTML5 custom elements",
     "ODD"
   ],
-  "author": "Raff Viglianti and Hugh Cayless",
+  "author": "Hugh Cayless",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TEIC/CETEIcean.git"
+    "url": "https://github.com/digitallatin/viewer"
   },
   "devDependencies": {
     "babel-preset-es2015-rollup": "^1.1.0",
