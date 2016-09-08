@@ -39,7 +39,25 @@
           });
         }
       }});
-      c.getHTML5('https://raw.githubusercontent.com/sjhuskey/Calpurnius_Siculus/master/editio.xml', app.loadData());
+      var foo = c.getHTML5('editio.xml', null, function(el){
+        if (el.hasAttribute("id")) {
+         if (["tei-listwit", "tei-witness", "tei-bibl", "tei-handnote", "tei-person", "tei-item"].includes(el.localName)) {
+            var val = $(el).children("tei-abbr[type=siglum]").html();
+            if (val) {
+              app.references["#" + el.getAttribute("id")] = val;
+            } else {
+              app.references["#" + el.getAttribute("id")] = el.getAttribute("id");
+            }
+          }
+        }
+      });
+      foo.then(function(TEI){
+        app.loadData(TEI);
+        $("body").append(TEI);
+        if (window.location.hash) {
+    			window.location = window.location;
+    		}
+      })
     </script>
   </head>
   <body>

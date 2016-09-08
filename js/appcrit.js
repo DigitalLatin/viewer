@@ -29,9 +29,10 @@ var appcrit = (function () {
   	function appcrit() {
   		classCallCheck(this, appcrit);
 
-  		this.section = window.location.hash;
   		this.variantBlocks = "tei-l,tei-speaker,tei-p";
   		this.genId = 0;
+  		this.dom = null;
+  		this.references = {};
   	}
 
   	createClass(appcrit, [{
@@ -233,12 +234,6 @@ var appcrit = (function () {
   						$(elt).click(function (evt) {
   							var rdg = $("#" + self.escapeID($(evt.currentTarget).attr("data-id")));
   							self.swapLem(rdg);
-  							if (rdg.attr("data-copyFrom")) {
-  								self.swapLem($(rdg.attr("data-copyFrom")));
-  							}
-  							if (rdg.attr("data-copy")) {
-  								self.swapLem($(rdg.attr("data-copy")));
-  							}
   						});
   					});
   					d.dialog({
@@ -263,14 +258,6 @@ var appcrit = (function () {
   			});
   		}
   	}, {
-  		key: "appToolTips",
-  		value: function appToolTips() {
-  			var self = this;
-  			this.section.find("button.app").each(function (i, elt) {
-  				self.addToolTip(elt);
-  			});
-  		}
-  	}, {
   		key: "escapeID",
   		value: function escapeID(id) {
   			return id.replace(/([\.,])/g, "\\$1");
@@ -288,11 +275,21 @@ var appcrit = (function () {
   	}, {
   		key: "refLabel",
   		value: function refLabel(ref) {
-  			var elt = $(this.escapeID(ref));
-  			if (elt.attr("n")) {
-  				return elt.attr("n");
+  			if (this.references[ref]) {
+  				return this.references[ref];
   			} else {
-  				return elt.attr("id");
+  				try {
+  					var elt = this.dom.querySelector(this.escapeID(ref));
+  					var siglum = $(elt).children("abbr[type=siglum]").html();
+  					if (!siglum) {
+  						this.references[ref] = elt.getAttribute("id");
+  					} else {
+  						this.references[ref] = siglum;
+  					}
+  					return this.references[ref];
+  				} catch (e) {
+  					//console.log("Unresolvable ref, " + ref);
+  				}
   			}
   		}
   	}, {
@@ -324,7 +321,7 @@ var appcrit = (function () {
   						if (e.attr("wit")) {
   							e.attr("wit").split(/ /).forEach(function (val) {
   								wit += "<span class=\"ref\" data-id=\"" + e.attr("data-id") + "\" data-ref=\"" + val + "\">" + self.refLabel(val) + "</span>";
-  								$("tei-witDetail[target=\"#" + e.attr("data-id") + "\"][wit=\"" + val + "\"]").each(function (i, elt) {
+  								e.parents("tei-app").first().find("tei-witDetail[target=\"#" + e.attr("data-id") + "\"][wit=\"" + val + "\"]").each(function (i, elt) {
   									wit += ", " + elt.innerHTML;
   								});
   							});
@@ -335,6 +332,9 @@ var appcrit = (function () {
   								source += " <span class=\"ref\" data-id=\"" + e.attr("data-id") + "\" data-ref=\"" + val + "\">" + self.refLabel(val) + "</span> ";
   							});
   						}
+  						if (elt.nextElementSibling && elt.nextElementSibling.localName == "tei-wit") {
+  							source += " ";
+  						}
   						if ((wit + source + corr).length > 0) {
   							$(elt).after(" <span class=\"source\">" + wit + source + corr + "</span>");
   						}
@@ -343,50 +343,72 @@ var appcrit = (function () {
   			};
   		}
   	}, {
+  		key: "makeCopy",
+  		value: function makeCopy(node) {
+  			var newNode = void 0;
+  			if (node.nodeType == Node.ELEMENT_NODE) {
+  				newNode = document.createElement(node.localName);
+  				for (var i = 0; i < node.attributes.length; i++) {
+  					// have to rewrite ids in copied content so there are no duplicates
+  					var att = node.attributes.item(i);
+  					if (att.name == "id") {
+  						newNode.setAttribute("data-copyFrom", att.value);
+  						newNode.setAttribute("id", this.generateId());
+  					}
+  					if (att.name == "class") {
+  						newNode.setAttribute("class", att.value + " app-copy");
+  					}
+  				}
+  				for (var _i2 = 0; _i2 < node.childNodes.length; _i2++) {
+  					var n = node.childNodes[_i2];
+  					if (n.nodeType == Node.ELEMENT_NODE) {
+  						if (n.hasAttribute("copyof")) {
+  							this.copy(n);
+  						}
+  						newNode.appendChild(this.makeCopy(n));
+  					} else {
+  						newNode.appendChild(n.cloneNode());
+  					}
+  				}
+  			} else {
+  				newNode = node.cloneNode();
+  			}
+  			return newNode;
+  		}
+
+  		// Copies the content of the target of the @copyOf attribute
+  		// into the current element
+
+  	}, {
   		key: "copy",
   		value: function copy(elt) {
   			var e = $(elt);
-  			e.html($(this.escapeID(e.attr("copyof"))).html());
-  			// have to rewrite ids in copied content so there are no duplicates
-  			var self = this;
-  			e.find("*[id]").each(function (i, elt) {
-  				$(elt).attr("data-copyFrom", "#" + $(elt).attr("id"));
-  				$(elt).attr("id", self.generateId());
-  				$($(elt).attr("data-copyFrom")).attr("data-copy", "#" + $(elt).attr("id"));
-  				$(elt).addClass("app-copy");
-  			});
-  			e.find("*[copyof]").each(function (i, elt) {
-  				self.copy(elt);
-  			});
+  			var src = this.dom.querySelector(this.escapeID(e.attr("copyof")));
+  			if (src) {
+  				for (var i = 0; i < src.childNodes.length; i++) {
+  					e.append(this.makeCopy(src.childNodes[i]));
+  				}
+  			} else {
+  				//console.log("Can't resolve " + e.attr("copyof"));
+  			}
   		}
   	}, {
-  		key: "loadSection",
-  		value: function loadSection(id, ceteicean) {
-  			var _this = this;
-
+  		key: "doSection",
+  		value: function doSection(section) {
   			var self = this;
   			var stamp = Date.now();
-  			$("tei-div[type=textpart],tei-sourceDesc,tei-front").css("display", "none");
-  			if (id) {
-  				this.section = $(id);
-  			} else {
-  				this.section = $($("tei-div[type=textpart]")[0]);
-  			}
-  			this.section.css("display", "block");
-
+  			var sectionId = section.attr("id");
   			// Add Apparatus div
-  			$("div#apparatus").remove();
-
-  			if (this.section.find("tei-app").length > 0) {
+  			if (section.find("tei-app").length > 0) {
   				(function () {
-  					$("tei-TEI").after("<div id=\"apparatus\" class=\"apparatus\"><h2>Apparatus</h2></div>");
+  					var appDiv = $("<div id=\"apparatus-" + sectionId + "\" class=\"apparatus\"><h2>Apparatus</h2></div>");
+  					section.after(appDiv);
 
-  					// Pull content into @copyOf elements
-  					_this.section.find("*[copyOf]").each(function (i, elt) {
-  						self.copy(elt);
-  					});
-
-  					_this.section.find("tei-app").each(function (i, elt) {
+  					section.find("tei-app").each(function (i, elt) {
+  						// Pull content into @copyOf elements
+  						$(elt).find("*[copyOf]").each(function (i, elt) {
+  							self.copy(elt);
+  						});
   						var app = void 0;
   						if (document.registerElement) {
   							app = $(elt.outerHTML);
@@ -406,7 +428,7 @@ var appcrit = (function () {
   						if (lem.children(this.variantBlocks).length == 0) {
   							lem.html(lem.text().replace(/\n/g, " ").replace(/^(\S+) .+ (\S+)/, "$1...$2"));
   						}
-  						app.find("tei-lem,tei-rdg,tei-rdggrp").each(self.addSigla());
+  						app.find("tei-lem,tei-rdg,tei-rdggrp").each(self.addSigla($(self.dom)));
   						var blocks = void 0;
   						if (app.find(">tei-lem:empty,>tei-rdg:empty,>tei-rdgGrp>tei-rdg:empty").length > 0 && app.find(self.variantBlocks).length > 0) {
   							var _lem = app.children("tei-lem");
@@ -439,6 +461,15 @@ var appcrit = (function () {
   							if (!n) {
   								n = $($(blocks[0]).attr("copyOf")).attr("n");
   							}
+  							if (!n) {
+  								for (var _i3 = 1; _i3 < blocks.length; _i3++) {
+  									if ($(blocks[_i3]).attr("n")) {
+  										n = $(blocks[_i3]).attr("n");
+  										break;
+  									}
+  								}
+  							}
+  							// TODO: Any chance of n still being undefined?
   							if (blocks.length > 1) {
   								if ($(blocks[blocks.length - 1]).attr("n")) {
   									n += "–" + $(blocks[blocks.length - 1]).attr("n");
@@ -462,16 +493,16 @@ var appcrit = (function () {
   						}
   						app.find("tei-lem:empty").append("om. ");
   						app.find("tei-rdg:empty").append("om. ");
-  						if (n && $("#app-l" + n).length == 0 || blocks.length > 0) {
+  						if (n && appDiv.find("#app-l" + n).length == 0 || blocks.length > 0) {
   							app.prepend("<span class=\"lem\" id=\"app-l" + n + "\">" + n + "</span>");
   						}
   						app.find("tei-lem,tei-rdg").removeAttr("id");
-  						$("div#apparatus").append(app);
+  						appDiv.append(app);
   					});
 
   					// Add line numbers
   					var parents = ["tei-sp", "tei-ab", "tei-div", "tei-lem"];
-  					_this.section.find(_this.variantBlocks).each(function (i, elt) {
+  					section.find(self.variantBlocks).each(function (i, elt) {
   						var e = $(elt);
   						if (Number(e.attr("n")) % 5 == 0 && parents.indexOf(elt.parentElement.localName) >= 0) {
   							e.attr("data-num", e.attr("n"));
@@ -480,10 +511,12 @@ var appcrit = (function () {
   					});
 
   					// Add apparatus links
-  					_this.appToolTips();
+  					section.find("button.app").each(function (i, elt) {
+  						self.addToolTip(elt);
+  					});
 
   					// Link up sigla in the apparatus to bibliography
-  					$("div#apparatus span.ref").each(function (i, elt) {
+  					appDiv.find("span.ref").each(function (i, elt) {
   						$(elt).attr("title", "");
   						$(elt).tooltip({
   							content: function content() {
@@ -499,49 +532,43 @@ var appcrit = (function () {
   		}
   	}, {
   		key: "loadData",
-  		value: function loadData() {
+  		value: function loadData(data) {
+  			this.dom = data;
   			var self = this;
-  			return function (data, ceteicean) {
-  				$(data).find("tei-app,tei-rdgGrp").each(function (i, elt) {
-  					var remove = [];
-  					// Strip whitespace inside app
-  					for (var _i2 = 0; _i2 < elt.childNodes.length; _i2++) {
-  						if (elt.childNodes[_i2].nodeType == Node.TEXT_NODE && !elt.childNodes[_i2].nodeValue.trim()) {
-  							remove.push(elt.childNodes[_i2]);
-  						}
+  			$(data).find("tei-app,tei-rdgGrp").each(function (i, elt) {
+  				var remove = [];
+  				// Strip whitespace inside app
+  				for (var _i4 = 0; _i4 < elt.childNodes.length; _i4++) {
+  					if (elt.childNodes[_i4].nodeType == Node.TEXT_NODE && !elt.childNodes[_i4].nodeValue.trim()) {
+  						remove.push(elt.childNodes[_i4]);
   					}
-  					remove.forEach(function (txt, index) {
-  						elt.removeChild(txt);
-  					});
+  				}
+  				remove.forEach(function (txt, index) {
+  					elt.removeChild(txt);
   				});
-  				// Add ids to app, lem, rdg, and rdgGrp if there are none
-  				$(data).find("tei-app,tei-lem,tei-rdg,tei-rdgGrp").each(function (i, elt) {
-  					var e = $(elt);
-  					if (!e.attr("id")) {
-  						e.attr("id", self.generateId());
-  					}
-  				});
-  				document.getElementsByTagName("body")[0].appendChild(data);
-  				// If a section is specified, then show that one and load it up;
-  				// otherwise load the first one.
-  				self.loadSection(self.section, ceteicean);
-  				//Add navigation header
-  				var nav = $("<div/>", { id: "navigation" });
-  				nav.html("<h2>Contents:</h2><ul></ul>");
-  				nav.appendTo("body");
-  				nav.find("ul").append("<li><a href=\"#front\">Front Matter</a></li>");
-  				$("tei-div[type=textpart]").each(function (i, elt) {
-  					nav.find("ul").append("<li><a href=\"#" + $(elt).attr("id") + "\">" + $(elt).find("tei-head").html() + "</a></li>");
-  				});
-  				// Add event listeners to ToC
-  				$("div#navigation a").click(function (evt) {
-  					$("div#navigation a.clicked").removeClass("clicked");
-  					var elt = $(evt.target).addClass("clicked");
-  					$("span.apps").remove();
-  					self.loadSection($(evt.target).attr("href"));
-  					return false;
-  				});
-  			};
+  			});
+  			// Add ids to app, lem, rdg, and rdgGrp if there are none
+  			$(data).find("tei-app,tei-lem,tei-rdg,tei-rdgGrp").each(function (i, elt) {
+  				var e = $(elt);
+  				if (!e.attr("id")) {
+  					e.attr("id", self.generateId());
+  				}
+  			});
+
+  			//Add navigation header
+  			var nav = $("<div/>", { id: "navigation" });
+  			nav.html("<h2>Contents:</h2><ul></ul>");
+  			nav.appendTo("body");
+  			nav.find("ul").append("<li><a href=\"#front\">Front Matter</a></li>");
+  			$(data).find("tei-div[type=textpart]").each(function (i, elt) {
+  				nav.find("ul").append("<li><a href=\"#" + $(elt).attr("id") + "\">" + $(elt).find("tei-head").html() + "</a></li>");
+  			});
+  			$(this.dom).find("tei-div[type=textpart],tei-front").each(function (i, elt) {
+  				self.doSection($(elt));
+  			});
+  			// cleanup
+  			this.dom = null;
+  			this.references = null;
   		}
   	}]);
   	return appcrit;
