@@ -551,15 +551,10 @@ tei-cb:before {
 tei-cell {
   display: table-cell;
   padding: 1em 1.5em 1em 1em;
-  /*
-tei-border-left: 2px solid @border-color;
-tei-border-top:2px solid @border-color;
-tei-*/
-  border: 1px dotted #aaaaaa;
-  width: 100%;
+  border: thin solid gray;
 }
 /* for cell or row with @role = label */
-tei-[data-tei-role=label] {
+tei-cell[role=label] {
   font-weight: bold;
 }
 tei-certainty {
@@ -903,6 +898,10 @@ tei-hi[rend="caps"] {
 tei-hi[rend="italic"] {
   font-style: italic;
 }
+tei-hi[rend="super"] {
+  font-size: 60%;
+  vertical-align: super;
+}
 tei-hi {
   /* GLS: do we want to bold this or change the background color? */
 }
@@ -1141,15 +1140,6 @@ tei-listWit > tei-witness {
   display: list-item;
   margin-left: 2em;
   text-indent: -1.1em;
-}
-tei-witness > tei-listWit {
-  display: inline;
-}
-tei-witness > tei-listWit > tei-head {
-  display: inline;
-}
-tei-witness > tei-listWit > tei-witness {
-  display: inline;
 }
 tei-localName {
   /* Empty Rule Set */
@@ -1472,13 +1462,6 @@ tei-pron {
 tei-provenance {
   /* inline */
 }
-tei-ptr::shadow a {
-  color: #5f0000;
-  text-decoration: none;
-}
-tei-ptr::shadow a::after {
-  content: " ";
-}
 tei-pubPlace {
   /* Empty Rule Set */
 }
@@ -1626,6 +1609,9 @@ tei-root {
 }
 tei-row {
   display: table-row;
+}
+tei-row[role=label] {
+  font-weight: bold;
 }
 tei-rs {
   /* Empty Rule Set */
@@ -1904,12 +1890,8 @@ tei-TEI {
   display: block;
 }
 tei-table {
-  border-collapse: separate;
-  border-spacing: 2px;
-}
-/* Why is this selector "TEI table" instead of just "table"? */
-tei-TEI tei-table {
-  display: block;
+  border-collapse: collapse;
+  display: table;
   margin-top: 2em;
   margin-bottom: 2em;
   font-size: 12pt;
@@ -2159,7 +2141,4 @@ tei-width: 330px;
 .head-font {
   font-family: Arvo, sans-serif;
   font-weight: normal;
-}
-tei-text span {
-  display:none;
 }
