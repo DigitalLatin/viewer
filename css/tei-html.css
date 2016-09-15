@@ -72,20 +72,28 @@ border-top:2px solid @border-color;
 }
 
 /* Navigation */
-div#navigation {
-  position: absolute;
-  top: 5em;
-  right: 100px;
+div#controls {
+  position: fixed;
+  top: 1em;
+  right: 1em;
   font-size: 80%;
+  width: 18%
 }
-div#navigation h2 {
+div#navigation {
+  border: thin solid gray;
+  padding: 0.5em;
+}
+div#controls h2 {
   font-size: 120%;
   margin: 0;
 }
-div#navigation ul {
+div#controls ul {
   list-style-type: none;
   margin:0;
   padding:0;
+}
+div#navigation a.selected {
+  font-weight: bold;
 }
 
 /* Apparatus */
@@ -238,6 +246,9 @@ div.apparatus span.lineref {
   display: inline;
   font-style: italic;
   margin-right: .3em;
+}
+.ui-dialog-content span.lem {
+  display: none;
 }
 .ui-dialog-content tei-note[data-id]:hover {
   cursor: pointer;
@@ -1546,8 +1557,14 @@ tei-recordingStmt {
   /* Empty Rule Set */
 }
 tei-ref {
-  color: #5f0000;
-  text-decoration: none;
+  color: black;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+tei-ref a {
+  color: black;
+  text-decoration: underline;
+  text-decoration-style: dotted;
 }
 tei-region {
   /* Empty Rule Set */
@@ -1911,12 +1928,8 @@ tei-*/
 }
 tei-TEI > tei-text {
   display: block;
-  /*
-tei-border-radius: 15px;
-tei-border: 1px solid black;
-tei-background:white;
-tei-*/
   line-height: 1.5;
+  width: 80%;
 }
 tei-textClass {
   display: none;
@@ -2071,19 +2084,18 @@ html {
 img {
   border: 1px solid #aaaaaa;
 }
+a {
+  text-decoration: underline;
+}
+a:link, a:visited, a:active {
+  color: black;
+  text-decoration: underline;
+}
 #footer {
   margin-top: 1em;
   border-top: 1px solid #292929;
   padding-top: .5em;
   font-size: 12pt;
-}
-a:link, a:visited, a:active {
-  color: #5f0000;
-  text-decoration: none;
-}
-a:hover {
-  color: #5f0000;
-  text-decoration: underline;
 }
 #sidebar {
   left: 56em;
@@ -2129,14 +2141,19 @@ tei-width: 330px;
   color: #292929;
 }
 /* loading animation */
-#loading {
-  display: none;
+@keyframes rotate {
+  from {transform: rotate(0deg);}
+  to {transform: rotate(360deg);}
+}
+
+#loading p {
+  font-size: 128px;
   position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url("../images/transparentbg.png");
+  top: 50%;
+  left: 50%;
+  margin-left: -0.5em;
+  margin-top: -0.5em;
+  animation: 2s rotate linear infinite;
 }
 .head-font {
   font-family: Arvo, sans-serif;
