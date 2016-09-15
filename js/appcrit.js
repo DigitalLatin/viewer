@@ -118,7 +118,7 @@ var appcrit = (function () {
   						}
   						self.addToolTip(btn[0]);
   					}
-  					if (l.length > 0) {
+  					if (l && l.length > 0) {
   						l.find("button").each(function (i, elt) {
   							$(elt).tooltip(self.ttip(elt));
   						});
