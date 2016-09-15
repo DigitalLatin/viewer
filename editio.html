@@ -10,6 +10,7 @@
     <script type="text/javascript" src="js/appcrit.js"></script>
     <script type="text/javascript">
       var c = new CETEI();
+      c.shadowCSS = "css/tei-html.css";
       var app = new appcrit();
       c.addBehaviors({"handlers":{
         // Overrides the default ptr behavior, displaying a short link
@@ -17,6 +18,7 @@
           var self = this;
           return function() {
             var shadow = this.createShadowRoot();
+            self.addShadowStyle(shadow);
             var link = document.createElement("a");
             link.innerHTML = this.getAttribute("target").replace(/https?:\/\/([^\/]+)\/.*/, "$1");
             link.href = this.getAttribute("target");
@@ -39,7 +41,7 @@
           });
         }
       }});
-      var foo = c.getHTML5('editio.xml', null, function(el){
+      var data = c.getHTML5('editio.xml', null, function(el){
         if (el.hasAttribute("id")) {
          if (["tei-listwit", "tei-witness", "tei-bibl", "tei-handnote", "tei-person", "tei-item"].includes(el.localName)) {
             var val = $(el).children("tei-abbr[type=siglum]").html();
@@ -51,8 +53,9 @@
           }
         }
       });
-      foo.then(function(TEI){
+      data.then(function(TEI){
         app.loadData(TEI);
+        $("#loading").remove();
         $("body").append(TEI);
         if (window.location.hash) {
     			window.location = window.location;
@@ -61,5 +64,16 @@
     </script>
   </head>
   <body>
+    <div id="loading">
+      <p>✻</p>
+    </div>
+    <div id="controls">
+      <div id="display">
+        <form class="">
+          <ul>
+            <li><input type="checkbox" name="orthographical" value="true"><label for="orthographical">Hide orthographical variants</label></li>
+            <li><input type="checkbox" name="morphological" value="true"><label for="morphological">Hide morphological variants</label></li>
+          </ul>
+        </form>
   </body>
 </html>

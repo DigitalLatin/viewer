@@ -46,18 +46,20 @@ var appcrit = (function () {
   		}
   	}, {
   		key: "swapLem",
-  		value: function swapLem(oldrdg) {
+  		value: function swapLem(oldrdg, evt) {
   			var self = this;
   			if (oldrdg[0].localName == "tei-rdg") {
   				// swapLem is a no-op if we clicked a lem
+  				var copyfrom = oldrdg.attr("data-copyfrom");
+  				var oldrdgid = oldrdg.attr("id");
   				var app = oldrdg.parents("tei-app").first();
   				var oldlem = void 0;
   				if ((oldlem = app.find(">tei-lem")).length == 0) {
   					if ((oldlem = app.find("tei-rdgGrp>tei-lem")).length == 0) {
   						if (app.attr("exclude")) {
   							app.attr("exclude").split(/ /).forEach(function (val) {
-  								if ($(val).find(">tei-lem").length > 0) {
-  									oldlem = $(val).find(">tei-lem");
+  								if ($(self.escapeID(val)).find(">tei-lem").length > 0) {
+  									oldlem = $(self.escapeID(val)).find(">tei-lem");
   								}
   							});
   						}
@@ -78,72 +80,50 @@ var appcrit = (function () {
   					newrdg.append(oldlem.html());
   					oldlem.replaceWith(newrdg[0].outerHTML);
   					//reacquire handles to newlem and newrdg in the altered DOM
-  					newlem = $("#" + newlem.attr("id"));
-  					newrdg = $("#" + newrdg.attr("id"));
-  					newlem.find("button.app").each(function (i, elt) {
-  						self.addToolTip(elt);
-  					});
-  					var l = void 0,
-  					    btn = void 0;
-  					if (app.find(this.variantBlocks).length > 0 && app.find("#button-" + app.attr("id").length == 0)) {
-  						// the app doesn't contain the button clicked, e.g. not a line-containing app or one containing only a rdg
+  					newlem = $("#" + self.escapeID(newlem.attr("id")));
+  					newrdg = $("#" + self.escapeID(newrdg.attr("id")));
+  					var l = void 0;
+  					// Grab the button we clicked to open the dialog. We might need to move it.
+  					var btn = void 0;
+  					var append = false;
+  					if (evt) {
+  						btn = $("#" + self.escapeID($(evt.currentTarget).parents("div").first().attr("id").replace(/^dialog/, "button")));
+  					}
+  					if (app.find(this.variantBlocks).length > 0 && btn && app.find("#" + btn.attr("id").length == 0)) {
+  						// It's a line-containing app, but doesn't contain the button; button needs to be moved
   						l = newlem.find(this.variantBlocks).first();
   						if (l.length == 0) {
-  							l = newlem.parents(this.variantBlocks);
+  							l = app.prev(this.variantBlocks + ",tei-app");
+  							if (l.length > 0 && l[0].localName == "tei-app") {
+  								l = l.find("tei-lem " + this.variantBlocks).last();
+  							}
+  							if (l.length > 0) {
+  								append = true;
+  							}
   							if (l.length == 0) {
-  								l = app.prev(this.variantBlocks + ",tei-app");
+  								l = app.next(this.variantBlocks + ",tei-app");
   								if (l.length > 0 && l[0].localName == "tei-app") {
-  									l = l.find("tei-lem " + this.variantBlocks).last();
-  								}
-  								if (l.length == 0) {
-  									l = app.next(this.variantBlocks + ",tei-app");
-  									if (l.length > 0 && l[0].localName == "tei-app") {
-  										l = l.find("tei-lem " + this.variantBlocks).first();
-  									}
+  									l = l.find("tei-lem " + this.variantBlocks).first();
   								}
   							}
   						}
-  						btn = $("#button-" + app.attr("id"));
   						if (l.find("span.apps").length > 0) {
-  							l.find("span.apps").first().append(btn.detach());
+  							if (append) {
+  								l.find("span.apps").first().append(btn.detach());
+  							} else {
+  								l.find("span.apps").first().prepend(btn.detach());
+  							}
   						} else {
   							l.append($("<span class=\"apps\"></span>").append(btn.detach()));
   						}
-  						btn.click(function () {
-  							$("#dialog-" + $(this).attr("data-app")).dialog("open");
+  						self.addToolTip(btn[0]);
+  					}
+  					if (l.length > 0) {
+  						l.find("button").each(function (i, elt) {
+  							$(elt).tooltip(self.ttip(elt));
   						});
   					}
   					oldapp = newrdg.parent("tei-app");
-  					if (oldapp.attr("id") != app.attr("id")) {
-  						if (oldlem.find("#button-" + oldapp.attr("id")).length > 0) {
-  							l = newrdg.parent("tei-app").find(">tei-lem " + this.variantBlocks);
-  							if (l.length == 0) {
-  								l = newrdg.parents(this.variantBlocks);
-  								if (l.length == 0) {
-  									l = oldapp.prev(this.variantBlocks + ",tei-app");
-  									if (l.length > 0 && l[0].localName == "tei-app") {
-  										l = l.find("tei-lem " + this.variantBlocks).last();
-  									}
-  									if (l.length == 0) {
-  										l = oldapp.next(this.variantBlocks + ",tei-app");
-  										if (l[0].localName == "tei-app") {
-  											l = l.find("tei-lem " + this.variantBlocks).first();
-  										}
-  									}
-  								}
-  							}
-  							$("#button-" + oldapp.attr("id")).remove();
-  							btn = oldlem.find("#button-" + oldapp.attr("id"));
-  							if (l.find("span.apps").length > 0) {
-  								l.find("span.apps").first().append(btn.detach());
-  							} else {
-  								l.append($("<span class=\"apps\"></span>").append(btn.detach()));
-  							}
-  							btn.click(function () {
-  								$("#dialog-" + $(this).attr("data-app")).dialog("open");
-  							});
-  						}
-  					}
   					if (newlem.attr("require")) {
   						newlem.attr("require").split(/ /).forEach(function (val) {
   							var req = $(val);
@@ -153,6 +133,13 @@ var appcrit = (function () {
   						});
   					}
   				}
+  				//give copies the same treatment, so we don't get out of sync.
+  				if (copyfrom) {
+  					self.swapLem($("#" + self.escapeID(copyfrom)));
+  				}
+  				$("*[copyfrom=" + oldrdgid + "]").each(function (i, elt) {
+  					self.swapLem($(elt));
+  				});
   			}
   		}
   	}, {
@@ -161,23 +148,23 @@ var appcrit = (function () {
   			var self = this;
   			return {
   				content: function content() {
-  					return "<div class=\"apparatus\">" + $("#copy-" + $(elt).attr("data-app")).html() + "</div>";
+  					return "<div class=\"apparatus\">" + $("#copy-" + self.escapeID($(elt).attr("data-app"))).html() + "</div>";
   				},
   				open: function open(event, ui) {
-  					var app = $("#" + $(this).attr("data-app"));
+  					var app = $("#" + self.escapeID($(this).attr("data-app")));
   					app.addClass("highlight");
   					if (app.children("tei-lem").length == 0) {
   						var exclude = app.attr("exclude");
   						if (exclude) {
   							exclude.split(/ /).forEach(function (val) {
-  								$(val).find(self.variantBlocks).addClass("highlight");
+  								$(self.escapeID(val)).find(self.variantBlocks).addClass("highlight");
   							});
   						}
   					}
   					app.find(self.variantBlocks).addClass("highlight");
   				},
   				close: function close(event, ui) {
-  					var app = $("#" + $(this).attr("data-app"));
+  					var app = $("#" + self.escapeID($(this).attr("data-app")));
   					app.find("hr").remove();
   					app.removeClass("highlight");
   					if (app.children("tei-lem").length == 0) {
@@ -189,6 +176,7 @@ var appcrit = (function () {
   						}
   					}
   					app.find(self.variantBlocks).removeClass("highlight");
+  					$(this).attr("title", "");
   				}
   			};
   		}
@@ -203,19 +191,20 @@ var appcrit = (function () {
   			var self = this;
   			$(elt).click(function (event) {
   				// Add apparatus dialogs
-  				var d = $("#dialog-" + $(this).attr("data-app").replace(/dialog-/, ""));
+  				var d = $("#dialog-" + self.escapeID($(this).attr("data-app")).replace(/dialog-/, ""));
   				if (d.length == 0) {
   					d = $("<div/>", {
   						id: "dialog-" + $(this).attr("data-app"),
   						class: "dialog",
-  						"data-exclude": $("#" + $(this).attr("data-id")).attr("exclude") });
+  						"data-exclude": $("#" + self.escapeID($(this).attr("data-app"))).attr("exclude") });
   					d.appendTo("body");
-  					var content = $("#copy-" + $(this).attr("data-app")).clone();
+  					var content = $("#copy-" + self.escapeID($(this).attr("data-app"))).clone();
   					content.find("span.lem").remove();
   					d.html(content.html());
   					if (content.attr("exclude")) {
   						content.attr("exclude").split(/ /).forEach(function (val) {
-  							d.append($(val).html());
+  							var excl = $(self.escapeID(val).replace(/#/, "#copy-"));
+  							d.append(excl.html());
   						});
   					}
   					d.find("*[id]").each(function (i, elt) {
@@ -233,13 +222,13 @@ var appcrit = (function () {
   					d.find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function (i, elt) {
   						$(elt).click(function (evt) {
   							var rdg = $("#" + self.escapeID($(evt.currentTarget).attr("data-id")));
-  							self.swapLem(rdg);
+  							self.swapLem(rdg, evt);
   						});
   					});
   					d.dialog({
   						autoOpen: false,
   						open: function open(event) {
-  							$("#" + $(this).attr("id").replace(/dialog/, "button")).tooltip("destroy");
+  							$("#" + $(this).attr("id").replace(/dialog/, "button")).tooltip("close");
   							$("#" + $(this).attr("id").replace(/dialog-/, "")).addClass("highlight");
   							$("#" + $(this).attr("id").replace(/dialog-/, "")).find(this.variantBlocks).addClass("highlight");
   						},
@@ -248,9 +237,9 @@ var appcrit = (function () {
   							$("#" + $(this).attr("id").replace(/dialog-/, "")).find(this.variantBlocks).removeClass("highlight");
   							var btn = $("#" + $(this).attr("id").replace(/dialog/, "button"));
   							if (btn.tooltip("instance")) {
-  								btn.tooltip("destroy");
+  								btn.tooltip("close");
   							}
-  							btn.tooltip(self.ttip(btn[0]));
+  							btn.attr("title", ""); // hack to handle JQuery UI bug
   						}
   					});
   				}
@@ -333,7 +322,7 @@ var appcrit = (function () {
   							});
   						}
   						if (elt.nextElementSibling && elt.nextElementSibling.localName == "tei-wit") {
-  							source += " ";
+  							source += " <span class=\"ref\" data-id=\"" + e.attr("data-id") + "\">" + $(elt.nextElementSibling).html() + "</span> ";
   						}
   						if ((wit + source + corr).length > 0) {
   							$(elt).after(" <span class=\"source\">" + wit + source + corr + "</span>");
@@ -354,9 +343,10 @@ var appcrit = (function () {
   					if (att.name == "id") {
   						newNode.setAttribute("data-copyFrom", att.value);
   						newNode.setAttribute("id", this.generateId());
-  					}
-  					if (att.name == "class") {
+  					} else if (att.name == "class") {
   						newNode.setAttribute("class", att.value + " app-copy");
+  					} else {
+  						newNode.setAttribute(att.name, att.value);
   					}
   				}
   				for (var _i2 = 0; _i2 < node.childNodes.length; _i2++) {
@@ -396,108 +386,123 @@ var appcrit = (function () {
   		key: "doSection",
   		value: function doSection(section) {
   			var self = this;
-  			var stamp = Date.now();
+  			$("button").remove();
+  			$("div.apparatus").remove();
   			var sectionId = section.attr("id");
   			// Add Apparatus div
   			if (section.find("tei-app").length > 0) {
   				(function () {
   					var appDiv = $("<div id=\"apparatus-" + sectionId + "\" class=\"apparatus\"><h2>Apparatus</h2></div>");
   					section.after(appDiv);
-
+  					// Pull content into @copyOf elements
+  					section.find("*[copyOf]").each(function (i, elt) {
+  						self.copy(elt);
+  					});
   					section.find("tei-app").each(function (i, elt) {
-  						// Pull content into @copyOf elements
-  						$(elt).find("*[copyOf]").each(function (i, elt) {
-  							self.copy(elt);
-  						});
   						var app = void 0;
   						if (document.registerElement) {
   							app = $(elt.outerHTML);
   						} else {
   							app = $(elt).clone(true, true);
   						}
-  						var n = void 0,
-  						    lines = void 0,
-  						    unit = void 0;
-  						app.attr("id", "copy-" + app.attr("id"));
-  						// clean up descendant apps
-  						var lem = app.children("tei-lem");
-  						if (lem.find("tei-app").length > 0) {
-  							lem.find("tei-rdg,tei-rdggrp,tei-note").remove();
-  							lem.find("tei-lem").removeAttr("wit").removeAttr("source");
+  						// Assemble distributed readings into the main app (with the lem)
+  						if (app.children("tei-lem").length == 1 && app.attr("exclude")) {
+  							app.attr("exclude").split(/ /).forEach(function (val) {
+  								var rdg = section.find(self.escapeID(val)).clone();
+  								app.append($(rdg).children().unwrap());
+  							});
   						}
-  						if (lem.children(this.variantBlocks).length == 0) {
-  							lem.html(lem.text().replace(/\n/g, " ").replace(/^(\S+) .+ (\S+)/, "$1...$2"));
-  						}
-  						app.find("tei-lem,tei-rdg,tei-rdggrp").each(self.addSigla($(self.dom)));
-  						var blocks = void 0;
-  						if (app.find(">tei-lem:empty,>tei-rdg:empty,>tei-rdgGrp>tei-rdg:empty").length > 0 && app.find(self.variantBlocks).length > 0) {
-  							var _lem = app.children("tei-lem");
-  							var children = _lem.find(self.variantBlocks);
-  							if (children.length > 0) {
-  								unit = children[0].localName;
-  								if (unit == "tei-l") {
-  									if (children.length > 1) {
-  										blocks = "<span class=\"ref lineref\" data-id=\"" + _lem.attr("data-id") + "\">ll. " + _lem.find(self.variantBlocks).first().attr("n") + "–" + _lem.find(self.variantBlocks).last().attr("n") + "</span> ";
-  									} else {
-  										blocks = "<span class=\"ref lineref\" data-id=\"" + _lem.attr("data-id") + "\">l. " + _lem.find(self.variantBlocks).attr("n") + "</span> ";
+  						// Don't process distributed readings
+  						if (!app.attr("exclude") || app.children("tei-lem").length == 1) {
+  							var n = void 0,
+  							    lines = void 0,
+  							    unit = void 0;
+  							app.attr("id", "copy-" + app.attr("id"));
+  							// clean up descendant apps
+  							var lem = app.children("tei-lem");
+  							if (lem.find("tei-app").length > 0) {
+  								lem.find("tei-rdg,tei-rdggrp,tei-note").remove();
+  								lem.find("tei-lem").removeAttr("wit").removeAttr("source");
+  							}
+  							// turn phrases into first...last
+  							if (lem.children(this.variantBlocks).length == 0) {
+  								lem.html(lem.text().replace(/\n/g, " ").replace(/^(\S+) .+ (\S+)/, "$1...$2"));
+  							}
+  							app.find("tei-lem,tei-rdg,tei-rdggrp").each(self.addSigla($(self.dom)));
+  							var blocks = void 0;
+  							//generate block references for apps containing lines, paragraphs, etc.
+  							if (app.find(self.variantBlocks).length > 0) {
+  								var _lem = app.children("tei-lem");
+  								var children = _lem.find(self.variantBlocks);
+  								if (children.length > 0) {
+  									unit = children[0].localName;
+  									if (unit == "tei-l") {
+  										if (children.length > 1) {
+  											blocks = "<span class=\"ref lineref\" data-id=\"" + _lem.attr("data-id") + "\">ll. " + _lem.find(self.variantBlocks).first().attr("n") + "–" + _lem.find(self.variantBlocks).last().attr("n") + "</span> ";
+  										} else {
+  											blocks = "<span class=\"ref lineref\" data-id=\"" + _lem.attr("data-id") + "\">l. " + _lem.find(self.variantBlocks).attr("n") + "</span> ";
+  										}
   									}
-  								}
-  								if (unit == "tei-p") {
-  									if (children.length > 1) {
-  										blocks = "<span class=\"ref lineref\" data-id=\"" + _lem.attr("data-id") + "\">" + _lem.find(self.variantBlocks).first().attr("n") + "–" + _lem.find(self.variantBlocks).last().attr("n") + "</span> ";
-  									} else {
-  										blocks = "<span class=\"ref lineref\" data-id=\"" + _lem.attr("data-id") + "\">" + _lem.find(self.variantBlocks).attr("n") + "</span> ";
+  									if (unit == "tei-p") {
+  										if (children.length > 1) {
+  											blocks = "<span class=\"ref lineref\" data-id=\"" + _lem.attr("data-id") + "\">" + _lem.find(self.variantBlocks).first().attr("n") + "–" + _lem.find(self.variantBlocks).last().attr("n") + "</span> ";
+  										} else {
+  											blocks = "<span class=\"ref lineref\" data-id=\"" + _lem.attr("data-id") + "\">" + _lem.find(self.variantBlocks).attr("n") + "</span> ";
+  										}
   									}
-  								}
-  								if (unit == "tei-speaker") {
-  									blocks = "<span class=\"ref lineref\" data-id=\"" + _lem.attr("data-id") + "\">sp. </span> ";
-  								}
+  									if (unit == "tei-speaker") {
+  										blocks = "<span class=\"ref lineref\" data-id=\"" + _lem.attr("data-id") + "\">sp. </span> ";
+  									}
 
-  								app.prepend(blocks);
+  									app.prepend(blocks);
+  								}
   							}
-  						}
-  						if ((blocks = app.find(self.variantBlocks)).length > 0) {
-  							n = $(blocks[0]).attr("n");
-  							if (!n) {
-  								n = $($(blocks[0]).attr("copyOf")).attr("n");
-  							}
-  							if (!n) {
-  								for (var _i3 = 1; _i3 < blocks.length; _i3++) {
-  									if ($(blocks[_i3]).attr("n")) {
-  										n = $(blocks[_i3]).attr("n");
-  										break;
+  							if ((blocks = lem.find(self.variantBlocks)).length > 0) {
+  								n = $(blocks[0]).attr("n");
+  								if (!n && blocks[0].hasAttribute("copyof")) {
+  									n = section.find(self.escapeID($(blocks[0]).attr("copyof"))).attr("n");
+  								}
+  								if (!n) {
+  									for (var _i3 = 1; _i3 < blocks.length; _i3++) {
+  										if ($(blocks[_i3]).attr("n")) {
+  											n = $(blocks[_i3]).attr("n");
+  											break;
+  										}
   									}
   								}
-  							}
-  							// TODO: Any chance of n still being undefined?
-  							if (blocks.length > 1) {
-  								if ($(blocks[blocks.length - 1]).attr("n")) {
-  									n += "–" + $(blocks[blocks.length - 1]).attr("n");
-  								} else {
-  									n += "–" + $($(blocks[blocks.length - 1]).attr("copyOf")).attr("n");
+  								// TODO: Any chance of n still being undefined?
+  								if (blocks.length > 1) {
+  									if ($(blocks[blocks.length - 1]).attr("n")) {
+  										n += "–" + $(blocks[blocks.length - 1]).attr("n");
+  									} else {
+  										n += "–" + section.find($(blocks[blocks.length - 1]).attr("copyOf")).attr("n");
+  									}
   								}
+  								var l = $(elt).find("tei-lem").find(self.variantBlocks);
+  								if (l.length == 0) {
+  									l = $(elt).next(self.variantBlocks + ",tei-app");
+  								}
+  								l.first().append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
+  								// we don't want the full line showing up in the app., just its reference
+  								app.find("tei-lem:not(:empty)").remove();
+  								app.find("tei-rdg:not(:empty)").remove();
+  							} else {
+  								n = $(elt).parents(self.variantBlocks).attr("n");
+  								if (!n && elt.hasAttribute("copyof")) {
+  									n = section.find(self.escapeID($(elt).parents(self.variantBlocks).attr("copyof"))).attr("n");
+  								}
+  								$(elt).parents(self.variantBlocks).append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
   							}
-  							var l = $(elt).find("tei-lem").find(self.variantBlocks);
-  							if (l.length == 0) {
-  								l = $(elt).next(self.variantBlocks + ",tei-app");
+  							// tei-wit should have been put into the sigla, so remove it
+  							app.find("tei-wit").remove();
+  							app.find("tei-lem:empty").append("om. ");
+  							app.find("tei-rdg:empty").append("om. ");
+  							if (n && appDiv.find("#app-l" + n).length == 0 || blocks.length > 0) {
+  								app.prepend("<span class=\"lem\" id=\"app-l" + n + "\">" + n + "</span>");
   							}
-  							l.first().append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
-  							app.find("tei-lem:not(:empty)").remove();
-  							app.find("tei-rdg:not(:empty)").remove();
-  						} else {
-  							n = $(elt).parents(self.variantBlocks).attr("n");
-  							if (!n) {
-  								n = $($(elt).parents(self.variantBlocks).attr("copyOf")).attr("n");
-  							}
-  							$(elt).parents(self.variantBlocks).append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
+  							app.find("tei-lem,tei-rdg").removeAttr("id");
+  							appDiv.append(app);
   						}
-  						app.find("tei-lem:empty").append("om. ");
-  						app.find("tei-rdg:empty").append("om. ");
-  						if (n && appDiv.find("#app-l" + n).length == 0 || blocks.length > 0) {
-  							app.prepend("<span class=\"lem\" id=\"app-l" + n + "\">" + n + "</span>");
-  						}
-  						app.find("tei-lem,tei-rdg").removeAttr("id");
-  						appDiv.append(app);
   					});
 
   					// Add line numbers
@@ -517,18 +522,53 @@ var appcrit = (function () {
 
   					// Link up sigla in the apparatus to bibliography
   					appDiv.find("span.ref").each(function (i, elt) {
-  						$(elt).attr("title", "");
-  						$(elt).tooltip({
-  							content: function content() {
-  								return "<div class=\"ref\">" + $(self.escapeID($(elt).attr("data-ref"))).html() + "</div>";
-  							}
-  						});
+  						if (elt.hasAttribute("data-ref")) {
+  							$(elt).attr("title", "");
+  							$(elt).tooltip({
+  								content: function content() {
+  									var ref = $(self.escapeID($(elt).attr("data-ref")));
+  									var title = void 0;
+  									switch (ref[0].localName) {
+  										case "tei-handnote":
+  											title = $("<span>" + ref.parents("tei-witness,tei-bibl").find(">tei-title,tei-bibl>tei-title").first().html() + "</span>");
+  											title.append("; ", ref.html());
+  											break;
+  										case "tei-listwit":
+  											title = $("<span>" + ref.children("tei-head").html() + ": </span>");
+  											title.append($.map(ref.children("tei-witness"), function (val) {
+  												return $(val).find(">tei-title").html();
+  											}).join(", "));
+  											break;
+  										case "tei-item":
+  											title = $("<span>" + ref.html() + "</span>");
+  											break;
+  										case "tei-bibl":
+  											title = $("<span>" + ref.html() + "</span>");
+  										default:
+  											title = $("<span>" + ref.find(">tei-title,tei-bibl>tei-title").first().html() + "</span>");
+  									}
+  									return "<div class=\"ref\">" + title.html() + "</div>";
+  								}
+  							});
+  						}
   					});
   				})();
   			} else {
   				// View sources
 
   			}
+  		}
+  	}, {
+  		key: "toggleApps",
+  		value: function toggleApps(evt) {
+  			$("tei-app[ana~=\\#" + evt.currentTarget.name + "]").each(function (i, elt) {
+  				var btn = $("#button-" + $(elt).attr("id"));
+  				if (evt.currentTarget.checked) {
+  					btn.hide();
+  				} else {
+  					btn.show();
+  				}
+  			});
   		}
   	}, {
   		key: "loadData",
@@ -558,28 +598,35 @@ var appcrit = (function () {
   			//Add navigation header
   			var nav = $("<div/>", { id: "navigation" });
   			nav.html("<h2>Contents:</h2><ul></ul>");
-  			nav.appendTo("body");
+  			nav.prependTo("#controls");
   			nav.find("ul").append("<li><a href=\"#front\">Front Matter</a></li>");
   			$(data).find("tei-div[type=textpart]").each(function (i, elt) {
   				nav.find("ul").append("<li><a href=\"#" + $(elt).attr("id") + "\">" + $(elt).find("tei-head").html() + "</a></li>");
   			});
-  			$(this.dom).find("tei-div[type=textpart],tei-front").each(function (i, elt) {
-  				self.doSection($(elt));
+  			nav.find("a").click(function (e) {
+  				$("a.selected").toggleClass("selected");
+  				$(this).toggleClass("selected");
+  				self.doSection($($(this).attr("href")));
   			});
+  			$(":checkbox").change(this.toggleApps);
+  			/*
+     $(this.dom).find("tei-div[type=textpart],tei-front").each(function(i, elt){
+     	self.doSection($(elt));
+     });
+     */
+  			if (window.location.hash) {
+  				self.doSection($(this.dom).find(window.location.hash));
+  			} else {
+  				self.doSection($(this.dom).find("#front"));
+  			}
+
   			// cleanup
-  			this.dom = null;
-  			this.references = null;
+  			//this.dom = null;
+  			//this.references = null;
   		}
   	}]);
   	return appcrit;
   }();
-
-  // Make main class available to pre-ES6 browser environments
-
-
-  if (window) {
-  	window.appcrit = appcrit;
-  }
 
   return appcrit;
 

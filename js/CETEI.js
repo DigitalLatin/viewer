@@ -39,7 +39,8 @@ var CETEI = (function () {
       "graphic": function graphic() {
         var ceteicean = this;
         return function () {
-          var shadow = this.createShadowRoot();
+          var shadow = ceteicean.createShadowRoot();
+          this.addShadowStyle(shadow);
           var img = new Image();
           img.src = ceteicean.rw(this.getAttribute("url"));
           if (this.hasAttribute("width")) {
@@ -51,9 +52,128 @@ var CETEI = (function () {
           shadow.appendChild(img);
         };
       },
-      "egXML": function egXML() {
+      "table": function table() {
+        var ceteicean = this;
         return function () {
           var shadow = this.createShadowRoot();
+          ceteicean.addShadowStyle(shadow);
+          var shadowContent = document.createElement("table");
+          shadowContent.innerHTML = this.innerHTML;
+          var _iteratorNormalCompletion = true;
+          var _didIteratorError = false;
+          var _iteratorError = undefined;
+
+          try {
+            for (var _iterator = Array.from(shadowContent.querySelectorAll("tei-row"))[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+              var row = _step.value;
+
+              var tr = document.createElement("tr");
+              tr.innerHTML = row.innerHTML;
+              var _iteratorNormalCompletion3 = true;
+              var _didIteratorError3 = false;
+              var _iteratorError3 = undefined;
+
+              try {
+                for (var _iterator3 = Array.from(row.attributes)[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                  var attr = _step3.value;
+
+                  tr.setAttribute(attr.name, attr.value);
+                }
+              } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+              } finally {
+                try {
+                  if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                    _iterator3.return();
+                  }
+                } finally {
+                  if (_didIteratorError3) {
+                    throw _iteratorError3;
+                  }
+                }
+              }
+
+              row.parentElement.replaceChild(tr, row);
+            }
+          } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
+              }
+            } finally {
+              if (_didIteratorError) {
+                throw _iteratorError;
+              }
+            }
+          }
+
+          var _iteratorNormalCompletion2 = true;
+          var _didIteratorError2 = false;
+          var _iteratorError2 = undefined;
+
+          try {
+            for (var _iterator2 = Array.from(shadowContent.querySelectorAll("tei-cell"))[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+              var cell = _step2.value;
+
+              var td = document.createElement("td");
+              if (cell.hasAttribute("cols")) {
+                td.setAttribute("colspan", cell.getAttribute("cols"));
+              }
+              td.innerHTML = cell.innerHTML;
+              var _iteratorNormalCompletion4 = true;
+              var _didIteratorError4 = false;
+              var _iteratorError4 = undefined;
+
+              try {
+                for (var _iterator4 = Array.from(cell.attributes)[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                  var _attr = _step4.value;
+
+                  td.setAttribute(_attr.name, _attr.value);
+                }
+              } catch (err) {
+                _didIteratorError4 = true;
+                _iteratorError4 = err;
+              } finally {
+                try {
+                  if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                    _iterator4.return();
+                  }
+                } finally {
+                  if (_didIteratorError4) {
+                    throw _iteratorError4;
+                  }
+                }
+              }
+
+              cell.parentElement.replaceChild(td, cell);
+            }
+          } catch (err) {
+            _didIteratorError2 = true;
+            _iteratorError2 = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                _iterator2.return();
+              }
+            } finally {
+              if (_didIteratorError2) {
+                throw _iteratorError2;
+              }
+            }
+          }
+
+          shadow.appendChild(shadowContent);
+        };
+      },
+      "egXML": function egXML() {
+        var ceteicean = this;
+        return function () {
+          var shadow = this.createShadowRoot();
+          ceteicean.addShadowStyle(shadow);
           shadow.innerHTML = "<pre>" + this.innerHTML.replace(/</g, "&lt;") + "</pre>";
         };
       }
@@ -77,6 +197,119 @@ var CETEI = (function () {
         }
         elt.appendChild(content);
       },
+      "table": function table(elt) {
+        var table = document.createElement("table");
+        table.innerHTML = elt.innerHTML;
+        var _iteratorNormalCompletion5 = true;
+        var _didIteratorError5 = false;
+        var _iteratorError5 = undefined;
+
+        try {
+          for (var _iterator5 = Array.from(table.querySelectorAll("tei-row"))[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+            var row = _step5.value;
+
+            var tr = document.createElement("tr");
+            tr.innerHTML = row.innerHTML;
+            var _iteratorNormalCompletion7 = true;
+            var _didIteratorError7 = false;
+            var _iteratorError7 = undefined;
+
+            try {
+              for (var _iterator7 = Array.from(row.attributes)[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+                var attr = _step7.value;
+
+                tr.setAttribute(attr.name, attr.value);
+              }
+            } catch (err) {
+              _didIteratorError7 = true;
+              _iteratorError7 = err;
+            } finally {
+              try {
+                if (!_iteratorNormalCompletion7 && _iterator7.return) {
+                  _iterator7.return();
+                }
+              } finally {
+                if (_didIteratorError7) {
+                  throw _iteratorError7;
+                }
+              }
+            }
+
+            row.parentElement.replaceChild(tr, row);
+          }
+        } catch (err) {
+          _didIteratorError5 = true;
+          _iteratorError5 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion5 && _iterator5.return) {
+              _iterator5.return();
+            }
+          } finally {
+            if (_didIteratorError5) {
+              throw _iteratorError5;
+            }
+          }
+        }
+
+        var _iteratorNormalCompletion6 = true;
+        var _didIteratorError6 = false;
+        var _iteratorError6 = undefined;
+
+        try {
+          for (var _iterator6 = Array.from(table.querySelectorAll("tei-cell"))[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+            var cell = _step6.value;
+
+            var td = document.createElement("td");
+            if (cell.hasAttribute("cols")) {
+              td.setAttribute("colspan", cell.getAttribute("cols"));
+            }
+            td.innerHTML = cell.innerHTML;
+            var _iteratorNormalCompletion8 = true;
+            var _didIteratorError8 = false;
+            var _iteratorError8 = undefined;
+
+            try {
+              for (var _iterator8 = Array.from(cell.attributes)[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+                var _attr2 = _step8.value;
+
+                td.setAttribute(_attr2.name, _attr2.value);
+              }
+            } catch (err) {
+              _didIteratorError8 = true;
+              _iteratorError8 = err;
+            } finally {
+              try {
+                if (!_iteratorNormalCompletion8 && _iterator8.return) {
+                  _iterator8.return();
+                }
+              } finally {
+                if (_didIteratorError8) {
+                  throw _iteratorError8;
+                }
+              }
+            }
+
+            cell.parentElement.replaceChild(td, cell);
+          }
+        } catch (err) {
+          _didIteratorError6 = true;
+          _iteratorError6 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion6 && _iterator6.return) {
+              _iterator6.return();
+            }
+          } finally {
+            if (_didIteratorError6) {
+              throw _iteratorError6;
+            }
+          }
+        }
+
+        elt.innerHTML = "<span style=\"display:none\">" + elt.innerHTML + "</span>";
+        elt.appendChild(table);
+      },
       "egXML": function egXML(elt) {
         var content = elt.innerHTML;
         elt.innerHTML = "<span style=\"display:none\">" + elt.innerHTML + "</span>";
@@ -96,9 +329,16 @@ var CETEI = (function () {
       if (base) {
         this.base = base;
       } else {
-        this.base = window.location.href.replace(/\/[^\/]*$/, "/");
+        try {
+          if (window) {
+            this.base = window.location.href.replace(/\/[^\/]*$/, "/");
+          }
+        } catch (e) {
+          this.base = "";
+        }
       }
       this.behaviors.push(behaviors);
+      this.shadowCSS;
     }
 
     // public method
@@ -109,7 +349,7 @@ var CETEI = (function () {
 
 
     babelHelpers.createClass(CETEI, [{
-      key: 'getHTML5',
+      key: "getHTML5",
       value: function getHTML5(TEI_url, callback, perElementFn) {
         var _this = this;
 
@@ -145,12 +385,12 @@ var CETEI = (function () {
        */
 
     }, {
-      key: 'makeHTML5',
+      key: "makeHTML5",
       value: function makeHTML5(TEI, callback, perElementFn) {
         var _this2 = this;
 
         // TEI is assumed to be a string
-        var TEI_dom = new window.DOMParser().parseFromString(TEI, "text/xml");
+        var TEI_dom = new DOMParser().parseFromString(TEI, "text/xml");
 
         this._fromTEI(TEI_dom);
 
@@ -319,10 +559,17 @@ var CETEI = (function () {
        */
 
     }, {
-      key: 'addStyle',
+      key: "addStyle",
       value: function addStyle(doc, data) {
         if (this.hasStyle) {
           doc.getElementsByTagName("head").item(0).appendChild(data.getElementsByTagName("style").item(0).cloneNode(true));
+        }
+      }
+    }, {
+      key: "addShadowStyle",
+      value: function addShadowStyle(shadow) {
+        if (this.shadowCSS) {
+          shadow.innerHTML = "<style>" + "@import url(\"" + this.shadowCSS + "\");</style>" + shadow.innerHTML;
         }
       }
 
@@ -332,7 +579,7 @@ var CETEI = (function () {
       */
 
     }, {
-      key: 'addBehaviors',
+      key: "addBehaviors",
       value: function addBehaviors(bhvs) {
         if (bhvs["handlers"] || bhvs["fallbacks"]) {
           this.behaviors.push(bhvs);
@@ -347,7 +594,7 @@ var CETEI = (function () {
        */
 
     }, {
-      key: 'setBaseUrl',
+      key: "setBaseUrl",
       value: function setBaseUrl(base) {
         this.base = base;
       }
@@ -355,7 +602,7 @@ var CETEI = (function () {
       // "private" method
 
     }, {
-      key: '_fromTEI',
+      key: "_fromTEI",
       value: function _fromTEI(TEI_dom) {
         var root_el = TEI_dom.documentElement;
         this.els = new Set(Array.from(root_el.getElementsByTagName("*"), function (x) {
@@ -367,10 +614,11 @@ var CETEI = (function () {
       // private method
 
     }, {
-      key: '_insert',
+      key: "_insert",
       value: function _insert(elt, strings) {
         if (elt.createShadowRoot) {
           var shadow = elt.createShadowRoot();
+          this.addShadowStyle(shadow);
           shadow.innerHTML += strings[0] + elt.innerHTML + (strings[1] ? strings[1] : "");
         } else {
           var span = void 0;
@@ -393,7 +641,7 @@ var CETEI = (function () {
       // private method
 
     }, {
-      key: '_template',
+      key: "_template",
       value: function _template(str, elt) {
         var result = str;
         if (str.search(/$(\w*)@(\w+)/)) {
@@ -412,7 +660,7 @@ var CETEI = (function () {
         return result;
       }
     }, {
-      key: 'tagName',
+      key: "tagName",
       value: function tagName(name) {
         if (name == "egXML") {
           return "teieg-" + name;
@@ -424,11 +672,11 @@ var CETEI = (function () {
       /* Takes a template in the form of an array of 1 or 2 strings and
          returns a closure around a function that can be called as
          a createdCallback or applied to an individual element.
-          Called by the getHandler() and
+          Called by the getHandler() and getFallback() methods
       */
 
     }, {
-      key: 'decorator',
+      key: "decorator",
       value: function decorator(strings) {
         return function () {
           var ceteicean = this;
@@ -450,7 +698,7 @@ var CETEI = (function () {
        */
 
     }, {
-      key: 'getHandler',
+      key: "getHandler",
       value: function getHandler(fn) {
         for (var i = this.behaviors.length - 1; i >= 0; i--) {
           if (this.behaviors[i]["handlers"][fn]) {
@@ -468,7 +716,7 @@ var CETEI = (function () {
        */
 
     }, {
-      key: 'getFallback',
+      key: "getFallback",
       value: function getFallback(fn) {
         for (var i = this.behaviors.length - 1; i >= 0; i--) {
           if (this.behaviors[i]["fallbacks"][fn]) {
@@ -492,7 +740,7 @@ var CETEI = (function () {
        */
 
     }, {
-      key: 'registerAll',
+      key: "registerAll",
       value: function registerAll(names) {
         var _iteratorNormalCompletion4 = true;
         var _didIteratorError4 = false;
@@ -538,7 +786,7 @@ var CETEI = (function () {
       */
 
     }, {
-      key: 'fallback',
+      key: "fallback",
       value: function fallback(names) {
         var _iteratorNormalCompletion5 = true;
         var _didIteratorError5 = false;
@@ -600,7 +848,7 @@ var CETEI = (function () {
          HTML document */
 
     }, {
-      key: 'rw',
+      key: "rw",
       value: function rw(url) {
         if (!url.match(/^(?:http|mailto|file|\/|#).*$/)) {
           return this.base + url;
@@ -614,7 +862,7 @@ var CETEI = (function () {
        */
 
     }, {
-      key: 'first',
+      key: "first",
       value: function first(urls) {
         return urls.replace(/ .*$/, "");
       }
@@ -622,7 +870,7 @@ var CETEI = (function () {
       // public method
 
     }, {
-      key: 'fromODD',
+      key: "fromODD",
       value: function fromODD() {
         // Place holder for ODD-driven setup.
         // For example:
@@ -638,8 +886,12 @@ var CETEI = (function () {
   // Make main class available to pre-ES6 browser environments
 
 
-  if (window) {
-    window.CETEI = CETEI;
+  try {
+    if (window) {
+      window.CETEI = CETEI;
+    }
+  } catch (e) {
+    // window not defined;
   }
 
   return CETEI;
