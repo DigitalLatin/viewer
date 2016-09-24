@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+    <title></title>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h2>Critical Editions and the Data Model as Interface</h2>
+          <p>Hugh A. Cayless
+            <br>@hcayless</p>
+          <p>
+            <img src="images/DC3_logo.svg" alt="" width="50%" style="border:none; background:none; box-shadow: none;"/>
+          </p>
+        </section>
+        <section>
+          <img src="images/mellon.svg" alt="Mellon Foundation" height="100px"
+            style="border:none; background:none; box-shadow: none;"/>
+          <img src="images/OUWordmark.png" alt="" height="90px" style="background-color:white;"/>
+          <img src="images/DLL-logo.png" alt=""
+            style="border:none; background:none; box-shadow: none;"/>
+          <img src="images/SCS.png" alt="" style="background-color:white;"/>
+          <img src="images/MAA.jpg" alt="" width="350px"/>
+          <img src="images/RSA.png" alt="" width="400px"/>
+        </section>
+        <section data-markdown>
+          <script type="text/template">
+            ##*OED*: interface n.
+
+             1. A surface lying between two portions of matter or space, and forming their common boundary.
+
+             2. transf. and fig.
+
+              a. A means or place of interaction between two systems, organizations, etc.; a meeting-point or common ground between two parties, systems, or disciplines; also, interaction, liaison, dialogue.
+
+              b. (An) apparatus designed to connect two scientific instruments, devices, etc., so that they can be operated jointly.
+          </script>
+        </section>
+
+        <section data-markdown>
+          <script type="text/template">
+            ##What do interfaces do?
+            * They hide implementation details and complexity <!-- .element: class="fragment" -->
+            * They serve as a contract governing the interaction between two parties <!-- .element: class="fragment" -->
+            * They serve as generalizable protocols. <!-- .element: class="fragment" -->
+            * They steer you (hopefully in the right direction) <!-- .element: class="fragment" -->
+          </script>
+        </section>
+
+        <section>
+          <img src="images/giarratano-CS.1.jpg" height="600px" alt="Giarratano, Calpurnius Siculus, Poem 1" />
+        </section>
+
+        <section data-markdown>
+          <script type="text/template">
+            ##The [Demo](/editio.html) (pray for me)
+            * We decided:
+              * to keep the basic form of the critical edition
+              * to mark our texts up in TEI
+              * NOT to use XSLT to transform our texts into standard HTML for display
+              * to define sigla for the apparatus, but provide immediate expansions of them via mouseovers
+              * to let our users manipulate the reading text using the apparatus criticus
+
+          </script>
+        </section>
+      </div>
+
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+  </body>
+</html>
