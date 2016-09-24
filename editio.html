@@ -41,7 +41,7 @@
           });
         }
       }});
-      var data = c.getHTML5('https://raw.githubusercontent.com/sjhuskey/Calpurnius_Siculus/master/editio.xml', null, function(el){
+      var data = c.getHTML5('editio.xml', null, function(el){
         if (el.hasAttribute("id")) {
          if (["tei-listwit", "tei-witness", "tei-bibl", "tei-handnote", "tei-person", "tei-item"].includes(el.localName)) {
             var val = $(el).children("tei-abbr[type=siglum]").html();
@@ -73,6 +73,7 @@
           <ul>
             <li><input type="checkbox" name="orthographical" value="true"><label for="orthographical">Hide orthographical variants</label></li>
             <li><input type="checkbox" name="morphological" value="true"><label for="morphological">Hide morphological variants</label></li>
+            <li><input type="checkbox" name="lexical" value="true"><label for="lexical">Hide lexical variants</label></li>
           </ul>
         </form>
   </body>

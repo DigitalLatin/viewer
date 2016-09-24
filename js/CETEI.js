@@ -59,6 +59,13 @@ var CETEI = (function () {
           ceteicean.addShadowStyle(shadow);
           var shadowContent = document.createElement("table");
           shadowContent.innerHTML = this.innerHTML;
+          if (shadowContent.firstElementChild.localName == "tei-head") {
+            var head = shadowContent.firstElementChild;
+            head.remove();
+            var caption = document.createElement("caption");
+            caption.innerHTML = head.innerHTML;
+            shadowContent.appendChild(caption);
+          }
           var _iteratorNormalCompletion = true;
           var _didIteratorError = false;
           var _iteratorError = undefined;
@@ -174,7 +181,7 @@ var CETEI = (function () {
         return function () {
           var shadow = this.createShadowRoot();
           ceteicean.addShadowStyle(shadow);
-          shadow.innerHTML = "<pre>" + this.innerHTML.replace(/</g, "&lt;") + "</pre>";
+          shadow.innerHTML = "<pre>" + ceteicean.serialize(this, true) + "</pre>";
         };
       }
     },
@@ -186,9 +193,8 @@ var CETEI = (function () {
         });
       },
       "graphic": function graphic(elt) {
-        var ceteicean = this;
         var content = new Image();
-        content.src = ceteicean.rw(this.getAttribute("url"));
+        content.src = this.rw(this.getAttribute("url"));
         if (elt.hasAttribute("width")) {
           content.width = elt.getAttribute("width").replace(/[^.0-9]/g, "");
         }
@@ -200,6 +206,13 @@ var CETEI = (function () {
       "table": function table(elt) {
         var table = document.createElement("table");
         table.innerHTML = elt.innerHTML;
+        if (table.firstElementChild.localName == "tei-head") {
+          var head = table.firstElementChild;
+          head.remove();
+          var caption = document.createElement("caption");
+          caption.innerHTML = head.innerHTML;
+          table.appendChild(caption);
+        }
         var _iteratorNormalCompletion5 = true;
         var _didIteratorError5 = false;
         var _iteratorError5 = undefined;
@@ -438,7 +451,7 @@ var CETEI = (function () {
                 newElement.setAttribute("class", att.value.replace(/#/g, ""));
               }
             }
-            // Turn <rendition scheme="css"> elements into HTML styles
+            // Preseve element name so we can use it later
           } catch (err) {
             _didIteratorError = true;
             _iteratorError = err;
@@ -454,6 +467,8 @@ var CETEI = (function () {
             }
           }
 
+          newElement.setAttribute("data-teiname", el.localName);
+          // Turn <rendition scheme="css"> elements into HTML styles
           if (el.localName == "tagsDecl") {
             var style = document.createElement("style");
             var _iteratorNormalCompletion2 = true;
@@ -865,6 +880,84 @@ var CETEI = (function () {
       key: "first",
       value: function first(urls) {
         return urls.replace(/ .*$/, "");
+      }
+
+      /* Takes an element and serializes it to a string or, if the stripElt
+         parameter is set, serializes the element's content.
+       */
+
+    }, {
+      key: "serialize",
+      value: function serialize(el, stripElt) {
+        var str = "";
+        if (!stripElt) {
+          str += "&lt;" + el.getAttribute("data-teiname");
+          var _iteratorNormalCompletion7 = true;
+          var _didIteratorError7 = false;
+          var _iteratorError7 = undefined;
+
+          try {
+            for (var _iterator7 = Array.from(el.attributes)[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+              var attr = _step7.value;
+
+              if (!attr.name.startsWith("data-") && !["id", "lang", "class"].includes(attr.name)) {
+                str += " " + attr.name + "=\"" + attr.value + "\"";
+              }
+            }
+          } catch (err) {
+            _didIteratorError7 = true;
+            _iteratorError7 = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion7 && _iterator7.return) {
+                _iterator7.return();
+              }
+            } finally {
+              if (_didIteratorError7) {
+                throw _iteratorError7;
+              }
+            }
+          }
+
+          if (el.children.length > 0) {
+            str += ">";
+          } else {
+            str += "/>";
+          }
+        }
+        var _iteratorNormalCompletion8 = true;
+        var _didIteratorError8 = false;
+        var _iteratorError8 = undefined;
+
+        try {
+          for (var _iterator8 = Array.from(el.childNodes)[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+            var node = _step8.value;
+
+            if (node.nodeType == Node.ELEMENT_NODE) {
+              str += this.serialize(node);
+            } else {
+              str += node.nodeValue;
+            }
+          }
+        } catch (err) {
+          _didIteratorError8 = true;
+          _iteratorError8 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion8 && _iterator8.return) {
+              _iterator8.return();
+            }
+          } finally {
+            if (_didIteratorError8) {
+              throw _iteratorError8;
+            }
+          }
+        }
+
+        if (!stripElt && el.children.length > 0) {
+          str += "&lt;" + el.getAttribute("data-teiname") + ">";
+        }
+        return str;
       }
 
       // public method

@@ -33,6 +33,7 @@ var appcrit = (function () {
   		this.genId = 0;
   		this.dom = null;
   		this.references = {};
+  		this.log = [];
   	}
 
   	createClass(appcrit, [{
@@ -66,6 +67,7 @@ var appcrit = (function () {
   					}
   				}
   				if (oldlem.length > 0) {
+  					this.log.push({ "lem": oldlem.attr("id"), "rdg": oldrdg.attr("id") });
   					var oldapp = oldlem.parent("tei-app");
   					var newlem = $("<tei-lem/>");
   					for (var i = 0; i < oldrdg[0].attributes.length; i++) {
@@ -93,18 +95,18 @@ var appcrit = (function () {
   						// It's a line-containing app, but doesn't contain the button; button needs to be moved
   						l = newlem.find(this.variantBlocks).first();
   						if (l.length == 0) {
-  							l = app.prev(this.variantBlocks + ",tei-app");
-  							if (l.length > 0 && l[0].localName == "tei-app") {
-  								l = l.find("tei-lem " + this.variantBlocks).last();
-  							}
+  							// Look for a line preceding the app that can contain the button
+  							l = $(document.evaluate("preceding::*[" + this.variantBlocks.split(',').map(function (val) {
+  								return "local-name(.) = '" + val + "'";
+  							}).join(" or ") + "][not(ancestor::tei-app) or parent::tei-lem][1]", btn[0], null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue);
   							if (l.length > 0) {
   								append = true;
   							}
+  							// look for a following line instead
   							if (l.length == 0) {
-  								l = app.next(this.variantBlocks + ",tei-app");
-  								if (l.length > 0 && l[0].localName == "tei-app") {
-  									l = l.find("tei-lem " + this.variantBlocks).first();
-  								}
+  								l = $(document.evaluate("following::*[" + this.variantBlocks.split(',').map(function (val) {
+  									return "local-name(.) = '" + val + "'";
+  								}).join(" or ") + "][not(ancestor::tei-app) or parent::tei-lem][1]", btn[0], null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue);
   							}
   						}
   						if (l.find("span.apps").length > 0) {
@@ -116,11 +118,11 @@ var appcrit = (function () {
   						} else {
   							l.append($("<span class=\"apps\"></span>").append(btn.detach()));
   						}
-  						self.addToolTip(btn[0]);
+  						self.addToolTip(btn);
   					}
   					if (l && l.length > 0) {
-  						l.find("button").each(function (i, elt) {
-  							$(elt).tooltip(self.ttip(elt));
+  						app.find("button").each(function (i, elt) {
+  							self.addToolTip(elt);
   						});
   					}
   					oldapp = newrdg.parent("tei-app");
@@ -137,7 +139,7 @@ var appcrit = (function () {
   				if (copyfrom) {
   					self.swapLem($("#" + self.escapeID(copyfrom)));
   				}
-  				$("*[copyfrom=" + oldrdgid + "]").each(function (i, elt) {
+  				$("*[data-copyfrom=" + self.escapeID(oldrdgid) + "]").each(function (i, elt) {
   					self.swapLem($(elt));
   				});
   			}
@@ -375,6 +377,7 @@ var appcrit = (function () {
   			var e = $(elt);
   			var src = this.dom.querySelector(this.escapeID(e.attr("copyof")));
   			if (src) {
+  				e.attr("data-copyfrom", e.attr("copyof"));
   				for (var i = 0; i < src.childNodes.length; i++) {
   					e.append(this.makeCopy(src.childNodes[i]));
   				}
@@ -395,8 +398,10 @@ var appcrit = (function () {
   					var appDiv = $("<div id=\"apparatus-" + sectionId + "\" class=\"apparatus\"><h2>Apparatus</h2></div>");
   					section.after(appDiv);
   					// Pull content into @copyOf elements
-  					section.find("*[copyOf]").each(function (i, elt) {
-  						self.copy(elt);
+  					section.find("*[copyof]").each(function (i, elt) {
+  						if (!elt.hasAttribute("data-copyfrom")) {
+  							self.copy(elt);
+  						}
   					});
   					section.find("tei-app").each(function (i, elt) {
   						var app = void 0;
@@ -421,7 +426,7 @@ var appcrit = (function () {
   							// clean up descendant apps
   							var lem = app.children("tei-lem");
   							if (lem.find("tei-app").length > 0) {
-  								lem.find("tei-rdg,tei-rdggrp,tei-note").remove();
+  								lem.find("tei-rdg,tei-rdggrp,tei-note,tei-wit").remove();
   								lem.find("tei-lem").removeAttr("wit").removeAttr("source");
   							}
   							// turn phrases into first...last
@@ -561,12 +566,21 @@ var appcrit = (function () {
   	}, {
   		key: "toggleApps",
   		value: function toggleApps(evt) {
-  			$("tei-app[ana~=\\#" + evt.currentTarget.name + "]").each(function (i, elt) {
+  			$("tei-app[ana~=\"\\#" + evt.currentTarget.name + "\"]").each(function (i, elt) {
   				var btn = $("#button-" + $(elt).attr("id"));
   				if (evt.currentTarget.checked) {
   					btn.hide();
   				} else {
   					btn.show();
+  				}
+  			});
+  			$("tei-rdg[ana~=\"\\#" + evt.currentTarget.name + "\"]").each(function (i, elt) {
+  				if (evt.currentTarget.checked) {
+  					$(elt).addClass("hidden");
+  					$(elt).next("span").addClass("hidden");
+  				} else {
+  					$(elt).removeClass("hidden");
+  					$(elt).next("span").removeClass("hidden");
   				}
   			});
   		}
