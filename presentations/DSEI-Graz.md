@@ -8,7 +8,7 @@ What do interfaces do?
  * They hide implementation details and complexity
   * All kinds of different things may happen in the background when you type something in a search box, but all you need to know is "I type something here, hit Enter or the button next to it, and I get results."
  * They serve as a contract governing the interaction between two parties
-  A good interface tells you what it will or won't do for you. An API, for example, is just a list of functions you can call, with hopefully an idea of what will happen if you call them.
+  * A good interface tells you what it will or won't do for you. An API, for example, is just a list of functions you can call, with hopefully an idea of what will happen if you call them.
  * They serve as generalizable protocols. Different systems can implement the same interface, and you'll know how to operate the system even if you've never seen it before, because you understand its contract.
   * Once you understand how restaurant menus work, you can order at pretty much any restaurant
  * Because interfaces do all these things, they act to steer you in a particular direction as you interact with them. Interfaces have a rhetoric.
