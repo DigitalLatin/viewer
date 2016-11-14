@@ -462,7 +462,7 @@ class appcrit {
 			});
 
 			// Add line numbers
-			let parents = ["tei-sp", "tei-ab", "tei-div", "tei-lem"];
+			let parents = ["tei-sp", "tei-ab", "tei-div", "tei-lem", "tei-lg"];
 			section.find(self.variantBlocks).each(function(i,elt){
 				let e = $(elt);
 				if (Number(e.attr("n")) % 5 == 0 && (parents.indexOf(elt.parentElement.localName) >= 0)) {
@@ -528,9 +528,13 @@ class appcrit {
 			if (evt.currentTarget.checked) {
 				$(elt).addClass("hidden");
 				$(elt).next("span").addClass("hidden");
+				if ($(elt.parentElement).children("tei-rdg").not(".hidden").length == 0) {
+					$("#button-" + $(elt.parentElement).attr("id")).hide();
+				}
 			} else {
 				$(elt).removeClass("hidden");
 				$(elt).next("span").removeClass("hidden");
+				$("#button-" + $(elt.parentElement).attr("id")).show();
 			}
 		});
 	}

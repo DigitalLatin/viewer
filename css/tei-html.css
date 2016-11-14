@@ -1000,11 +1000,17 @@ tei-kinesic {
 tei-l {
   display: block;
   width: 35em;
+  margin-left:2em;
 }
 tei-l[data-num]:before {
   content: attr(data-num);
   position: absolute;
-  left: 2em;
+  left: 1em;
+}
+tei-l tei-label {
+  position:absolute;
+  left: 4em;
+  font-weight: bold;
 }
 tei-lacunaEnd {
   /* Empty Rule Set */
