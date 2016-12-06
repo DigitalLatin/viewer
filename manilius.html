@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="css/tei-html.css">
+    <link rel="stylesheet" href="js/jquery-ui-1.11.4.custom/jquery-ui.css">
+    <script type="text/javascript" src="js/CETEI.js"></script>
+    <script type="text/javascript" src="js/jquery/jquery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/appcrit.js"></script>
+    <script type="text/javascript">
+      var c = new CETEI();
+      c.shadowCSS = "css/tei-html.css";
+      var app = new appcrit();
+      c.addBehaviors({"handlers":{
+        // Overrides the default ptr behavior, displaying a short link
+        "ptr": function() {
+          var self = this;
+          return function() {
+            var shadow = this.createShadowRoot();
+            self.addShadowStyle(shadow);
+            var link = document.createElement("a");
+            link.innerHTML = this.getAttribute("target").replace(/https?:\/\/([^\/]+)\/.*/, "$1");
+            link.href = this.getAttribute("target");
+            shadow.appendChild(link);
+          }
+        }
+      }, "fallbacks": {
+        "ptr": function(elt) {
+          var content = document.createElement("a");
+          content.setAttribute("href", elt.getAttribute("target"));
+          content.innerHTML = elt.getAttribute("target").replace(/https?:\/\/([^\/]+)\/.*/, "$1");
+          elt.appendChild(content);
+          elt.addEventListener("click", function(event) {
+            window.location = this.getAttribute("target");
+          });
+        },
+        "ref": function(elt) {
+          $(elt).click(function() {
+            window.location = $(this).attr("target");
+          });
+        }
+      }});
+      var data = c.getHTML5('https://raw.githubusercontent.com/hcayless/astronomicon/master/manilius_1_text.xml', null, function(el){
+        if (el.hasAttribute("id")) {
+         if (["tei-listwit", "tei-witness", "tei-bibl", "tei-handnote", "tei-person", "tei-item"].includes(el.localName)) {
+            var val = $(el).children("tei-abbr[type=siglum]").html();
+            if (val) {
+              app.references["#" + el.getAttribute("id")] = val;
+            } else {
+              app.references["#" + el.getAttribute("id")] = el.getAttribute("id");
+            }
+          }
+        }
+      });
+      data.then(function(TEI){
+        app.loadData(TEI);
+        $("#loading").remove();
+        $("body").append(TEI);
+        if (window.location.hash) {
+    			window.location = window.location;
+    		}
+      })
+    </script>
+  </head>
+  <body>
+    <div id="loading">
+      <p>✻</p>
+    </div>
+    <div id="controls">
+      <div id="display">
+        <form class="">
+          <ul>
+            <li><input type="checkbox" name="orthographical" value="true"><label for="orthographical">Hide orthographical variants</label></li>
+            <li><input type="checkbox" name="morphological" value="true"><label for="morphological">Hide morphological variants</label></li>
+            <li><input type="checkbox" name="lexical" value="true"><label for="lexical">Hide lexical variants</label></li>
+          </ul>
+        </form>
+  </body>
+</html>
