@@ -631,7 +631,9 @@ var appcrit = (function () {
   			nav.find("a").click(function (e) {
   				$("a.selected").toggleClass("selected");
   				$(this).toggleClass("selected");
-  				self.doSection($($(this).attr("href")));
+  				if ($(this).id != "apparatus") {
+  					self.doSection($($(this).attr("href")));
+  				}
   			});
   			$(":checkbox").change(this.toggleApps);
   			/*
