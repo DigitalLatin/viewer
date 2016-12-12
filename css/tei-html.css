@@ -1142,7 +1142,7 @@ tei-listBibl > tei-head {
 }
 tei-listBibl > tei-bibl {
   display: list-item;
-  margin-left: .5em;
+  margin-left: 2em;
 }
 tei-listWit {
   display:block;
