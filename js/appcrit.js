@@ -617,14 +617,16 @@ var appcrit = (function () {
   			var nav = $("<div/>", { id: "navigation" });
   			nav.html("<h2>Contents:</h2><ul></ul>");
   			nav.prependTo("#controls");
-  			nav.find("ul").append("<li><a href=\"#front\">Front Matter</a></li>");
+  			var ul = nav.find("ul");
+  			ul.append("<li><a href=\"#front\">Front Matter</a></li>");
   			var parts = $(data).find("tei-div[type=textpart]");
   			if (parts.length == 0) {
   				parts = $(data).find("tei-div[type=edition]");
   			}
   			parts.each(function (i, elt) {
-  				nav.find("ul").append("<li><a href=\"#" + $(elt).attr("id") + "\">" + $(elt).find("tei-head").html() + "</a></li>");
+  				ul.append("<li><a href=\"#" + $(elt).attr("id") + "\">" + $(elt).find("tei-head").html() + "</a></li>");
   			});
+  			ul.append("<li><a href=\"#apparatus\">Apparatus</a></li>");
 
   			nav.find("a").click(function (e) {
   				$("a.selected").toggleClass("selected");
