@@ -1,0 +1,448 @@
+#morphlib-window {
+    min-width: 100px;
+    width: auto;
+    height: auto;
+    color: #0E2233;
+    border-color: #3E8D9C #B8B7B5 #B8B7B5 #73CDDE !important;
+    border-style: outset !important;
+    border-width: 2px !important;
+    padding: 0px;
+    margin: 0px;
+    letter-spacing: normal;
+    text-align: left;
+    text-decoration: none;
+    text-indent: 0px;
+    text-transform: none;
+    white-space: normal;
+    word-spacing: normal;
+    font-family:  Arial, sans-serif;
+    font-size: medium;
+    visibility: visible;
+    position: absolute;
+    z-index: 7777;
+    background: white;
+    top: 5px;
+    left: 5px;
+}
+
+#morphlib-window[alpheios-pending]:not(.full-dict-display) *,#morphlib-window.query-pending * {
+    display: none;
+}
+
+#morphlib-window[alpheios-pending]:not(.full-dict-display) #morphlib-text,#morphlib-window.query-pending #morphlib-text {
+    display: block;
+    height: 20px;
+    padding-left: 18px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 2px;
+    cursor: progress;
+    white-space: nowrap;
+}
+#morphlib-window.query-pending #morphlib-text:after {
+    content: "Loading quiz...";
+}
+
+#morphlib-window.alpheios-inline-query * {
+    display: none;
+}
+
+#morphlib-window.alpheios-inline-query .morphlib-title-bar {
+    display: block;
+}
+
+#morphlib-window.alpheios-inline-query .morphlib-close-button {
+    display: block;
+}
+
+#morphlib-window.alpheios-inline-query #morphlib-text,
+#morphlib-window.alpheios-inline-query #morphlib-align-answer-prompt {
+    display: block;
+    padding-left: 20px;
+    border: none;
+}
+
+#morphlib-window.alpheios-inline-query #morphlib-text #morphlib-inline-query-instruct {
+    display: block;
+    padding: 20px 20px 20px 20px;
+}
+#morphlib-window.alpheios-inline-query #morphlib-text #morphlib-inline-query-instruct span {
+    display: inline;
+}
+
+#morphlib-window.alpheios-inline-query #morphlib-text .morphlib-align-answer {
+    display: block;
+    padding-left: 20px;
+}
+
+#morphlib-window.alpheios-inline-query #morphlib-text .morphlib-align-answer span {
+    display: inline;
+}
+
+#morphlib-align-answer-prompt {
+    color: #E49A0D;
+    font-style: italic;
+    font-weight: bold;
+    padding-left: 20px;
+}
+
+.morphlib-align-answer span {
+    padding-right: .5em;
+}
+
+.morphlib-inline-query-heading {
+    font-style: italic;
+    font-weight: bold;
+}
+
+.morphlib-inline-query-word {
+    font-weight: bold;
+}
+
+#morphlib-text {
+    font-style: normal;
+}
+
+#morphlib-text.learner .morphlib-pofs,
+#morphlib-text.learner .morphlib-decl,
+#morphlib-text.learner .morphlib-pofs,
+#morphlib-text.learner .morphlib-mean,
+#morphlib-text.learner .morphlib-infl-set {
+    display: none;
+}
+
+.morphlib-word {
+    border-top: 1px dotted #0E2233;
+    padding-top: 10px;
+    padding-left: 4px;
+    padding-right: 4px;
+    clear: both;
+}
+
+.morphlib-word-first {
+    border-top: none;
+    padding-top: 0px;
+}
+
+.morphlib-tense,.morphlib-voice,.morphlib-pers {
+    color: #3E8D9C;
+    font-weight: bold;
+}
+
+
+.morphlib-entry span:not(.morphlib-nopad) {
+    padding-right: .5em;
+}
+
+.morphlib-hdwd,.morphlib-phrase {
+    font-weight: bold;
+}
+
+div.morphlib-morph {
+    display: inline;
+    font-size: smaller;
+}
+
+.morphlib-mean {
+    font-style: normal;
+    font-weight: bolder;
+    margin-left: 1em;
+    margin-bottom: .5em;
+    font-size: 95%;
+}
+
+.morphlib-entry,.morphlib-unknown,.morphlib-error {
+    margin-bottom: 1em;
+}
+
+.morphlib-attr {
+    font-weight: normal;
+    color: #0E2233;
+}
+
+.morphlib-case,.morphlib-mood,.morphlib-decl,.morphlib-conj,.morphlib-pofs,.morphlib-pofs-extra {
+    color:#3E8D9C;
+    font-weight: bold;
+}
+
+/*.morphlib-case:hover,.morphlib-mood:hover,.morphlib-decl:hover,.morphlib-conj:hover,.morphlib-pofs:hover,.morphlib-pofs-extra:hover {
+    color: #5BC8DC !important;
+}*/
+
+/* attributes inside part-of-speech should not have pointer cursor */
+.morphlib-attr {
+    cursor: default;
+}
+
+.morphlib-morph .morphlib-pofs:after {
+    content: ";";
+}
+
+.morphlib-infl-set .morphlib-pofs,
+.morphlib-infl-set .morphlib-decl,
+.morphlib-infl-set .morphlib-formatting {
+    font-size: smaller;
+}
+
+.morphlib-mean .morphlib-mean-extra {
+    font-size: smaller;
+}
+
+.morphlib-term {
+    margin-left: 1em;
+    font-weight: bold;
+    padding-right: 0 !important;
+}
+
+.morphlib-suff {
+    padding-right: 0 !important;
+}
+
+.morphlib-infl {
+    margin-left: 2em;
+    font-size: smaller;
+}
+
+#morphlib-secondary-loading {
+    display: inline;
+    color: #666666;
+    border: 2px outset #B8B7B5;
+    padding-left: 18px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 2px;
+    cursor: progress;
+    white-space: nowrap;
+    position: absolute;
+}
+
+#morphlib-text-loading {
+    padding-left: 18px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 2px;
+    cursor: progress;
+    white-space: nowrap;
+}
+
+.loading {
+    font-size: smaller;
+    padding-left: 18px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 2px;
+    cursor: progress;
+    white-space: nowrap;
+}
+
+#morphlib-bottom-panel {
+    height: 100px;
+}
+
+#morphlib-infl-index h1 {
+    font-size: larger;
+}
+
+#morphlib-infl-index a.morphlib-infl-index-link {
+    color: #3E8D9C;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#morphlib-infl-index a.morphlib-infl-index-link:hover {
+    color: #5BC8DC !important;
+}
+
+#morphlib-infl-index a.loading {
+    cursor: progress;
+    color: #666666;
+}
+
+.morphlib-query-element {
+    margin-left: 1em;
+    margin-bottom: 1em;
+    font-family: Arial, sans-serif;
+}
+
+.morphlib-query-infl a {
+    color: #3E8D9C;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.morphlib-query-infl a:hover {
+    color: #5BC8DC !important;
+}
+
+#morphlib-window #morphlib-word-tools {
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-left: 2px;
+    margin-bottom: 10px;
+    position: relative;
+    clear: both;
+    padding: 0;
+    height: 32px;
+}
+
+#morphlib-window #morphlib-word-tools.smallicons {
+    margin-left: 0px;
+    position: relative;
+    padding: 0;
+    background-color: #ebe9d7;
+    border: 1px inset #9E9C9A;
+    height: 20px;
+}
+
+.morphlib-tool-icon {
+    display: inline;
+    position: relative;
+    float: left;
+    font-size: 10px;
+    width: 40px;
+    height: 32px;
+    margin-top: 2px;
+}
+.alpheios-icon-label {
+    font-size: 10px;
+    font-family:  Arial, sans-serif !important;
+}
+
+.smallicons .morphlib-tool-icon {
+    width: 18px;
+    height: 18px;
+    border: 1px solid transparent;
+    margin-top: 0px;
+}
+.smallicons .alpheios-icon-label {
+    display: none;
+}
+
+.morphlib-tool-icon img {
+    margin: 0 0;
+    vertical-align: bottom;
+    border: 1px solid transparent;
+}
+
+.morphlib-tooltip {
+    font-size: small !important;
+    font-weight: normal !important;
+    font-style: normal !important;
+    background-color: #5BC8DC !important;
+    border: 1px solid #B8B7B5 !important;
+    position: absolute;
+    top: 20px;
+    left: 16px;
+    z-index: 1000;
+    font-family:  Arial, sans-serif;
+}
+
+.alpheios-label {
+    font-size: small;
+    vertical-align: bottom;
+    color: #4E6476;
+    font-style: normal;
+}
+
+.morphlib-dict {
+    margin-bottom: .5em;
+    clear: both;
+}
+
+.morphlib-dict-source {
+    font-size: small;
+    color: #4E6476;
+    font-style: italic;
+}
+
+.morphlib-dial {
+    font-size: smaller;
+}
+
+.morphlib-form-end, .morphlib-infl-end {
+    position: relative;
+}
+
+.morphlib-help-link {
+    font-weight: bold !important;
+    cursor: pointer;
+    text-decoration: none;
+    vertical-align: super;
+    padding: 0;
+    margin: 0;
+}
+
+.morphlib-help-link:hover {
+    color: #5BC8DC !important;
+}
+
+.morphlib-help-link .morphlib-tooltip {
+    top: 1em;
+    left: 1em;
+}
+
+.alpheios-toolbar-label {
+    color: #0e2233;
+    font-size: smaller;
+    padding-right: 4px;
+    display: none;
+}
+
+.morphlib-title-bar {
+    border: 1px solid #9e9c98;
+    background-color: #9e9c9a;
+    height: 18px;
+    cursor: pointer;
+}
+
+.alpheios-enhanced .morphlib-title-bar {
+    background-color: #73cdd3;
+}
+
+.alpheios-button {
+    background-color: #ebe9d7;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #9E9C9A;
+    text-decoration: none;
+    cursor: pointer;
+    margin-right: 1px;
+    text-align: center;
+}
+
+.alpheios-button:hover {
+    border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight;
+}
+
+.alpheios-hint {
+    font-weight: normal;
+    color: #4E6476;
+    font-style: italic;
+    margin-bottom: 1em;
+    padding-left: 18px;
+    font-family:  Arial, sans-serif;
+}
+
+.alpheios-link {
+    color: #3E8D9C;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.alpheios-link:hover {
+    color: #5BC8DC;
+}
+
+#morphlib-morphlib-credits {
+    font-size: small;
+    font-weight: normal;
+    color: #4E6476;
+    font-style: italic;
+    margin-bottom: 1em;
+    padding-left: .5em;
+    font-family:  Arial, sans-serif;
+}
+
+.morphlib-source-title {
+    text-decoration: underline;
+}
