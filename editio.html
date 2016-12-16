@@ -8,6 +8,7 @@
     <script type="text/javascript" src="js/jquery/jquery-1.11.3.js"></script>
     <script type="text/javascript" src="js/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
     <script type="text/javascript" src="js/appcrit.js"></script>
+    <script src="js/alpheios-morphlib.js" charset="utf-8"></script>
     <script type="text/javascript">
       var c = new CETEI();
       c.shadowCSS = "css/tei-html.css";
@@ -24,8 +25,8 @@
             link.href = this.getAttribute("target");
             shadow.appendChild(link);
           }
-        }
-      }, "fallbacks": {
+        }, "gap": ["<span>*</span>"]
+      },  "fallbacks": {
         "ptr": function(elt) {
           var content = document.createElement("a");
           content.setAttribute("href", elt.getAttribute("target"));
@@ -60,6 +61,8 @@
         if (window.location.hash) {
     			window.location = window.location;
     		}
+        var morph = new morphlibrary(document);
+        morph.activate("lat");
       })
     </script>
   </head>
