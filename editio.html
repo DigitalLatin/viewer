@@ -25,8 +25,9 @@
             link.href = this.getAttribute("target");
             shadow.appendChild(link);
           }
-        }, "gap": ["<span>*</span>"]
-      },  "fallbacks": {
+        },
+        "gap": ["<span>*</span>"],
+        "witDetail": ["(",") "]      },  "fallbacks": {
         "ptr": function(elt) {
           var content = document.createElement("a");
           content.setAttribute("href", elt.getAttribute("target"));

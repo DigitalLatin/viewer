@@ -500,12 +500,12 @@ var appcrit = (function () {
   							}
   							// tei-wit should have been put into the sigla, so remove it
   							app.find("tei-wit").remove();
-  							app.find("tei-lem:empty").append("om. ");
   							app.find("tei-rdg:empty").append("om. ");
   							if (n && appDiv.find("#app-l" + n).length == 0 || blocks.length > 0) {
   								app.prepend("<span class=\"lem\" id=\"app-l" + n + "\">" + n + "</span>");
   							}
   							app.find("tei-lem,tei-rdg").removeAttr("id");
+  							app.find("tei-lem:parent").append("<span>] </span>");
   							appDiv.append(app);
   						}
   					});
