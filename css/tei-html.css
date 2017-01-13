@@ -104,7 +104,6 @@ div.apparatus tei-app.app-copy {
   display: none;
 }
 div.apparatus tei-app span.source {
-  font-style: italic;
   font-weight: normal;
   margin-right: .3em;
 }
@@ -167,7 +166,6 @@ div.apparatus span.lineref {
 }
 
 .ui-tooltip-content div.apparatus span.source {
-  font-style: italic;
   font-weight: normal;
   margin-right: .3em;
 }
@@ -178,10 +176,10 @@ div.apparatus span.lineref {
   display: inline;
 }
 .ui-tooltip-content div.apparatus tei-lem {
-  font-weight: bold;
   display: inline;
 }
 .ui-tooltip-content div.apparatus tei-rdg {
+  font-style: italic;
   display: inline;
 }
 .ui-tooltip-content div.apparatus tei-rdg.hidden {
@@ -195,12 +193,14 @@ div.apparatus span.lineref {
 }
 .ui-tooltip-content div.apparatus tei-wit {
   display: inline;
-  font-style: italic;
+  margin-right: .3em;
+}
+.ui-tooltip-content div.apparatus tei-witdetail {
+  display: inline;
   margin-right: .3em;
 }
 .ui-tooltip-content div.apparatus tei-note {
   display: inline;
-  font-style: italic;
   margin-right: .3em;
 }
 /* lists in tooltips */
@@ -230,9 +230,7 @@ div.apparatus span.lineref {
   padding: 0;
 }
 .ui-dialog-content tei-lem {
-  font-weight: bold;
   display: inline;
-  margin-right: .3em;
 }
 .ui-dialog-content tei-lem:hover {
   cursor: pointer;
@@ -240,6 +238,7 @@ div.apparatus span.lineref {
 }
 .ui-dialog-content tei-rdg {
   display: inline;
+  font-style: italic;
 }
 .ui-dialog-content tei-rdg.hidden {
   display: none;
@@ -255,6 +254,9 @@ div.apparatus span.lineref {
   display: inline;
   font-style: italic;
   margin-right: .3em;
+}
+.ui-dialog-content tei-witdetail {
+  display: inline;
 }
 .ui-dialog-content span.lem {
   display: none;
@@ -274,7 +276,6 @@ div.apparatus span.lineref {
 }
 .ui-dialog-content span.source {
   font-weight: normal;
-  font-style: italic;
   margin-right: .3em;
 }
 
@@ -1142,7 +1143,7 @@ tei-listBibl > tei-head {
 }
 tei-listBibl > tei-bibl {
   display: list-item;
-  margin-left: .5em;
+  margin-left: 2em;
 }
 tei-listWit {
   display:block;
