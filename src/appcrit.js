@@ -1,6 +1,7 @@
 class appcrit {
 
-	constructor() {
+	constructor(c) {
+		this.ceteicean = c;
 		this.variantBlocks = "tei-l,tei-speaker,tei-p";
 		this.genId = 0;
 		this.dom = null;
@@ -272,8 +273,8 @@ class appcrit {
 				if (e.attr("wit")) {
 					e.attr("wit").split(/ /).forEach(function(val) {
 						wit += "<span class=\"ref\" data-id=\"" + e.attr("data-id") + "\" data-ref=\"" + val + "\">" + self.refLabel(val) + "</span>";
-						e.parents("tei-app").first().find("tei-witDetail[target=\"#" + e.attr("data-id") + "\"][wit=\"" + val + "\"]").each(function(i, elt) {
-							wit += ", " + elt.innerHTML;
+						e.parents("tei-app").first().find("tei-witdetail[target=\"#" + e.attr("data-id") + "\"][wit=\"" + val + "\"]").each(function(i, elt) {
+							wit += elt.shadowRoot?elt.shadowRoot.childNodes.item(1).outerHTML:elt.innerHTML;
 						});
 					});
 				}
@@ -293,7 +294,7 @@ class appcrit {
 		}
 	}
 
-	makeCopy(node) {
+	makeCopy(node, keepIds) {
 		let newNode;
 		if (node.nodeType == Node.ELEMENT_NODE) {
 			newNode = document.createElement(node.localName);
@@ -301,8 +302,12 @@ class appcrit {
 				// have to rewrite ids in copied content so there are no duplicates
 				let att = node.attributes.item(i);
 				if (att.name == "id") {
-					newNode.setAttribute("data-copyFrom", att.value);
-					newNode.setAttribute("id", this.generateId());
+					if (!keepIds) {
+						newNode.setAttribute("data-copyFrom", att.value);
+						newNode.setAttribute("id", this.generateId());
+					} else {
+						newNode.setAttribute(att.name, att.value);
+					}
 				} else if (att.name == "class") {
 					newNode.setAttribute("class", att.value + " app-copy");
 				} else {
@@ -315,10 +320,14 @@ class appcrit {
 					if (n.hasAttribute("copyof")) {
 						this.copy(n);
 					}
-					newNode.appendChild(this.makeCopy(n));
+					newNode.appendChild(this.makeCopy(n, keepIds));
 				} else {
 					newNode.appendChild(n.cloneNode());
 				}
+			}
+			if (node.shadowRoot) {
+				let s = newNode.attachShadow({mode:'open'});
+				s.innerHTML = node.shadowRoot.innerHTML;
 			}
 		} else {
 			newNode = node.cloneNode();
@@ -358,8 +367,8 @@ class appcrit {
 			});
 			section.find("tei-app").each(function(i, elt) {
 				let app;
-				if (document.registerElement) {
-					app = $(elt.outerHTML);
+				if (self.ceteicean.supportsShadowDom) {
+					app = $(self.makeCopy(elt, true));
 				} else {
 					app = $(elt).clone(true, true);
 				}
@@ -456,7 +465,7 @@ class appcrit {
 						app.prepend("<span class=\"lem\" id=\"app-l" + n +"\">" + n + "</span>");
 					}
 					app.find("tei-lem,tei-rdg").removeAttr("id");
-					app.find("tei-lem:parent").append("<span>] </span>");
+					app.children("tei-lem:parent").append("<span>] </span>");
 					appDiv.append(app);
 				}
 			});
@@ -561,6 +570,9 @@ class appcrit {
 				e.attr("id",self.generateId());
 			}
 		});
+
+		// Add place notes
+		$(data).find("tei-add[place=margin]").append("<span class=\"note\"> (in mg.)</span>")
 
 		//Add navigation header
 		let nav = $("<div/>", {id:"navigation"});

@@ -115,6 +115,12 @@ div.apparatus tei-app>span.lem:before {
   content: '\a';
   white-space: pre;
 }
+span.note {
+  display:none;
+}
+div.apparatus span.note {
+  display:inline;
+}
 div.apparatus tei-app>tei-lem {
   font-weight: bold;
   margin-left: .2em;
@@ -196,24 +202,29 @@ div.apparatus span.lineref {
   margin-right: .3em;
 }
 .ui-tooltip-content div.apparatus tei-witdetail {
-  display: inline;
-  margin-right: .3em;
+  display: none;
 }
 .ui-tooltip-content div.apparatus tei-note {
   display: inline;
   margin-right: .3em;
 }
+.ui-tooltip-content span.note {
+  display:inline;
+}
 /* lists in tooltips */
-.ui-tooltip-content tei-listWit {
+.ui-tooltip-content tei-listwit {
   display: inline;
   margin: 0;
 }
-.ui-tooltip-content tei-listBibl {
+.ui-tooltip-content tei-listbibl {
   display: inline;
   margin: 0;
 }
 .ui-tooltip-content tei-witness {
   display: inline;
+}
+.ui-tooltip-content tei-witdetail {
+  display: none;
 }
 .ui-tooltip-content tei-bibl {
   display: inline;
@@ -256,7 +267,7 @@ div.apparatus span.lineref {
   margin-right: .3em;
 }
 .ui-dialog-content tei-witdetail {
-  display: inline;
+  display: none;
 }
 .ui-dialog-content span.lem {
   display: none;
