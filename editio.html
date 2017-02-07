@@ -12,38 +12,32 @@
     <script type="text/javascript">
       var c = new CETEI();
       c.shadowCSS = "css/tei-html.css";
-      var app = new appcrit();
+      var app = new appcrit(c);
       c.addBehaviors({"handlers":{
         // Overrides the default ptr behavior, displaying a short link
-        "ptr": function() {
-          var self = this;
-          return function() {
-            var shadow = this.createShadowRoot();
-            self.addShadowStyle(shadow);
+        "ptr": function(elt) {
             var link = document.createElement("a");
-            link.innerHTML = this.getAttribute("target").replace(/https?:\/\/([^\/]+)\/.*/, "$1");
-            link.href = this.getAttribute("target");
-            shadow.appendChild(link);
-          }
+            link.innerHTML = elt.getAttribute("target").replace(/https?:\/\/([^\/]+)\/.*/, "$1");
+            link.href = elt.getAttribute("target");
+            return link;
         },
         "gap": ["<span>*</span>"],
-        "witDetail": ["(",") "]      },  "fallbacks": {
-        "ptr": function(elt) {
-          var content = document.createElement("a");
-          content.setAttribute("href", elt.getAttribute("target"));
-          content.innerHTML = elt.getAttribute("target").replace(/https?:\/\/([^\/]+)\/.*/, "$1");
-          elt.appendChild(content);
-          elt.addEventListener("click", function(event) {
-            window.location = this.getAttribute("target");
-          });
-        },
-        "ref": function(elt) {
-          $(elt).click(function() {
-            window.location = $(this).attr("target");
-          });
+        "witDetail": function(elt) {
+          var content = document.createElement("span");
+          if (elt.hasAttribute("data-empty")) {
+            if (elt.getAttribute("type") == "correction-altered") {
+              content.innerHTML = " (p.c.) "
+            }
+            if (elt.getAttribute("type") == "correction-original") {
+              content.innerHTML = " (a.c.) "
+            }
+          } else {
+            content.innerHTML = " (" + elt.innerHTML + ") ";
+          }
+          return content;
         }
       }});
-      var data = c.getHTML5('https://raw.githubusercontent.com/sjhuskey/Calpurnius_Siculus/master/editio.xml', null, function(el){
+      var data = c.getHTML5('editio.xml', null, function(el){
         if (el.hasAttribute("id")) {
          if (["tei-listwit", "tei-witness", "tei-bibl", "tei-handnote", "tei-person", "tei-item"].includes(el.localName)) {
             var val = $(el).children("tei-abbr[type=siglum]").html();
