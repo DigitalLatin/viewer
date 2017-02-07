@@ -128,6 +128,7 @@ div.apparatus tei-app>tei-lem {
 }
 div.apparatus tei-app tei-rdg {
   display: inline;
+  font-style: italic;
 }
 div.apparatus tei-app tei-rdg.hidden {
   display: none;
@@ -346,6 +347,12 @@ tei-add[place=inline]:before {
   content: "«";
 }
 tei-add[place=inline]:after {
+  content: "»";
+}
+tei-add[place=inRas]:before {
+  content: "«";
+}
+tei-add[place=inRas]:after {
   content: "»";
 }
 tei-add[place=below] {

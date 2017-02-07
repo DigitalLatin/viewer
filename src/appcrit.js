@@ -293,11 +293,12 @@ class appcrit {
 			}
 		}
 	}
-
+//TODO: this is overcopying. look at cloneNode without deep copy
 	makeCopy(node, keepIds) {
 		let newNode;
 		if (node.nodeType == Node.ELEMENT_NODE) {
-			newNode = document.createElement(node.localName);
+			newNode = node.cloneNode(false);
+
 			for (let i = 0; i < node.attributes.length; i++) {
 				// have to rewrite ids in copied content so there are no duplicates
 				let att = node.attributes.item(i);
@@ -322,10 +323,13 @@ class appcrit {
 					}
 					newNode.appendChild(this.makeCopy(n, keepIds));
 				} else {
-					newNode.appendChild(n.cloneNode());
+					newNode.appendChild(n.cloneNode(false));
 				}
 			}
-			if (node.shadowRoot) {
+			if (newNode.shadowRoot) {
+				newNode.shadowRoot.innerHTML = node.shadowRoot.innerHTML; //TODO: tei-ref keeps reduplicating content when created
+			}
+			if (node.shadowRoot && !newNode.shadowRoot) {
 				let s = newNode.attachShadow({mode:'open'});
 				s.innerHTML = node.shadowRoot.innerHTML;
 			}
