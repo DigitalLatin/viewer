@@ -71,17 +71,13 @@ border-top:2px solid @border-color;
   font-weight: bold;
 }
 
-/* Navigation */
+/* Controls */
 div#controls {
   position: fixed;
   top: 1em;
   right: 1em;
   font-size: 80%;
   width: 18%
-}
-div#navigation {
-  border: thin solid gray;
-  padding: 0.5em;
 }
 div#controls h2 {
   font-size: 120%;
@@ -92,9 +88,24 @@ div#controls ul {
   margin:0;
   padding:0;
 }
+div#navigation {
+  border: thin solid gray;
+  padding: 0.5em;
+}
 div#navigation a.selected {
   font-weight: bold;
 }
+div#editing li {
+  display: inline;
+  font-size: 200%;
+}
+div#editing button {
+  font-size: 100%;
+  padding: 4px 4px 0px;
+}
+
+
+
 
 /* Apparatus */
 div.apparatus tei-app {
@@ -157,9 +168,24 @@ tei-div[type="sources"] {
 }
 
 tei-text button.app {
-  height: .5em;
-  font-size: 60%;
-  color: gray;
+  border: thin solid white;
+  background-color: white;
+  font-size: 120%;
+  width: 25px;
+  height: 20px;
+  padding: 0px;
+}
+
+tei-text button.app:hover {
+  border: thin solid silver;
+}
+
+tei-text button.note:hover {
+  border: thin solid white;
+}
+
+button:focus {
+  outline: none;
 }
 tei-text span.apps {
   display: inline;
@@ -929,6 +955,10 @@ tei-hi[rend="italic"] {
   font-style: italic;
 }
 tei-hi[rend="super"] {
+  font-size: 60%;
+  vertical-align: super;
+}
+tei-hi[rend="superscript"] {
   font-size: 60%;
   vertical-align: super;
 }
@@ -2176,4 +2206,24 @@ a:link, a:visited, a:active {
 .head-font {
   font-family: Arvo, sans-serif;
   font-weight: normal;
+}
+
+/* -----
+SVG Icons - svgicons.sparkk.fr
+----- */
+
+.svg-icon {
+  width: 1em;
+  height: 1em;
+}
+
+.svg-icon path,
+.svg-icon polygon,
+.svg-icon rect {
+  fill: #005cb9;
+}
+
+.svg-icon circle {
+  stroke: #005cb9;
+  stroke-width: 1;
 }

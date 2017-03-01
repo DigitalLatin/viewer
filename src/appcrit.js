@@ -7,6 +7,7 @@ class appcrit {
 		this.dom = null;
 		this.references = {};
 		this.log = [];
+		this.redoLog = [];
 	}
 
 	generateId(prefix) {
@@ -17,7 +18,7 @@ class appcrit {
 		}
 	}
 
-	swapLem(oldrdg, evt) {
+	swapLem(oldrdg) {
 		let self = this;
 		if (oldrdg[0].localName == "tei-rdg") { // swapLem is a no-op if we clicked a lem
 			let copyfrom = oldrdg.attr("data-copyfrom");
@@ -57,9 +58,7 @@ class appcrit {
 				// Grab the button we clicked to open the dialog. We might need to move it.
 				let btn;
 				let append = false;
-				if (evt) {
-					btn = $("#" + self.escapeID($(evt.currentTarget).parents("div").first().attr("id").replace(/^dialog/, "button")));
-				}
+				btn = $("#button-" + newlem.parents("tei-app").first().attr("id"));
 				if (app.find(this.variantBlocks).length > 0 && btn && app.find("#" + btn.attr("id").length == 0)) {
 					// It's a line-containing app, but doesn't contain the button; button needs to be moved
 					l = newlem.find(this.variantBlocks).first();
@@ -114,6 +113,18 @@ class appcrit {
 		}
 	}
 
+	undo() {
+		let step = this.log.pop();
+		this.swapLem($(document.getElementById(step.lem)));
+		this.redoLog.push(step);
+		this.log.pop(); // kill the undone step
+	}
+
+	redo() {
+		let step = this.redoLog.pop();
+		this.swapLem($(document.getElementById(step.rdg)));
+	}
+
 	ttip(elt) {
 		let self = this;
 		return {
@@ -157,63 +168,65 @@ class appcrit {
 		}
 		$(elt).attr("title","");
 		$(elt).tooltip(this.ttip(elt));
-		let self = this;
-		$(elt).click(function (event) {
-			// Add apparatus dialogs
-			let d = $("#dialog-" + self.escapeID($(this).attr("data-app")).replace(/dialog-/,""))
-			if (d.length == 0) {
-				d = $("<div/>", {
-					id: "dialog-" + $(this).attr("data-app"),
-					class: "dialog",
-					"data-exclude": $("#" + self.escapeID($(this).attr("data-app"))).attr("exclude")});
-				d.appendTo("body");
-				let content = $("#copy-" + self.escapeID($(this).attr("data-app"))).clone();
-				content.find("span.lem").remove();
-				d.html(content.html());
-				if (content.attr("exclude")) {
-					content.attr("exclude").split(/ /).forEach(function(val) {
-						let excl = $(self.escapeID(val).replace(/#/, "#copy-"))
-						d.append(excl.html());
-					});
-				}
-				d.find("*[id]").each(function(i, elt) {
-					$(elt).attr("data-id", $(elt).attr("id"));
-				});
-				d.find("*[id]").removeAttr("id");
-				d.find("tei-note[target]").each(function(i, elt) {
-					$(elt).attr("data-id", $(elt).attr("target").replace(/#/, ""));
-				});
-				if ($(elt).find(this.variantBlocks).length > 0) {
-					d.find("tei-lem,tei-rdg,tei-rdgGrp").remove();
-				}
-				d.find("tei-lem:empty").append("om. ");
-				d.find("tei-rdg:empty").append("om. ");
-				d.find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function(i, elt) {
-					$(elt).click(function(evt) {
-						let rdg = $("#" + self.escapeID($(evt.currentTarget).attr("data-id")));
-						self.swapLem(rdg, evt);
-					});
-				});
-				d.dialog({
-					autoOpen: false,
-					open: function(event) {
-						$("#" + $(this).attr("id").replace(/dialog/, "button")).tooltip("close");
-						$("#" + $(this).attr("id").replace(/dialog-/, "")).addClass("highlight");
-						$("#" + $(this).attr("id").replace(/dialog-/, "")).find(this.variantBlocks).addClass("highlight");
-					},
-					close: function(event) {
-						$("#" + $(this).attr("id").replace(/dialog-/, "")).removeClass("highlight");
-						$("#" + $(this).attr("id").replace(/dialog-/, "")).find(this.variantBlocks).removeClass("highlight");
-						let btn = $("#" + $(this).attr("id").replace(/dialog/, "button"));
-						if (btn.tooltip("instance")) {
-							btn.tooltip("close");
-						}
-						btn.attr("title", ""); // hack to handle JQuery UI bug
+		if (!$(elt).hasClass("note")) {
+			let self = this;
+			$(elt).click(function (event) {
+				// Add apparatus dialogs
+				let d = $("#dialog-" + self.escapeID($(this).attr("data-app")).replace(/dialog-/,""))
+				if (d.length == 0) {
+					d = $("<div/>", {
+						id: "dialog-" + $(this).attr("data-app"),
+						class: "dialog",
+						"data-exclude": $("#" + self.escapeID($(this).attr("data-app"))).attr("exclude")});
+					d.appendTo("body");
+					let content = $("#copy-" + self.escapeID($(this).attr("data-app"))).clone();
+					content.find("span.lem").remove();
+					d.html(content.html());
+					if (content.attr("exclude")) {
+						content.attr("exclude").split(/ /).forEach(function(val) {
+							let excl = $(self.escapeID(val).replace(/#/, "#copy-"))
+							d.append(excl.html());
+						});
 					}
-				});
-			}
-			d.dialog("open");
-		});
+					d.find("*[id]").each(function(i, elt) {
+						$(elt).attr("data-id", $(elt).attr("id"));
+					});
+					d.find("*[id]").removeAttr("id");
+					d.find("tei-note[target]").each(function(i, elt) {
+						$(elt).attr("data-id", $(elt).attr("target").replace(/#/, ""));
+					});
+					if ($(elt).find(this.variantBlocks).length > 0) {
+						d.find("tei-lem,tei-rdg,tei-rdgGrp").remove();
+					}
+					d.find("tei-lem:empty").append("om. ");
+					d.find("tei-rdg:empty").append("om. ");
+					d.find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function(i, elt) {
+						$(elt).click(function(evt) {
+							let rdg = $("#" + self.escapeID($(evt.currentTarget).attr("data-id")));
+							self.swapLem(rdg);
+						});
+					});
+					d.dialog({
+						autoOpen: false,
+						open: function(event) {
+							$("#" + $(this).attr("id").replace(/dialog/, "button")).tooltip("close");
+							$("#" + $(this).attr("id").replace(/dialog-/, "")).addClass("highlight");
+							$("#" + $(this).attr("id").replace(/dialog-/, "")).find(this.variantBlocks).addClass("highlight");
+						},
+						close: function(event) {
+							$("#" + $(this).attr("id").replace(/dialog-/, "")).removeClass("highlight");
+							$("#" + $(this).attr("id").replace(/dialog-/, "")).find(this.variantBlocks).removeClass("highlight");
+							let btn = $("#" + $(this).attr("id").replace(/dialog/, "button"));
+							if (btn.tooltip("instance")) {
+								btn.tooltip("close");
+							}
+							btn.attr("title", ""); // hack to handle JQuery UI bug
+						}
+					});
+				}
+				d.dialog("open");
+			});
+		}
 	}
 
 	escapeID(id) {
@@ -293,7 +306,16 @@ class appcrit {
 			}
 		}
 	}
-//TODO: this is overcopying. look at cloneNode without deep copy
+
+	appButton(elt) {
+		let e = $(elt);
+		if (e.children("tei-rdg").length > 0) {
+			return "<button id=\"button-" + e.attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + e.attr("id") + "\"><svg class=\"svg-icon\"><use xlink:href=\"#rdg-icon\"></use></svg></button>"
+		} else { // it's a note
+			return "<button id=\"button-" + e.attr("id") + "\" title=\"\" class=\"app note\" data-app=\"" + e.attr("id") + "\"><svg class=\"svg-icon\"><use xlink:href=\"#note-icon\"></use></svg></button>"
+		}
+	}
+
 	makeCopy(node, keepIds) {
 		let newNode;
 		if (node.nodeType == Node.ELEMENT_NODE) {
@@ -342,12 +364,23 @@ class appcrit {
 	// Copies the content of the target of the @copyOf attribute
 	// into the current element
 	copy(elt) {
+		if (elt.hasAttribute("data-copyfrom")) {
+			return; // copy() is a no-op if copying has already happened
+		}
 		let e = $(elt);
 		let src = this.dom.querySelector(this.escapeID(e.attr("copyof")));
 		if (src) {
 			e.attr("data-copyfrom", e.attr("copyof"))
 			for (let i = 0; i < src.childNodes.length; i++) {
 				e.append(this.makeCopy(src.childNodes[i]));
+			}
+			for (let i = 0; i < src.attributes.length; i++) {
+				let att = src.attributes.item(i);
+				if (att.name == "id") {
+					e.attr("id", this.generateId());
+				}  else {
+					e.attr(att.name, att.value);
+				}
 			}
 		} else {
 			//console.log("Can't resolve " + e.attr("copyof"));
@@ -356,7 +389,7 @@ class appcrit {
 
 	doSection(section) {
 		let self = this;
-		$("button").remove();
+		$("tei-text button").remove();
 		$("div.apparatus").remove();
 		let sectionId = section.attr("id");
 		// Add Apparatus div
@@ -365,9 +398,7 @@ class appcrit {
 			section.after(appDiv);
 			// Pull content into @copyOf elements
 			section.find("*[copyof]").each(function(i, elt) {
-				if (!elt.hasAttribute("data-copyfrom")) {
-					self.copy(elt);
-				}
+				self.copy(elt);
 			});
 			section.find("tei-app").each(function(i, elt) {
 				let app;
@@ -422,7 +453,6 @@ class appcrit {
 							if (unit == "tei-speaker") {
 									blocks = "<span class=\"ref lineref\" data-id=\"" + lem.attr("data-id") + "\">sp. </span> ";
 							}
-
 							app.prepend(blocks);
 						}
 					}
@@ -451,16 +481,22 @@ class appcrit {
 						if (l.length == 0) {
 							l = $(elt).next(self.variantBlocks + ",tei-app");
 						}
-						l.first().append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
+						l.first().append(self.appButton(elt));
 						// we don't want the full line showing up in the app., just its reference
 						app.find("tei-lem:not(:empty)").remove();
-						app.find("tei-rdg:not(:empty)").remove();
+						app.find("tei-rdg:not(:empty)").each(function(i, elt) {
+							let rdg = $(elt);
+							let children = rdg.find(self.variantBlocks);
+							rdg.html(children.toArray().reduce(function(result, elt) {
+								return result + (result?",":"") + elt.getAttribute("n");
+							}, ""));
+						});
 					} else {
 						n = $(elt).parents(self.variantBlocks).attr("n");
 						if (!n && elt.hasAttribute("copyof")) {
 							n = section.find(self.escapeID($(elt).parents(self.variantBlocks).attr("copyof"))).attr("n");
 						}
-						$(elt).parents(self.variantBlocks).append("<button id=\"button-" + $(elt).attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + $(elt).attr("id") + "\">?</button>");
+						$(elt).parents(self.variantBlocks).append(self.appButton(elt));
 					}
 					// tei-wit should have been put into the sigla, so remove it
 					app.find("tei-wit").remove();
@@ -581,7 +617,7 @@ class appcrit {
 		//Add navigation header
 		let nav = $("<div/>", {id:"navigation"});
 		nav.html("<h2>Contents:</h2><ul></ul>");
-		nav.prependTo("#controls");
+		nav.appendTo("#controls");
 		let ul = nav.find("ul");
 		ul.append("<li><a href=\"#front\">Front Matter</a></li>");
 		let parts = $(data).find("tei-div[type=textpart]");
