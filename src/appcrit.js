@@ -309,7 +309,7 @@ class appcrit {
 
 	appButton(elt) {
 		let e = $(elt);
-		if (e.children("tei-rdg").length > 0) {
+		if (e.children("tei-rdg").length > 0 || e.children("tei-lem").length > 0) {
 			return "<button id=\"button-" + e.attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + e.attr("id") + "\"><svg class=\"svg-icon\"><use xlink:href=\"#rdg-icon\"></use></svg></button>"
 		} else { // it's a note
 			return "<button id=\"button-" + e.attr("id") + "\" title=\"\" class=\"app note\" data-app=\"" + e.attr("id") + "\"><svg class=\"svg-icon\"><use xlink:href=\"#note-icon\"></use></svg></button>"
