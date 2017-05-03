@@ -198,7 +198,7 @@ tei-seg span.apps {
   position: absolute;
   left: 0px;
   top: 0px;
-  width: 80px;
+  width: 100px;
 }
 
 /* Apparatus tooltips */
@@ -1762,7 +1762,6 @@ tei-secl>*:last-child:after {
 tei-seg {
   /* Empty Set Rule */
   position: relative;
-  border: thin solid gray;
 }
 tei-segmentation {
   /* Empty Rule Set */
