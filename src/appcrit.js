@@ -96,7 +96,7 @@ class appcrit {
 				oldapp = newrdg.parent("tei-app");
 				if (newlem.attr("require")) {
 					newlem.attr("require").split(/ /).forEach(function(val) {
-						let req = $(val);
+						let req = $(self.escapeID(val));
 						if (req[0].localName == "tei-rdg") {
 							self.swapLem(req);
 						}
@@ -105,7 +105,7 @@ class appcrit {
 			}
 			//give copies the same treatment, so we don't get out of sync.
 			if (copyfrom) {
-				self.swapLem($("#" + self.escapeID(copyfrom)));
+				self.swapLem($(self.escapeID(copyfrom)));
 			}
 			$("*[data-copyfrom=" + self.escapeID(oldrdgid) + "]").each(function(i, elt){
 				self.swapLem($(elt));
@@ -115,9 +115,13 @@ class appcrit {
 
 	undo() {
 		let step = this.log.pop();
+		let l = this.log.length;
 		this.swapLem($(document.getElementById(step.lem)));
 		this.redoLog.push(step);
-		this.log.pop(); // kill the undone step
+		while (this.log.length > l) {
+			this.log.pop(); // kill the undone step()
+		}
+
 	}
 
 	redo() {
@@ -198,8 +202,18 @@ class appcrit {
 					if ($(elt).find(this.variantBlocks).length > 0) {
 						d.find("tei-lem,tei-rdg,tei-rdgGrp").remove();
 					}
-					d.find("tei-lem:empty").append("om. ");
-					d.find("tei-rdg:empty").append("om. ");
+					// If an empty lem or rdg (indicating omission) is folllowed by a 
+					// note, assume it explains it, otherwise add "om.".
+					d.find("tei-lem:empty").each(function(i, elt) {
+						if (elt.nextElementSibling.localName != "tei-note") {
+							$(elt.append("om. "));
+						}
+					});
+					d.find("tei-rdg:empty").each(function(i, elt) {
+						if (elt.nextElementSibling.localName != "tei-note") {
+							$(elt.append("om. "));
+						}
+					});
 					d.find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function(i, elt) {
 						$(elt).click(function(evt) {
 							let rdg = $("#" + self.escapeID($(evt.currentTarget).attr("data-id")));
@@ -284,7 +298,7 @@ class appcrit {
 				}
 				// Add witness sigla
 				if (e.attr("wit")) {
-					e.attr("wit").split(/ /).forEach(function(val) {
+					e.attr("wit").split(/ +/).forEach(function(val) {
 						wit += "<span class=\"ref\" data-id=\"" + e.attr("data-id") + "\" data-ref=\"" + val + "\">" + self.refLabel(val) + "</span>";
 						e.parents("tei-app").first().find("tei-witdetail[target=\"#" + e.attr("data-id") + "\"][wit=\"" + val + "\"]").each(function(i, elt) {
 							wit += elt.shadowRoot?elt.shadowRoot.childNodes.item(1).outerHTML:elt.innerHTML;
@@ -307,14 +321,18 @@ class appcrit {
 		}
 	}
 
+	// Makes and returns a button corresponding to the app element parameter elt.
 	appButton(elt) {
 		let e = $(elt);
-		if (e.children("tei-rdg").length > 0 || e.children("tei-lem").length > 0) {
+		if (e.children("tei-rdg").length > 0 || e.children("tei-rdgGrp").length > 0) {
 			return "<button id=\"button-" + e.attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + e.attr("id") + "\"><svg class=\"svg-icon\"><use xlink:href=\"#rdg-icon\"></use></svg></button>"
 		} else { // it's a note
 			return "<button id=\"button-" + e.attr("id") + "\" title=\"\" class=\"app note\" data-app=\"" + e.attr("id") + "\"><svg class=\"svg-icon\"><use xlink:href=\"#note-icon\"></use></svg></button>"
 		}
 	}
+
+	// Makes a "safe" copy of the node in the 'node' parameter, with rewritten ids
+	// unless the 'keepIds' parameter is true.\
 
 	makeCopy(node, keepIds) {
 		let newNode;
@@ -387,6 +405,8 @@ class appcrit {
 		}
 	}
 
+	// Processes the contents of the jQuery-wrapped element in the 'section'
+	// parameter, resolving @copyOf references, adding an apparatus,
 	doSection(section) {
 		let self = this;
 		$("tei-text button").remove();
@@ -443,7 +463,7 @@ class appcrit {
 									blocks = "<span class=\"ref lineref\" data-id=\"" + lem.attr("data-id") + "\">l. " + lem.find(self.variantBlocks).attr("n") + "</span> ";
 								}
 							}
-							if (unit == "tei-p") {
+							if (unit == "tei-p" || unit == "tei-ab") {
 								if (children.length > 1) {
 									blocks = "<span class=\"ref lineref\" data-id=\"" + lem.attr("data-id") + "\">" + lem.find(self.variantBlocks).first().attr("n") + "–" + lem.find(self.variantBlocks).last().attr("n") + "</span> ";
 								} else {
@@ -456,6 +476,9 @@ class appcrit {
 							app.prepend(blocks);
 						}
 					}
+					let appBtnContainer;
+					// Find the right block element to append the button to. It could be
+					// a descendent of the app or an ancestor.
 					if ((blocks = lem.find(self.variantBlocks)).length > 0) {
 						n = $(blocks[0]).attr("n");
 						if (!n && blocks[0].hasAttribute("copyof")) {
@@ -477,30 +500,63 @@ class appcrit {
 								n += "–" + section.find($(blocks[blocks.length - 1]).attr("copyOf")).attr("n");
 							}
 						}
-						let l = $(elt).find("tei-lem").find(self.variantBlocks);
-						if (l.length == 0) {
-							l = $(elt).next(self.variantBlocks + ",tei-app");
+						let block = $(elt).find("tei-lem").find(self.variantBlocks);
+						if (block.length == 0) {
+							block = $(elt).next(self.variantBlocks + ",tei-app");
 						}
-						l.first().append(self.appButton(elt));
+						appBtnContainer = block.first().append(self.appButton(elt));
 						// we don't want the full line showing up in the app., just its reference
 						app.find("tei-lem:not(:empty)").remove();
 						app.find("tei-rdg:not(:empty)").each(function(i, elt) {
 							let rdg = $(elt);
 							let children = rdg.find(self.variantBlocks);
-							rdg.html(children.toArray().reduce(function(result, elt) {
-								return result + (result?",":"") + elt.getAttribute("n");
-							}, ""));
+							if (rdg.attr("rend") == "show") {
+								rdg.html(children.text()); //TODO: If rend="show", we should strip out the lines/blocks in some smart way
+							} else {
+								rdg.html(children.toArray().reduce(function(result, elt) {
+										return result + (result?",":"") + elt.getAttribute("n");
+									}, ""));
+							}
 						});
 					} else {
 						n = $(elt).parents(self.variantBlocks).attr("n");
 						if (!n && elt.hasAttribute("copyof")) {
 							n = section.find(self.escapeID($(elt).parents(self.variantBlocks).attr("copyof"))).attr("n");
 						}
-						$(elt).parents(self.variantBlocks).append(self.appButton(elt));
+						appBtnContainer = $(elt).parents(self.variantBlocks).append(self.appButton(elt));
 					}
+					// position button
+					// use an index variable; set an absolute position based on the vertical
+					// position of the related element and the right edge of the text; check
+					// the previous sibling's x position and if it is the same, increment the
+					// index, else reset index to zero and set the y position equal to the
+					// right edge, plus padding, plus the index times a constant (width of control + padding).
+					/*
+					let button = appBtnContainer.children("button").last();
+					let btnIndex = 0;
+					let btnWidth = 30;
+					// we've already got the referenced app in the elt var.
+					let appPos = $(elt).offset();
+					button.css("top", appPos.top + "px");
+					let prevBtn = button.prev("button");
+					if (prevBtn.length) {
+						if (prevBtn.css("top") == button.css("top")) {
+							btnIndex++;
+						}
+						button.css("left", (700 + (btnIndex * btnWidth)) + "px");
+					} else {
+						button.css("left", "700px");
+					}
+					*/
 					// tei-wit should have been put into the sigla, so remove it
 					app.find("tei-wit").remove();
-					app.find("tei-rdg:empty").append("om. ");
+					app.find("tei-rdg:empty").each(function(i, elt) {
+						if (elt.nextElementSibling.nextElementSibling
+							&& elt.nextElementSibling.nextElementSibling.localName != "tei-note") {
+							// if the empty rdg is folllowed by a note, assume it explains it
+							$(elt.append("om. "));
+						}
+					});
 					if (n && appDiv.find("#app-l" + n).length == 0 || blocks.length > 0) {
 						app.prepend("<span class=\"lem\" id=\"app-l" + n +"\">" + n + "</span>");
 					}
@@ -512,7 +568,7 @@ class appcrit {
 
 			// Add line numbers
 			let parents = ["tei-sp", "tei-ab", "tei-div", "tei-lem", "tei-lg"];
-			section.find(self.variantBlocks).each(function(i,elt){
+			section.find(self.variantBlocks).each(function(i,elt){ // Do this only for lines?
 				let e = $(elt);
 				if (Number(e.attr("n")) % 5 == 0 && (parents.indexOf(elt.parentElement.localName) >= 0)) {
 					e.attr("data-num",e.attr("n"));
@@ -559,9 +615,7 @@ class appcrit {
 			});
 		} else {
 		// View sources
-
 		}
-
 	}
 
 	toggleApps(evt) {

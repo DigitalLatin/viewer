@@ -193,6 +193,14 @@ tei-text span.apps {
   right: 25%;
 }
 
+tei-p span.apps {
+  display: inline;
+  position: absolute;
+  right: -15%;
+  top: 0px;
+  width: 80px;
+}
+
 /* Apparatus tooltips */
 div.apparatus span.lineref {
   display: none;
@@ -1415,6 +1423,10 @@ tei-p {
   margin-bottom: 1em;
   text-align: justify;
 }
+tei-text tei-p {
+  position: relative;
+  width: 90%;
+}
 *[data-tei-rendition~="#center"] p {
   text-align: center;
 }
@@ -2008,24 +2020,8 @@ tei-textDesc {
   display: none;
 }
 /* title */
-/* Need TEI ancestor to distinguish TEI title from HTML title */
 tei-TEI tei-title {
   display: inline;
-}
-tei-TEI tei-title[level=a] {
-  quotes: "\201c" "\201d" "\2018" "\2019" "\201c" "\201d" "\2018" "\2019" "\201c" "\201d" "\2018" "\2019" "\201c" "\201d";
-}
-tei-TEI tei-title[level=a]:before {
-  content: open-quote;
-}
-tei-TEI tei-title[level=a]:after {
-  content: close-quote;
-}
-tei-TEI tei-title[level=a][next]:after {
-  content: "" !important;
-}
-tei-TEI tei-title[level=a][prev]:before {
-  content: "" !important;
 }
 tei-title[level=m] {
   font-style: italic;
@@ -2193,7 +2189,12 @@ a:link, a:visited, a:active {
   from {transform: rotate(0deg);}
   to {transform: rotate(360deg);}
 }
-
+div#loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  opacity: 75%;
+}
 #loading p {
   font-size: 128px;
   position: fixed;
