@@ -2189,7 +2189,12 @@ a:link, a:visited, a:active {
   from {transform: rotate(0deg);}
   to {transform: rotate(360deg);}
 }
-
+div#loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  opacity: 75%;
+}
 #loading p {
   font-size: 128px;
   position: fixed;
