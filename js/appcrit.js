@@ -612,7 +612,7 @@ var appcrit = (function () {
   							// tei-wit should have been put into the sigla, so remove it
   							app.find("tei-wit").remove();
   							app.find("tei-rdg:empty").each(function (i, elt) {
-  								if (elt.nextElementSibling.nextElementSibling && elt.nextElementSibling.nextElementSibling.localName != "tei-note") {
+  								if (!elt.nextElementSibling.nextElementSibling || (elt.nextElementSibling.nextElementSibling && elt.nextElementSibling.nextElementSibling.localName != "tei-note")) {
   									// if the empty rdg is folllowed by a note, assume it explains it
   									$(elt.append("om. "));
   								}
