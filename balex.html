@@ -22,6 +22,9 @@
             return link;
         },
         "gap": ["<span>*</span>"],
+        "seg": function(elt) {
+          elt.insertAdjacentHTML('beforebegin', "<sup>" + elt.getAttribute("n") + " </sup>");
+        },
         "witDetail": function(elt) {
           var content = document.createElement("span");
           if (elt.hasAttribute("data-empty")) {
@@ -55,11 +58,41 @@
         $("body").append(TEI);
         if (window.location.hash) {
     			window.location = window.location;
+          var section = $(window.location.hash);
+          section.find("tei-p").each(function(i,elt) {
+            var e = $(elt);
+            var btns = e.find("span.apps");
+            var top = 0;
+            var left = 0;
+            btns.each(function(i,elt){
+              $(elt).find("button").each(function(i,elt) {
+                var btn = $(elt);
+                var pos = $("#" + app.escapeID(btn.attr("data-app"))).position();
+                if (top < pos["top"]) {
+                  top = pos["top"];
+                  left = 0;
+                } else {
+                  left++;
+                }
+                btn.css({"position":"absolute","top":top + "px","left":(left*25) + "px"});
+              });
+            });
+          });
     		}
+
         var morph = new morphlibrary(document);
         morph.activate("lat");
       })
     </script>
+    <style media="screen">
+      tei-div[type=textpart] tei-p {
+        width: 700px;
+      }
+      tei-seg span.apps {
+        width: 150px;
+        right: -170px
+      }
+    </style>
   </head>
   <body>
     <svg class="svg-icon" style="display:none;">
