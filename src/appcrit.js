@@ -2,7 +2,7 @@ class appcrit {
 
 	constructor(c) {
 		this.ceteicean = c;
-		this.variantBlocks = "tei-l,tei-speaker,tei-p";
+		this.variantBlocks = "tei-l,tei-speaker,tei-p,tei-ab,tei-seg";
 		this.genId = 0;
 		this.dom = null;
 		this.references = {};
@@ -202,7 +202,7 @@ class appcrit {
 					if ($(elt).find(this.variantBlocks).length > 0) {
 						d.find("tei-lem,tei-rdg,tei-rdgGrp").remove();
 					}
-					// If an empty lem or rdg (indicating omission) is folllowed by a 
+					// If an empty lem or rdg (indicating omission) is folllowed by a
 					// note, assume it explains it, otherwise add "om.".
 					d.find("tei-lem:empty").each(function(i, elt) {
 						if (elt.nextElementSibling.localName != "tei-note") {
@@ -463,7 +463,7 @@ class appcrit {
 									blocks = "<span class=\"ref lineref\" data-id=\"" + lem.attr("data-id") + "\">l. " + lem.find(self.variantBlocks).attr("n") + "</span> ";
 								}
 							}
-							if (unit == "tei-p" || unit == "tei-ab") {
+							if (unit == "tei-p" || unit == "tei-ab" || unit == "tei-seg") {
 								if (children.length > 1) {
 									blocks = "<span class=\"ref lineref\" data-id=\"" + lem.attr("data-id") + "\">" + lem.find(self.variantBlocks).first().attr("n") + "–" + lem.find(self.variantBlocks).last().attr("n") + "</span> ";
 								} else {
@@ -523,7 +523,7 @@ class appcrit {
 						if (!n && elt.hasAttribute("copyof")) {
 							n = section.find(self.escapeID($(elt).parents(self.variantBlocks).attr("copyof"))).attr("n");
 						}
-						appBtnContainer = $(elt).parents(self.variantBlocks).append(self.appButton(elt));
+						appBtnContainer = $(elt).parents(self.variantBlocks).first().append(self.appButton(elt));
 					}
 					// position button
 					// use an index variable; set an absolute position based on the vertical
@@ -567,14 +567,22 @@ class appcrit {
 			});
 
 			// Add line numbers
-			let parents = ["tei-sp", "tei-ab", "tei-div", "tei-lem", "tei-lg"];
-			section.find(self.variantBlocks).each(function(i,elt){ // Do this only for lines?
+			let parents = ["tei-sp", "tei-ab", "tei-p", "tei-div", "tei-lem", "tei-lg"];
+			section.find("tei-l").each(function(i,elt){ // Do this only for lines?
 				let e = $(elt);
 				if (Number(e.attr("n")) % 5 == 0 && (parents.indexOf(elt.parentElement.localName) >= 0)) {
 					e.attr("data-num",e.attr("n"));
 				}
+				// Also wrap app buttons in a span, while we have the line
 				e.find("button.app").wrapAll("<span class=\"apps\"></span>");
 			});
+			// Wrap app buttons in segments in a span, and set their position
+			section.find("tei-l,tei-seg").each(function(i,elt){
+				let e = $(elt);
+				e.find("button.app").wrapAll("<span class=\"apps\"></span>");
+			});
+
+
 
 			// Add apparatus links
 			section.find("button.app").each(function(i, elt) {
@@ -604,7 +612,9 @@ class appcrit {
 									title = $("<span>" + ref.html() + "</span>");
 									break;
 								case "tei-bibl":
-									title = $("<span>" + ref.html() + "</span>")
+									title = $("<span>" + ref.html() + "</span>");
+								case "tei-person":
+									title = $("<span>" + ref.html() + "</span>");
 								default:
 									title = $("<span>" + ref.find(">tei-title,tei-bibl>tei-title").first().html() + "</span>");
 							}
@@ -701,7 +711,6 @@ class appcrit {
 		} else {
 			self.doSection($(this.dom).find("#front"));
 		}
-
 
 		// cleanup
 		//this.dom = null;
