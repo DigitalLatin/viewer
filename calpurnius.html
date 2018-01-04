@@ -22,14 +22,6 @@
             return link;
         },
         "gap": ["<span>*</span>"],
-        "seg": function(elt) {
-          elt.insertAdjacentHTML('beforebegin', "<sup>" + elt.getAttribute("n") + " </sup>");
-        },
-        "p": function(elt) {
-          if (elt.hasAttribute("n")) {
-            elt.insertAdjacentHTML('afterbegin', "<span class=\"pnum\">" + elt.getAttribute("n") + ".</span>");
-          }
-        },
         "witDetail": function(elt) {
           var content = document.createElement("span");
           if (elt.hasAttribute("data-empty")) {
@@ -45,7 +37,7 @@
           return content;
         }
       }});
-      var data = c.getHTML5('https://raw.githubusercontent.com/DigitalLatin/caesar-balex/master/edition-BAlex.xml', null, function(el){
+      var data = c.getHTML5('editio.xml', null, function(el){
         if (el.hasAttribute("id")) {
          if (["tei-listwit", "tei-witness", "tei-bibl", "tei-handnote", "tei-person", "tei-item"].includes(el.localName)) {
             var val = $(el).children("tei-abbr[type=siglum]").html();
@@ -58,44 +50,22 @@
         }
       });
       data.then(function(TEI){
-        app.loadData(TEI);
-        $("#loading").remove();
         $("body").append(TEI);
-        var section = $("tei-div[type=edition]");
-        section.find("tei-p").each(function(i,elt) {
-          var e = $(elt);
-          var btns = e.find("span.apps");
-          var top = 0;
-          var left = 0;
-          btns.each(function(i,elt){
-            $(elt).find("button").each(function(i,elt) {
-              var btn = $(elt);
-              var pos = $("#" + app.escapeID(btn.attr("data-app"))).position();
-              if (top < pos["top"]) {
-                top = pos["top"];
-                left = 0;
-              } else {
-                left++;
-              }
-              btn.css({"position":"absolute","top":top + "px","left":(left*25) + "px"});
-            });
-          });
-        });
+        app.loadData(TEI);
         if (window.location.hash) {
     			window.location = window.location;
     		}
-
+        $("#loading").remove();
         var morph = new morphlibrary(document);
         morph.activate("lat");
       })
     </script>
     <style media="screen">
-      tei-div[type=textpart] tei-p {
+      tei-div[type=textpart] tei-l {
         width: 700px;
       }
-      tei-seg span.apps {
-        width: 150px;
-        right: -170px
+      tei-l span.apps {
+        width: 200px;
       }
     </style>
   </head>

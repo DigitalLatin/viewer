@@ -273,16 +273,16 @@ var preferences = function () {
         key: "getmorphserviceuri",
         value: function getmorphserviceuri(lang) {
             if (lang == "grc") {
-                return "http://services.perseids.org/bsp/morphologyservice/analysis/word?lang=grc&engine=morpheusgrc&word=";
+                return "http://morph.perseids.org/analysis/word?lang=grc&engine=morpheusgrc&word=";
             }
             if (lang == "lat") {
-                return "http://services.perseids.org/bsp/morphologyservice/analysis/word?lang=lat&engine=whitakerLat&word=";
+                return "http://morph.perseids.org/analysis/word?lang=lat&engine=whitakerLat&word=";
             }
             if (lang == "ara") {
-                return "http://services.perseids.org/bsp/morphologyservice/analysis/word?lang=ara&engine=aramorph&word=";
+                return "http://morph.alpheios.net/api/v1/analysis/word?lang=ara&engine=aramorph&word=";
             }
             if (lang == "per") {
-                return ["http://services.perseids.org/pysvc/morphologyservice/analysis/word?word=", "&lang=per&engine=hazm"];
+                return ["http://morph.perseids.org/analysis/word?word=", "&lang=per&engine=hazm"];
             }
         }
     }, {
@@ -350,7 +350,7 @@ function tokenresponse(word, bcontext, fcontext, wordlang, textdir) {
 
 var morphresponse =
 //constructor for response of parsed morphology object that morphology parser returns
-function morphresponse(originform, objects, isordered, credit) {
+function morphresponse(originform, objects, isordered, credit, lang) {
     classCallCheck(this, morphresponse);
 
     // the original analyzed form
@@ -361,6 +361,8 @@ function morphresponse(originform, objects, isordered, credit) {
     this.ordered = isordered;
     //credits
     this.credits = credit;
+    //language of morphservice
+    this.lang = lang;
 };
 
 var analysisresponse =
@@ -380,184 +382,93 @@ function analysisresponse(hdwd, pofs, shortdef, posinfl, ordinfl) {
     this.orderedinfls = ordinfl;
 };
 
-/**
- * Created by Elijah Cooke on 8/30/2016.
+/** * Created by Elijah Cooke on 8/30/2016.
  */
 function eventhandler(event, instance, trigger) {
-    if (instance.prefs.getdebugstatus()) {
-        console.log("Event Triggered");
+  if (instance.prefs.getdebugstatus()) {
+    console.log("Event Triggered");
+  }
+  var elementlang;
+  if (event.target.attributes["id"]) {
+    var jqid = "#" + event.target.attributes["id"].nodeValue;
+  } else {
+    var jqid = false;
+  }
+
+  if (event.target.attributes["xml:lang"]) {
+    elementlang = event.target.attributes["xml:lang"].nodeValue;
+  } else if (jqid && $(jqid).parents("[xml\\:lang]").length > 0) {
+    elementlang = $(jqid).parents("[xml\\:lang]")[0].attributes["xml:lang"].nodeValue;
+  }
+
+  var langfrom = 'element';
+  if (!elementlang || elementlang == "") {
+    if (!instance.defaultlang) {
+      instance.deflangui();
     }
-    var elementlang;
-    if (event.target.attributes["xml:lang"]) {
-        elementlang = event.target.attributes["xml:lang"].nodeValue;
-        if (elementlang == 'lat') {
-            if (instance.prefs.getdebugstatus()) {
-                console.log("Running word as latin, lang taken from element");
-            }
-            return processwordlat(event.target, instance);
-        }
-        if (elementlang == 'grc') {
-            if (instance.prefs.getdebugstatus()) {
-                console.log("Running word as Greek, lang taken from element");
-            }
-            return processwordgrc(event.target, instance);
-        }
-        if (elementlang == 'ara') {
-            if (instance.prefs.getdebugstatus()) {
-                console.log("Running word as Arabic, lang taken from element");
-            }
-            return processwordara(event.target, instance);
-        }
-        if (elementlang == 'per') {
-            if (instance.prefs.getdebugstatus()) {
-                console.log("Running word as Persian, lang taken from element");
-            }
-            return processwordper(event.target, instance);
-        }
-        console.log("Language not installed");
-    } else {
-        elementlang = instance.defaultlang;
-        if (elementlang == 'lat') {
-            if (instance.prefs.getdebugstatus()) {
-                console.log("Running word as latin, lang taken from default");
-            }
-            return processwordlat(event.target, instance);
-        }
-        if (elementlang == 'grc') {
-            if (instance.prefs.getdebugstatus()) {
-                console.log("Running word as greek, lang taken from default");
-            }
-            return processwordgrc(event.target, instance);
-        }
-        if (elementlang == 'ara') {
-            if (instance.prefs.getdebugstatus()) {
-                console.log("Running word as Arabic, lang taken from element");
-            }
-            return processwordara(event.target, instance);
-        }
-        if (elementlang == 'per') {
-            if (instance.prefs.getdebugstatus()) {
-                console.log("Running word as Persian, lang taken from element");
-            }
-            return processwordper(event.target, instance);
-        }
-        console.log("Language not installed");
-    }
+    elementlang = instance.defaultlang;
+    langfrom = 'default';
+  }
+  if (instance.prefs.getdebugstatus()) {
+    console.log("Running word as " + elementlang + ", lang taken from " + langfrom);
+  }
+
+  if (elementlang !== '') {
+    instance.currentlang = elementlang;
+    console.log("Running word as " + elementlang + ", lang taken from " + langfrom);
+  } else {
+    console.log("Unable to identify a language");
+  }
+
+  var rv = null;
+
+  switch (elementlang) {
+    case 'lat':
+      rv = processwordlat(event.target, instance);
+      break;
+    case 'grc':
+      rv = processwordgrc(event.target, instance);
+      break;
+    case 'ara':
+      rv = processwordara(event.target, instance);
+      break;
+    case 'per':
+      rv = processwordara(event.target, instance);
+      break;
+    default:
+      console.log("Language not installed");
+  }
+  return rv;
 }
 // process a word with the default values for latin
 function processwordlat(srcele, instance) {
-    instance.currentlang = "lat";
-    var word = window.getSelection().toString();
-    //TODO tokenize context and send to response constructor
-    var result = new tokenresponse(word, '', '', 'lat', 'ltr');
-    if (instance.prefs.getdebugstatus()) {
-        console.log(result);
-    }
-    return result;
+  var word = window.getSelection().toString();
+  //TODO tokenize context and send to response constructor
+  var result = new tokenresponse(word, '', '', 'lat', 'ltr');
+  if (instance.prefs.getdebugstatus()) {
+    console.log(result);
+  }
+  return result;
 }
 // process a word with the default values for greek
 function processwordgrc(srcele, instance) {
-    instance.currentlang = "grc";
-    var word = window.getSelection().toString();
-    //TODO tokenize context and send to response constructor
-    var result = new tokenresponse(word, '', '', 'grc', 'ltr');
-    if (instance.prefs.getdebugstatus()) {
-        console.log(result);
-    }
-    return result;
+  var word = window.getSelection().toString();
+  //TODO tokenize context and send to response constructor
+  var result = new tokenresponse(word, '', '', 'grc', 'ltr');
+  if (instance.prefs.getdebugstatus()) {
+    console.log(result);
+  }
+  return result;
 }
 // process a word with the default values for arabic
 function processwordara(srcele, instance) {
-    instance.currentlang = "ara";
-    var word = window.getSelection().toString();
-    //TODO tokenize context and send to response constructor
-    var result = new tokenresponse(word, '', '', 'ara', 'rtl');
-    if (instance.prefs.getdebugstatus()) {
-        console.log(result);
-    }
-    return result;
-}
-// process a word with the default values for greek
-function processwordper(srcele, instance) {
-    instance.currentlang = "per";
-    var word = window.getSelection().toString();
-    //TODO tokenize context and send to response constructor
-    var result = new tokenresponse(word, '', '', 'per', 'rtl');
-    if (instance.prefs.getdebugstatus()) {
-        console.log(result);
-    }
-    return result;
-}
-
-/**
- * Created by elijah on 6/30/16.
- */
-function launchPopup(morpgresponse, instance) {
-    var debug = instance.prefs.getdebugstatus();
-    var myWindow;
-    if (instance.popup) {
-        instance.popup.close();
-        myWindow = window.open("", "morplibWindow", "width=600,height=400");
-        myWindow.document.open();
-        myWindow.focus();
-    } else {
-        myWindow = window.open("", "morplibWindow", "width=600,height=400");
-    }
-    myWindow.document.write('<head><link rel="stylesheet" href="morphwindow.css" type="text/css" /><title>Morphology Library Window</title> </head>');
-    if (!myWindow) {
-        if (debug) {
-            console.log("Warning popup window failed to create popup window");
-        }
-        alert("Morphology Library failed to create a popup");
-        return;
-    }
-    if (debug) {
-        console.log("Popup window created successfully");
-    }
-    var entries = morpgresponse.analysisobjects;
-    myWindow.document.write('<div context="' + morpgresponse.originalform + ' class="morphlib-word morphlib-word-first">');
-    for (var i = 0; i < entries.length; i++) {
-        myWindow.document.write('<div class="morphlib-entry">');
-        myWindow.document.write('<div class="morplib-dict"><span class="morphlib-hdwd">' + entries[i].lemma + ': </span>');
-        myWindow.document.write('<div class="morphlib-morph"><span class="morphlib-pofs" context="' + entries[i].partofspeech + '">' + entries[i].partofspeech + '</span>');
-        myWindow.document.write('</div>');
-        myWindow.document.write('</div>');
-        myWindow.document.write('<div class="morphlib-mean">' + entries[i].shortdefinition);
-        myWindow.document.write('</div>');
-        myWindow.document.write('<div class="morphlib-label morphlib-form-label">Form(s):</div>');
-        for (var x = 0; x < entries[i].inflections.length; x++) {
-            var form = entries[i].inflections[x]["term"]["stem"];
-            if (entries[i].inflections[x]["term"]["suff"]) {
-                form = form + "-" + entries[i].inflections[x]["term"]["suff"];
-            }
-            myWindow.document.write('<div class="morphlib-infl-set" context="' + form + '" class="morphlib-infl-set"><span class="morphlib-term">' + form + '</span>');
-            myWindow.document.write('<div class="morphlib-infl">');
-            if (entries[i].inflections[x]["pers"]) {
-                myWindow.document.write('<span class="morphlib-pers">' + entries[i].inflections[x]["pers"] + ' person</span>');
-            }
-            if (entries[i].inflections[x]["num"]) {
-                myWindow.document.write('<span class="morphlib-num">' + entries[i].inflections[x]["num"] + '; </span>');
-            }
-            if (entries[i].inflections[x]["tense"]) {
-                myWindow.document.write('<span class="morphlib-tense">' + entries[i].inflections[x]["tense"] + ' </span>');
-            }
-            if (entries[i].inflections[x]["mood"]) {
-                myWindow.document.write('<span class="morphlib-mood">' + entries[i].inflections[x]["mood"] + '; </span>');
-            }
-            if (entries[i].inflections[x]["voice"]) {
-                myWindow.document.write('<span class="morphlib-voice">' + entries[i].inflections[x]["voice"] + '</span>');
-            }
-            if (entries[i].inflections[x]["case"]) {
-                myWindow.document.write('<span class="morphlib-voice">' + entries[i].inflections[x]["case"]["$"] + '</span>');
-            }
-            myWindow.document.write('</div></div>');
-        }
-        myWindow.document.write('</div>');
-    }
-    myWindow.document.write("</div>");
-    myWindow.document.write('<div>' + morpgresponse.credits + '</div>');
-    myWindow.focus();
-    instance.popup = myWindow;
+  var word = window.getSelection().toString();
+  //TODO tokenize context and send to response constructor
+  var result = new tokenresponse(word, '', '', 'ara', 'rtl');
+  if (instance.prefs.getdebugstatus()) {
+    console.log(result);
+  }
+  return result;
 }
 
 /**
@@ -578,6 +489,137 @@ function async(url, method, datatype, success) {
         dataType: datatype,
         success: success
     });
+}
+
+/**
+ * Created by Elijah Cooke on 1/20/2017.
+ */
+function bigdictlookup(instance, popup, lang, originalform, lemma) {
+    if (instance.prefs.getdebugstatus()) {
+        console.log("Starting big dictionary lookup");
+    }
+    var data;
+    var uri;
+    if (lang == "grc") {
+        uri = "http://repos1.alpheios.net/exist/rest/db/xq/lexi-get.xq?lx=lsj&lg=grc&out=HTML&l=" + lemma;
+    } else if (lang == "lat") {
+        var splitlemma = lemma.split(",");
+        if (Object.prototype.toString.call(splitlemma) === '[object Array]') {
+            var lemmas = "";
+            for (var i = 0; i < splitlemma.length; i++) {
+                lemmas = lemmas + "&l=" + splitlemma[i];
+            }
+            uri = "http://repos1.alpheios.net/exist/rest/db/xq/lexi-get.xq?lx=ls&lg=lat&out=HTML" + lemmas;
+        } else {
+            uri = "http://repos1.alpheios.net/exist/rest/db/xq/lexi-get.xq?lx=ls&lg=lat&out=HTML&l=" + lemma;
+        }
+    } else if (lang == "ara") {
+        uri = "http://repos1.alpheios.net/exist/rest/db/xq/lexi-get.xq?lx=sal&lg=ara&out=HTML&l=" + lemma;
+    } else if (lang == "per") {
+        uri = "http://repos1.alpheios.net/exist/rest/db/xq/lexi-get.xq?lx=stg&lg=per&out=HTML&l=" + lemma;
+    }
+    async(uri, "GET", "html", function (result) {
+        popup.document.getElementById("morphlibwindowdictlookup").innerHTML = "<div id='dictentry1' class='morphlib-dict'>" + result + "</div>";
+        if (lang == "grc") {
+            uri = "http://repos1.alpheios.net/exist/rest/db/xq/lexi-get.xq?lx=ml&lg=grc&out=HTML&l=" + lemma;
+            var secdict = document.createElement("div");
+            secdict.setAttribute("id", "dictentry2");
+            secdict.setAttribute("class", "morphlib-dict");
+            secdict.setAttribute("style", "visibility: hidden; position: absolute; top: 0px;");
+            popup.document.getElementById("morphlibwindowdictlookup").appendChild(secdict);
+            var dicttoggle = document.createElement("button");
+            dicttoggle.setAttribute("id", "toggledict");
+            dicttoggle.setAttribute("type", "button");
+            dicttoggle.setAttribute("onclick", "togglehiddengreek()");
+            dicttoggle.setAttribute("style", "position: absolute; right: 10px; top: -25px;");
+            dicttoggle.innerHTML = "Toggle Greek Dictionaries";
+            popup.document.getElementById("morphlibwindowdictlookup").appendChild(dicttoggle);
+            secdict.innerHTML = '<img src="http://www.cuisson.co.uk/templates/cuisson/supersize/slideshow/img/progress.BAK-FOURTH.gif">';
+            async(uri, "GET", "html", function (result) {
+                secdict.innerHTML = result;
+            });
+        }
+    });
+}
+
+/**
+ * Created by elijah on 6/30/16.
+ */
+function launchPopup(morpgresponse, instance) {
+    var debug = instance.prefs.getdebugstatus();
+    var myWindow;
+    if (instance.popup) {
+        instance.popup.close();
+        myWindow = window.open("", "morplibWindow", "width=600,height=400");
+        myWindow.document.open();
+        myWindow.focus();
+    } else {
+        myWindow = window.open("", "morplibWindow", "width=600,height=400");
+    }
+    myWindow.document.write('<head><link rel="stylesheet" href="morphwindow.css" type="text/css" /><title>Morphology Library Window</title> </head>');
+    myWindow.document.write('<script> function togglehidden() { if(document.getElementById("morphlibwinmorph").style.visibility=="hidden"){ document.getElementById("morphlibwinmorph").style.visibility = "visible"; document.getElementById("morphlibwindowdictlookup").style.visibility = "hidden"; document.getElementById("dictentry1").style.visibility = "hidden"; document.getElementById("dictentry2").style.visibility = "hidden"; } else { document.getElementById("morphlibwinmorph").style.visibility = "hidden"; document.getElementById("morphlibwindowdictlookup").style.visibility = "visible";  document.getElementById("dictentry1").style.visibility = "visible";} }</script>');
+    myWindow.document.write('<script> function togglehiddengreek() { if(document.getElementById("dictentry1").style.visibility=="hidden"){ document.getElementById("dictentry1").style.visibility = "visible"; } else { document.getElementById("dictentry1").style.visibility = "hidden"; } if(document.getElementById("dictentry2").style.visibility== "hidden"){ document.getElementById("dictentry2").style.visibility = "visible"; } else { document.getElementById("dictentry2").style.visibility = "hidden"; } } </script>');
+    if (!myWindow) {
+        if (debug) {
+            console.log("Warning popup window failed to create popup window");
+        }
+        alert("Morphology Library failed to create a popup");
+        return;
+    }
+    if (debug) {
+        console.log("Popup window created successfully");
+    }
+    var entries = morpgresponse.analysisobjects;
+    myWindow.document.write('<div><button id="toggledict" type="button" style="z-index: 1" onclick="togglehidden()">Toggle Full Dictionary</button></div>');
+    myWindow.document.write('<div id="morphlibwinmorph" style="visibility: visible" context="' + morpgresponse.originalform + ' class="morphlib-word morphlib-word-first">');
+    for (var i = 0; i < entries.length; i++) {
+        myWindow.document.write('<div class="morphlib-entry">');
+        myWindow.document.write('<div class="morplib-dict"><span class="morphlib-hdwd">' + entries[i].lemma + ': </span>');
+        myWindow.document.write('<div class="morphlib-morph"><span class="morphlib-pofs" context="' + entries[i].partofspeech + '">' + entries[i].partofspeech + '</span>');
+        myWindow.document.write('</div>');
+        myWindow.document.write('</div>');
+        myWindow.document.write('<div class="morphlib-mean">' + entries[i].shortdefinition);
+        myWindow.document.write('</div>');
+        myWindow.document.write('<div class="morphlib-label morphlib-form-label">Form(s):</div>');
+        for (var x = 0; x < entries[i].inflections.length; x++) {
+            var form = entries[i].inflections[x]["term"]["stem"]["$"];
+            if (entries[i].inflections[x]["term"]["suff"]) {
+                form = form + "-" + entries[i].inflections[x]["term"]["suff"]["$"];
+            }
+            myWindow.document.write('<div class="morphlib-infl-set" context="' + form + '" class="morphlib-infl-set"><span class="morphlib-term">' + form + '</span>');
+            myWindow.document.write('<div class="morphlib-infl">');
+            if (entries[i].inflections[x]["pers"]) {
+                myWindow.document.write('<span class="morphlib-pers">' + entries[i].inflections[x]["pers"]["$"] + ' person</span>');
+            }
+            if (entries[i].inflections[x]["num"]) {
+                myWindow.document.write('<span class="morphlib-num">' + entries[i].inflections[x]["num"]["$"] + '; </span>');
+            }
+            if (entries[i].inflections[x]["tense"]) {
+                myWindow.document.write('<span class="morphlib-tense">' + entries[i].inflections[x]["tense"]["$"] + ' </span>');
+            }
+            if (entries[i].inflections[x]["mood"]) {
+                myWindow.document.write('<span class="morphlib-mood">' + entries[i].inflections[x]["mood"]["$"] + '; </span>');
+            }
+            if (entries[i].inflections[x]["voice"]) {
+                myWindow.document.write('<span class="morphlib-voice">' + entries[i].inflections[x]["voice"]["$"] + '</span>');
+            }
+            if (entries[i].inflections[x]["case"]) {
+                myWindow.document.write('<span class="morphlib-case">' + entries[i].inflections[x]["case"]["$"] + '</span>');
+            }
+            if (entries[i].inflections[x]["gend"]) {
+                myWindow.document.write('<span class="morphlib-gend">' + entries[i].inflections[x]["gend"]["$"] + '</span>');
+            }
+            myWindow.document.write('</div></div>');
+        }
+        myWindow.document.write('</div>');
+    }
+    myWindow.document.write('<div>' + morpgresponse.credits + '</div>');
+    myWindow.document.write("</div>");
+    myWindow.focus();
+    myWindow.document.write('<div id="morphlibwindowdictlookup" style="visibility: hidden"><img src="http://www.cuisson.co.uk/templates/cuisson/supersize/slideshow/img/progress.BAK-FOURTH.gif"></div>');
+    bigdictlookup(instance, myWindow, morpgresponse.lang, morpgresponse.originalform, entries[0].lemma);
+    //myWindow.document.write("<div id='morphlibwindowdictlookup' style='visibility: hidden; position: relative'>" + bigdictlookup(instance, morpgresponse.lang, morpgresponse.originalform, entries[0].lemma) + "</div>")
+    instance.popup = myWindow;
 }
 
 /**
@@ -624,6 +666,7 @@ function morphservice(tokenobj, typeservice, serviceuri, apiformat, version, mor
 }
 
 function wwparser(result, instance, tokenobj) {
+    instance.morphService = "whitakerswords";
     if (instance.currentlang == "lat") {
         if (instance.prefs.getdebugstatus()) {
             console.log("Whitakers Words parser for latin started");
@@ -642,40 +685,42 @@ function wwparser(result, instance, tokenobj) {
         }
         if (Object.prototype.toString.call(analysis) === '[object Array]') {
             for (var i = 0; i < analysis.length; i++) {
+                var lemma = "";
+                var pofs = "";
+                var shortdef = "";
+                var infls = [];
                 if (instance.prefs.getdebugstatus()) {
                     console.log("Looping through different analyses from morph service");
                 }
                 if (analysis[i]["rest"]["entry"]["dict"]) {
                     if (analysis[i]["rest"]["entry"]["dict"]["hdwd"]) {
-                        var lemma = analysis[i]["rest"]["entry"]["dict"]["hdwd"]["$"];
+                        lemma = analysis[i]["rest"]["entry"]["dict"]["hdwd"]["$"];
+                        if (instance.prefs.getdebugstatus()) {
+                            console.log("Lemma found");
+                        }
                     }
-                }
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("Lemma found");
                 }
                 if (analysis[i]["rest"]["entry"]["dict"]) {
                     if (analysis[i]["rest"]["entry"]["dict"]["pofs"]) {
-                        var pofs = analysis[i]["rest"]["entry"]["dict"]["pofs"]["$"];
+                        pofs = analysis[i]["rest"]["entry"]["dict"]["pofs"]["$"];
+                        if (instance.prefs.getdebugstatus()) {
+                            console.log("part of speech found");
+                        }
                     }
-                }
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("part of speech found");
                 }
 
                 var shortdefh = analysis[i]["rest"]["entry"]["mean"];
-                var shortdef = "";
                 if (Object.prototype.toString.call(shortdefh) === '[object Array]') {
                     for (var l = 0; l < shortdefh.length; l++) {
-                        shortdef = shortdef + shortdefh[l] + "&#13;&#10;";
+                        shortdef = shortdef + shortdefh[l]["$"] + "&#13;&#10;";
                     }
                 } else {
-                    shortdef = shortdefh;
+                    shortdef = shortdefh["$"];
                 }
                 if (instance.prefs.getdebugstatus()) {
                     console.log("short definition found");
                 }
 
-                var infls = [];
                 if (instance.prefs.getdebugstatus()) {
                     console.log("starting loop to capture inflections");
                 }
@@ -697,23 +742,27 @@ function wwparser(result, instance, tokenobj) {
                 }
             }
         } else {
-            if (analysis["rest"]["entry"]["mean"] == "Assume\nthis\nis\ncapitalized\nproper\nname/abbr") {
+            if (analysis["rest"]["entry"]["mean"]["$"] == "Assume\nthis\nis\ncapitalized\nproper\nname/abbr") {
                 if (instance.prefs.getdebugstatus()) {
                     console.log("Proper noun");
                 }
-                shortdef = analysis["rest"]["entry"]["mean"];
+                shortdef = analysis["rest"]["entry"]["mean"]["$"];
                 var infls = [];
                 infls.push(analysis["rest"]["entry"]["infl"]);
-                lemma = "";
-                pofs = "";
+                var lemma = "";
+                var pofs = "";
                 analysisobjects.push(new analysisresponse(lemma, pofs, shortdef, infls, true));
                 if (instance.prefs.getdebugstatus()) {
                     console.log("analysis added");
                 }
             } else {
+                var lemma = "";
+                var pofs = "";
+                var shortdef = "";
+                var infls = [];
                 if (analysis["rest"]["entry"]["dict"]) {
                     if (analysis["rest"]["entry"]["dict"]["hdwd"]) {
-                        var lemma = analysis["rest"]["entry"]["dict"]["hdwd"]["$"];
+                        lemma = analysis["rest"]["entry"]["dict"]["hdwd"]["$"];
                     }
                 }
                 if (instance.prefs.getdebugstatus()) {
@@ -721,7 +770,7 @@ function wwparser(result, instance, tokenobj) {
                 }
                 if (analysis["rest"]["entry"]["dict"]) {
                     if (analysis["rest"]["entry"]["dict"]["pofs"]) {
-                        var pofs = analysis["rest"]["entry"]["dict"]["pofs"]["$"];
+                        pofs = analysis["rest"]["entry"]["dict"]["pofs"]["$"];
                     }
                 }
                 if (instance.prefs.getdebugstatus()) {
@@ -729,19 +778,17 @@ function wwparser(result, instance, tokenobj) {
                 }
                 if (analysis["rest"]["entry"]["mean"]) {
                     var shortdefh = analysis["rest"]["entry"]["mean"];
-                    var shortdef = "";
                     if (Object.prototype.toString.call(shortdefh) === '[object Array]') {
                         for (var l = 0; l < shortdefh.length; l++) {
-                            shortdef = shortdef + shortdefh[l] + "&#13;&#10;";
+                            shortdef = shortdef + shortdefh[l]["$"] + "&#13;&#10;";
                         }
                     } else {
-                        shortdef = shortdefh;
+                        shortdef = shortdefh["$"];
                     }
                 }
                 if (instance.prefs.getdebugstatus()) {
                     console.log("short definition found");
                 }
-                var infls = [];
                 if (instance.prefs.getdebugstatus()) {
                     console.log("starting loop to capture inflections");
                 }
@@ -764,397 +811,127 @@ function wwparser(result, instance, tokenobj) {
             }
         }
     }
-    var response = new morphresponse(tokenobj, analysisobjects, false, "Short definitions and morphology from Words by William Whitaker, Copyright © 1993-2016. Services provided by The Perseids Project at Tufts University and Alpheios.net.");
+    var response = new morphresponse(tokenobj, analysisobjects, false, "Short definitions and morphology from Words by William Whitaker, Copyright © 1993-2016. Services provided by The Perseids Project at Tufts University and Alpheios.net.", instance.currentlang);
     launchPopup(response, instance);
     return response;
 }
 
 function alpheiosparser(result, instance, tokenobj) {
-    var credits;
-    if (instance.currentlang == "lat") {
+    instance.morphService = "alpheios";
+    if (instance.prefs.getdebugstatus()) {
+        console.log("Alpeios parser for " + instance.currentlang + " started");
+    }
+    var analysisobjects = [];
+    var body = result["RDF"]["Annotation"]["Body"];
+    var credits = void 0;
+    if (analysis) {
         if (instance.prefs.getdebugstatus()) {
-            console.log("Alpeios parser for latin started");
+            console.log("body element found in Json morphology json response");
         }
-        var analysisobjects = [];
-        var analysis = result["RDF"]["Annotation"]["Body"];
-        if (analysis) {
-            if (instance.prefs.getdebugstatus()) {
-                console.log("body element found in Json morphology json response");
-            }
-        } else {
-            analysis = result["RDF"]["Annotation"];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("No body element found");
-            }
+    } else {
+        analysis = result["RDF"]["Annotation"];
+        if (instance.prefs.getdebugstatus()) {
+            console.log("No body element found");
         }
-        if (Object.prototype.toString.call(analysis) === '[object Array]') {
-            for (var i = 0; i < analysis.length; i++) {
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("Looping through different analyses from morph service");
-                }
-                var lemma = analysis[i]["rest"]["entry"]["dict"]["hdwd"]["$"];
+    }
+    var analysis = void 0;
+    if (Object.prototype.toString.call(body) !== '[object Array]') {
+        analysis = [body];
+    } else {
+        analysis = body;
+    }
+    for (var i = 0; i < analysis.length; i++) {
+        var lemma = "";
+        var pofs = "";
+        var shortdef = "";
+        var infls = [];
+        if (instance.prefs.getdebugstatus()) {
+            console.log("Looping through different analyses from morph service");
+        }
+
+        if (analysis[i]["rest"]["entry"]["dict"]) {
+            if (analysis[i]["rest"]["entry"]["dict"]["hdwd"]) {
+                lemma = analysis[i]["rest"]["entry"]["dict"]["hdwd"]["$"];
                 if (instance.prefs.getdebugstatus()) {
                     console.log("Lemma found");
                 }
-                var pofs = analysis[i]["rest"]["entry"]["dict"]["pofs"]["$"];
+            }
+            if (analysis[i]["rest"]["entry"]["dict"]["pofs"]) {
+                pofs = analysis[i]["rest"]["entry"]["dict"]["pofs"]["$"];
                 if (instance.prefs.getdebugstatus()) {
                     console.log("part of speech found");
                 }
+            }
+        }
+        switch (instance.currentlang) {
+            case 'lat':
                 if (instance.shortdeflatin) {
-                    var shortdef = instance.shortdeflatin[lemma];
+                    shortdef = instance.shortdeflatin[lemma];
                     if (instance.prefs.getdebugstatus()) {
                         console.log("short definition found in file");
                     }
                 } else {
-                    var shortdef = "Short Definition file Missing";
+                    shortdef = "Short Definition file Missing";
                     if (instance.prefs.getdebugstatus()) {
                         console.log("attempting to find shortdef through WW service");
                     }
                     async("http://services.perseids.org/bsp/morphologyservice/analysis/word?lang=lat&engine=whitakerLat&word=" + lemma, "GET", "json", function (result) {
-                        shortdef = result["RDF"]["Annotation"]["Body"]["rest"]["entry"]["mean"];
+                        shortdef = result["RDF"]["Annotation"]["Body"]["rest"]["entry"]["mean"]["$"];
                     });
                     console.log("short definition uri found");
                 }
-
-                var infls = [];
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("starting loop to capture inflections");
-                }
-                var inflections = analysis[i]["rest"]["entry"]["infl"];
-                if (Object.prototype.toString.call(inflections) === '[object Array]') {
-                    for (var infl in analysis[i]["rest"]["entry"]["infl"]) {
-                        infls.push(analysis[i]["rest"]["entry"]["infl"][infl]);
+                credits = "";
+                break;
+            case 'grc':
+                if (instance.shortdefgreek) {
+                    shortdef = instance.shortdefgreek[lemma];
+                    if (instance.prefs.getdebugstatus()) {
+                        console.log("short definition uri found");
                     }
-                } else {
-                    infls.push(analysis[i]["rest"]["entry"]["infl"]);
                 }
-
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("inflections captured");
+                credits = "Morphology provided by Morpheus from the Perseus Digital Library at Tufts University. Short Definitions from A Greek-English Lexicon (Henry George Liddell, Robert Scott). Services provided by The Perseids Project at Tufts University.";
+                break;
+            case 'per':
+                if (instance.shortdefpersian) {
+                    shortdef = instance.shortdefpersian[lemma];
                 }
-                analysisobjects.push(new analysisresponse(lemma, pofs, shortdef, infls, true));
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("analysis added");
-                }
-            }
-        } else {
-            var lemma = analysis["rest"]["entry"]["dict"]["hdwd"]["$"];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("Lemma found");
-            }
-            var pofs = analysis["rest"]["entry"]["dict"]["pofs"]["$"];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("part of speech found");
-            }
-            if (instance.shortdeflatin) {
-                var shortdef = instance.shortdeflatin[lemma];
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("short definition uri found");
-                }
-            } else {
-                var shortdef = "Short Definition file Missing";
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("attempting to find shortdef through WW service");
-                }
-                async("http://services.perseids.org/bsp/morphologyservice/analysis/word?lang=lat&engine=whitakerLat&word=" + lemma, "GET", "json", function (result) {
-                    shortdef = result["RDF"]["Annotation"]["Body"]["rest"]["entry"]["mean"];
-                });
-                console.log("short definition uri found");
-            }
-            var infls = [];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("starting loop to capture inflections");
-            }
-            var inflections = analysis["rest"]["entry"]["infl"];
-            if (Object.prototype.toString.call(inflections) === '[object Array]') {
-                for (var infl in analysis["rest"]["entry"]["infl"]) {
-                    infls.push(analysis["rest"]["entry"]["infl"][infl]);
-                }
-            } else {
-                infls.push(analysis["rest"]["entry"]["infl"]);
-            }
-
-            if (instance.prefs.getdebugstatus()) {
-                console.log("inflections captured");
-            }
-            analysisobjects.push(new analysisresponse(lemma, pofs, shortdef, infls, true));
-            if (instance.prefs.getdebugstatus()) {
-                console.log("analysis added");
-            }
-        }
-        credits = "";
-    }
-    if (instance.currentlang == "grc") {
-        if (instance.prefs.getdebugstatus()) {
-            console.log("Alpeios parser for greek started");
-        }
-        var analysisobjects = [];
-        var analysis = result["RDF"]["Annotation"]["Body"];
-        if (analysis) {
-            if (instance.prefs.getdebugstatus()) {
-                console.log("body element found in Json morphology json response");
-            }
-        } else {
-            analysis = result["RDF"]["Annotation"];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("No body element found");
-            }
-        }
-        if (Object.prototype.toString.call(analysis) === '[object Array]') {
-            for (var i = 0; i < analysis.length; i++) {
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("Looping through different analyses from morph service");
-                }
-                var lemma = analysis[i]["rest"]["entry"]["dict"]["hdwd"]["$"];
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("Lemma found");
-                }
-                var pofs = analysis[i]["rest"]["entry"]["dict"]["pofs"]["$"];
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("part of speech found");
-                }
-                var shortdef = instance.shortdefgreek[lemma];
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("short definition uri found");
-                }
-                var infls = [];
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("starting loop to capture inflections");
-                }
-                var inflections = analysis[i]["rest"]["entry"]["infl"];
-                if (Object.prototype.toString.call(inflections) === '[object Array]') {
-                    for (var infl in analysis[i]["rest"]["entry"]["infl"]) {
-                        infls.push(analysis[i]["rest"]["entry"]["infl"][infl]);
-                    }
-                } else {
-                    infls.push(analysis[i]["rest"]["entry"]["infl"]);
-                }
-
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("inflections captured");
-                }
-                analysisobjects.push(new analysisresponse(lemma, pofs, shortdef, infls, true));
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("analysis added");
-                }
-            }
-        } else {
-            var lemma = analysis["rest"]["entry"]["dict"]["hdwd"]["$"];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("Lemma found");
-            }
-            var pofs = analysis["rest"]["entry"]["dict"]["pofs"]["$"];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("part of speech found");
-            }
-            var shortdef = instance.shortdefgreek[lemma];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("short definition uri found");
-            }
-            var infls = [];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("starting loop to capture inflections");
-            }
-            var inflections = analysis["rest"]["entry"]["infl"];
-            if (Object.prototype.toString.call(inflections) === '[object Array]') {
-                for (var infl in analysis["rest"]["entry"]["infl"]) {
-                    infls.push(analysis["rest"]["entry"]["infl"][infl]);
-                }
-            } else {
-                infls.push(analysis["rest"]["entry"]["infl"]);
-            }
-
-            if (instance.prefs.getdebugstatus()) {
-                console.log("inflections captured");
-            }
-            analysisobjects.push(new analysisresponse(lemma, pofs, shortdef, infls, true));
-            if (instance.prefs.getdebugstatus()) {
-                console.log("analysis added");
-            }
-        }
-        credits = "Morphology provided by Morpheus from the Perseus Digital Library at Tufts University. Short Definitions from A Greek-English Lexicon (Henry George Liddell, Robert Scott). Services provided by The Perseids Project at Tufts University.";
-    }
-    if (instance.currentlang == "per") {
-        if (instance.prefs.getdebugstatus()) {
-            console.log("Alpeios parser for persian started");
-        }
-        var analysisobjects = [];
-        var analysis = result["RDF"]["Annotation"]["Body"];
-        if (analysis) {
-            if (instance.prefs.getdebugstatus()) {
-                console.log("body element found in Json morphology json response");
-            }
-        } else {
-            analysis = result["RDF"]["Annotation"];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("No body element found");
-            }
-        }
-        if (Object.prototype.toString.call(analysis) === '[object Array]') {
-            for (var i = 0; i < analysis.length; i++) {
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("Looping through different analyses from morph service");
-                }
-                var lemma = analysis[i]["rest"]["entry"]["dict"]["hdwd"]["$"];
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("Lemma found");
-                }
-                var pofs = analysis[i]["rest"]["entry"]["dict"]["pofs"]["$"];
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("part of speech found");
-                }
-                var shortdef = instance.shortdefpersian[lemma];
                 if (instance.prefs.getdebugstatus()) {
                     console.log("short definition found");
                 }
-                var infls = [];
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("starting loop to capture inflections");
-                }
-                var inflections = analysis[i]["rest"]["entry"]["infl"];
-                if (Object.prototype.toString.call(inflections) === '[object Array]') {
-                    for (var infl in analysis[i]["rest"]["entry"]["infl"]) {
-                        infls.push(analysis[i]["rest"]["entry"]["infl"][infl]);
-                    }
-                } else {
-                    infls.push(analysis[i]["rest"]["entry"]["infl"]);
-                }
-
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("inflections captured");
-                }
-                analysisobjects.push(new analysisresponse(lemma, pofs, shortdef, infls, true));
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("analysis added");
-                }
-            }
-        } else {
-            var lemma = analysis["rest"]["entry"]["dict"]["hdwd"]["$"];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("Lemma found");
-            }
-            var pofs = analysis["rest"]["entry"]["dict"]["pofs"]["$"];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("part of speech found");
-            }
-            var shortdef = instance.shortdefpersian[lemma];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("short definition found");
-            }
-            var infls = [];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("starting loop to capture inflections");
-            }
-            var inflections = analysis["rest"]["entry"]["infl"];
-            if (Object.prototype.toString.call(inflections) === '[object Array]') {
-                for (var infl in analysis["rest"]["entry"]["infl"]) {
-                    infls.push(analysis["rest"]["entry"]["infl"][infl]);
-                }
-            } else {
-                infls.push(analysis["rest"]["entry"]["infl"]);
-            }
-
-            if (instance.prefs.getdebugstatus()) {
-                console.log("inflections captured");
-            }
-            analysisobjects.push(new analysisresponse(lemma, pofs, shortdef, infls, true));
-            if (instance.prefs.getdebugstatus()) {
-                console.log("analysis added");
-            }
-        }
-        credits = "Morphology from the HAZM Analyzer adapted by the Roshan Institute for Persian Studies at UMD and the Perseids Project at Tufts University. Short definitions from A Comprehensive Persian-English Dictionary (Joseph Steingass).";
-    }
-    if (instance.currentlang == "ara") {
-        if (instance.prefs.getdebugstatus()) {
-            console.log("Alpeios parser for arabic started");
-        }
-        var analysisobjects = [];
-        var analysis = result["RDF"]["Annotation"]["Body"];
-        if (analysis) {
-            if (instance.prefs.getdebugstatus()) {
-                console.log("body element found in Json morphology json response");
-            }
-        } else {
-            analysis = result["RDF"]["Annotation"];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("No body element found");
-            }
-        }
-        if (Object.prototype.toString.call(analysis) === '[object Array]') {
-            for (var i = 0; i < analysis.length; i++) {
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("Looping through different analyses from morph service");
-                }
-                var lemma = analysis[i]["rest"]["entry"]["dict"]["hdwd"]["$"];
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("Lemma found");
-                }
-                var pofs = analysis[i]["rest"]["entry"]["dict"]["pofs"]["$"];
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("part of speech found");
-                }
-                var shortdef = analysis[i]["rest"]["entry"]["mean"];
+                credits = "Morphology from the HAZM Analyzer adapted by the Roshan Institute for Persian Studies at UMD and the Perseids Project at Tufts University. Short definitions from A Comprehensive Persian-English Dictionary (Joseph Steingass).";
+                break;
+            case 'ara':
+                shortdef = analysis[i]["rest"]["entry"]["mean"]["$"];
                 if (instance.prefs.getdebugstatus()) {
                     console.log("short definition id found");
                 }
-                var infls = [];
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("starting loop to capture inflections");
-                }
-                var inflections = analysis[i]["rest"]["entry"]["infl"];
-                if (Object.prototype.toString.call(inflections) === '[object Array]') {
-                    for (var infl in analysis[i]["rest"]["entry"]["infl"]) {
-                        infls.push(analysis[i]["rest"]["entry"]["infl"][infl]);
-                    }
-                } else {
-                    infls.push(analysis[i]["rest"]["entry"]["infl"]);
-                }
+                credits = "Morphology provided by Buckwalter Arabic Morphological Analyzer Version 2.0 from QUAMUS LLC (www.quamus.org). Short definitions from An Advanced Learner's Arabic Dictionary (H. Anthony Salmone). Services provided by The Perseids Project at Tufts University and Alpheios.net.";
+                break;
+            default:
+                break;
+        }
 
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("inflections captured");
-                }
-                analysisobjects.push(new analysisresponse(lemma, pofs, shortdef, infls, true));
-                if (instance.prefs.getdebugstatus()) {
-                    console.log("analysis added");
-                }
+        if (instance.prefs.getdebugstatus()) {
+            console.log("starting loop to capture inflections");
+        }
+        var inflections = analysis[i]["rest"]["entry"]["infl"];
+        if (Object.prototype.toString.call(inflections) === '[object Array]') {
+            for (var infl in analysis[i]["rest"]["entry"]["infl"]) {
+                infls.push(analysis[i]["rest"]["entry"]["infl"][infl]);
             }
         } else {
-            var lemma = analysis["rest"]["entry"]["dict"]["hdwd"]["$"];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("Lemma found");
-            }
-            var pofs = analysis["rest"]["entry"]["dict"]["pofs"]["$"];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("part of speech found");
-            }
-            var shortdef = analysis["rest"]["entry"]["mean"];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("short definition id found");
-            }
-            var infls = [];
-            if (instance.prefs.getdebugstatus()) {
-                console.log("starting loop to capture inflections");
-            }
-            var inflections = analysis["rest"]["entry"]["infl"];
-            if (Object.prototype.toString.call(inflections) === '[object Array]') {
-                for (var infl in analysis["rest"]["entry"]["infl"]) {
-                    infls.push(analysis["rest"]["entry"]["infl"][infl]);
-                }
-            } else {
-                infls.push(analysis["rest"]["entry"]["infl"]);
-            }
-
-            if (instance.prefs.getdebugstatus()) {
-                console.log("inflections captured");
-            }
-            analysisobjects.push(new analysisresponse(lemma, pofs, shortdef, infls, true));
-            if (instance.prefs.getdebugstatus()) {
-                console.log("analysis added");
-            }
+            infls.push(analysis[i]["rest"]["entry"]["infl"]);
         }
-        credits = "Morphology provided by Buckwalter Arabic Morphological Analyzer Version 2.0 from QUAMUS LLC (www.quamus.org). Short definitions from An Advanced Learner's Arabic Dictionary (H. Anthony Salmone). Services provided by The Perseids Project at Tufts University and Alpheios.net.";
+
+        if (instance.prefs.getdebugstatus()) {
+            console.log("inflections captured");
+        }
+        analysisobjects.push(new analysisresponse(lemma, pofs, shortdef, infls, true));
+        if (instance.prefs.getdebugstatus()) {
+            console.log("analysis added");
+        }
     }
-    var response = new morphresponse(tokenobj, analysisobjects, false, credits);
+    var response = new morphresponse(tokenobj, analysisobjects, false, credits, instance.currentlang);
     launchPopup(response, instance);
     return response;
 }
@@ -1166,19 +943,19 @@ function alpheiosparser(result, instance, tokenobj) {
 /**
  * Main controller function for the Alpheios morphology library
  * @type {{
- *      m_defaultLang: string,
- *      m_response: string,
- *      m_morphService: string,
- *      m_shortDefService: string,
- *      m_disambugationProvider: string,
- *      m_copyrightInfo: string,
- *      m_debugging: boolean,
- *      m_ignoreElements: list,
- *      m_focusElements: list
+ *      defaultLang: string,
+ *      response: string,
+ *      morphService: string,
+ *      shortDefService: string,
+ *      disambugationProvider: string,
+ *      copyrightInfo: string,
+ *      debugging: boolean,
+ *      ignoreElements: list,
+ *      focusElements: list
  *    }}
  */
 var morphlib = function () {
-    function morphlib(documentobj, shortdeflat, shortdefgrc) {
+    function morphlib(shortdefgrc) {
         classCallCheck(this, morphlib);
 
         var xx = this;
@@ -1188,7 +965,7 @@ var morphlib = function () {
         this.currentlang = "";
         //Holds the morphlib.response object
         this.response = "";
-        //holds the location of the morphology provider
+        //holds the name of the current morphology provider
         this.morphService = "";
         //holds the locations of the short definition provider
         this.shortDefService = "";
@@ -1204,8 +981,6 @@ var morphlib = function () {
         this.focusElements = false;
         //setup preferences from saved preference file
         this.prefs = new preferences("preferences.json");
-        //document object
-        this.doc = documentobj;
         //previous morphology results
         this.morphresults = [];
         //short definitions for greek
@@ -1225,18 +1000,21 @@ var morphlib = function () {
     }
     /*
      activate the library to run on a browser window
+     * @param {String} deflang - the default language
+     * @param {Obj} selector - array of elements to attach event listeners to
+     * @param {String[]} events = list of events to listen to
      */
 
 
     createClass(morphlib, [{
         key: "activate",
-        value: function activate(deflang, events) {
+        value: function activate(deflang, selector, events) {
             var instance = this;
+            this.defaultlang = deflang;
             if (this.prefs.getdebugstatus()) {
                 console.log("activate morphology library started");
             }
-            this.defaultlang = deflang;
-            this.currentlang = deflang;
+            this.selector = selector || $('body');
             if (this.prefs.getdebugstatus()) {
                 console.log("Adding default listener");
             }
@@ -1248,7 +1026,7 @@ var morphlib = function () {
                     if (this.prefs.getdebugstatus()) {
                         console.log("Adding " + x + "event");
                     }
-                    $('body').bind(x, function (event) {
+                    $(this.selector).bind(x, function (event) {
                         eventhandler(event, this, x);
                     });
                     if (this.prefs.getdebugstatus()) {
@@ -1261,12 +1039,13 @@ var morphlib = function () {
                     var bodydebug = $('body');
                     console.log(bodydebug);
                 }
-                $('body').on('dblclick', function (event) {
+                $(this.selector).on('dblclick', function (event) {
                     var tokenobject = eventhandler(event, instance, "click");
                     var morphresponse = morphservice(tokenobject, instance.prefs.getmorphservicetype(instance.currentlang), instance.prefs.getmorphserviceuri(instance.currentlang), instance.prefs.getmorphserviceapiformat(instance.currentlang), instance.prefs.getmorphserviceversion(instance.currentlang), instance);
                 });
-                $('body').on('touch', '*', function (event) {
-                    eventhandler(event, instance, "touch");
+                $(this.selector).on('touch', function (event) {
+                    var tokenobject = eventhandler(event, instance, "touch");
+                    this.response = morphservice(tokenobject, instance.prefs.getmorphservicetype(instance.currentlang), instance.prefs.getmorphserviceuri(instance.currentlang), instance.prefs.getmorphserviceapiformat(instance.currentlang), instance.prefs.getmorphserviceversion(instance.currentlang), instance);
                 });
                 if (this.prefs.getdebugstatus()) {
                     console.log("Default events added");
@@ -1283,7 +1062,7 @@ var morphlib = function () {
             if (this.prefs.getdebugstatus()) {
                 console.log("Deactivating Morphology library");
             }
-            $('body').unbind;
+            $(this.selector).unbind();
             alert("Morphology Library Deactivated");
             if (this.prefs.getdebugstatus()) {
                 console.log("Morphology library deactivated");
@@ -1307,7 +1086,7 @@ var morphlib = function () {
                     if (uilang.toUpperCase() === "ARABIC") {
                         this.defaultlang = "ara";
                     } else {
-                        if (uilang.toUpperCase() === "Persian") {
+                        if (uilang.toUpperCase() === "PERSIAN") {
                             this.defaultlang = "per";
                         } else {
                             window.alert("Language not installed please check spelling");

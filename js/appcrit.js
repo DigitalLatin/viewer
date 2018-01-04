@@ -467,13 +467,13 @@ var appcrit = (function () {
   		key: "doSection",
   		value: function doSection(section) {
   			var self = this;
-  			$("tei-text button").remove();
-  			$("div.apparatus").remove();
+  			//$("tei-text button").remove();
+  			//$("div.apparatus").remove();
   			var sectionId = section.attr("id");
   			// Add Apparatus div
   			if (section.find("tei-app").length > 0) {
   				(function () {
-  					var appDiv = $("<div id=\"apparatus-" + sectionId + "\" class=\"apparatus\"><h2>Apparatus</h2></div>");
+  					var appDiv = $("<div id=\"apparatus-" + sectionId + "\" class=\"apparatus\"></div>");
   					section.after(appDiv);
   					// Pull content into @copyOf elements
   					section.find("*[copyof]").each(function (i, elt) {
@@ -586,29 +586,7 @@ var appcrit = (function () {
   								}
   								appBtnContainer = $(elt).parents(self.variantBlocks).first().append(self.appButton(elt));
   							}
-  							// position button
-  							// use an index variable; set an absolute position based on the vertical
-  							// position of the related element and the right edge of the text; check
-  							// the previous sibling's x position and if it is the same, increment the
-  							// index, else reset index to zero and set the y position equal to the
-  							// right edge, plus padding, plus the index times a constant (width of control + padding).
-  							/*
-         let button = appBtnContainer.children("button").last();
-         let btnIndex = 0;
-         let btnWidth = 30;
-         // we've already got the referenced app in the elt var.
-         let appPos = $(elt).offset();
-         button.css("top", appPos.top + "px");
-         let prevBtn = button.prev("button");
-         if (prevBtn.length) {
-         	if (prevBtn.css("top") == button.css("top")) {
-         		btnIndex++;
-         	}
-         	button.css("left", (700 + (btnIndex * btnWidth)) + "px");
-         } else {
-         	button.css("left", "700px");
-         }
-         */
+
   							// tei-wit should have been put into the sigla, so remove it
   							app.find("tei-wit").remove();
   							app.find("tei-rdg:empty").each(function (i, elt) {
@@ -646,7 +624,6 @@ var appcrit = (function () {
   					// Add apparatus links
   					section.find("button.app").each(function (i, elt) {
   						self.addToolTip(elt);
-  						$(elt).css({});
   					});
 
   					// Link up sigla in the apparatus to bibliography
@@ -754,25 +731,30 @@ var appcrit = (function () {
   			parts.each(function (i, elt) {
   				ul.append("<li><a href=\"#" + $(elt).attr("id") + "\">" + $(elt).find("tei-head").html() + "</a></li>");
   			});
-  			ul.append("<li><a href=\"#apparatus\">Apparatus</a></li>");
 
   			nav.find("a").click(function (e) {
   				$("a.selected").toggleClass("selected");
   				$(this).toggleClass("selected");
-  				if ($(this).id != "apparatus") {
+  				var prose = $(self.dom).find("tei-div[type=textpart] tei-p").length > 0;
+  				if (!prose) {
   					self.doSection($($(this).attr("href")));
   				}
   			});
   			$(":checkbox").change(this.toggleApps);
-  			/*
-     $(this.dom).find("tei-div[type=textpart],tei-front").each(function(i, elt){
-     	self.doSection($(elt));
-     });
-     */
-  			if (window.location.hash) {
-  				self.doSection($(this.dom).find(window.location.hash));
+
+  			// TODO: This only works for BAlex and Calpurnius. Need it to be smart
+  			// about choosing how to handle sections.
+  			var chunks = $(this.dom).find("tei-div[type=textpart] tei-p");
+  			if (chunks.length > 0) {
+  				chunks.each(function (i, elt) {
+  					self.doSection($(elt));
+  				});
   			} else {
-  				self.doSection($(this.dom).find("#front"));
+  				if (window.location.hash) {
+  					self.doSection($(this.dom).find(window.location.hash));
+  				} else {
+  					self.doSection($(this.dom).find("#front"));
+  				}
   			}
 
   			// cleanup
