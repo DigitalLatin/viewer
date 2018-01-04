@@ -273,16 +273,16 @@ var preferences = function () {
         key: "getmorphserviceuri",
         value: function getmorphserviceuri(lang) {
             if (lang == "grc") {
-                return "http://morph.perseids.org/analysis/word?lang=grc&engine=morpheusgrc&word=";
+                return "https://morph.perseids.org/analysis/word?lang=grc&engine=morpheusgrc&word=";
             }
             if (lang == "lat") {
-                return "http://morph.perseids.org/analysis/word?lang=lat&engine=whitakerLat&word=";
+                return "https://morph.perseids.org/analysis/word?lang=lat&engine=whitakerLat&word=";
             }
             if (lang == "ara") {
                 return "http://morph.alpheios.net/api/v1/analysis/word?lang=ara&engine=aramorph&word=";
             }
             if (lang == "per") {
-                return ["http://morph.perseids.org/analysis/word?word=", "&lang=per&engine=hazm"];
+                return ["https://morph.perseids.org/analysis/word?word=", "&lang=per&engine=hazm"];
             }
         }
     }, {
