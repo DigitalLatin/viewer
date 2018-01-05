@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="https://digitallatin.github.io/guidelines/critical-editions.rng"
+            type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="https://digitallatin.github.io/guidelines/critical-editions.rng"
+            type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+  <teiHeader>
+    <fileDesc>
+      <titleStmt>
+        <title>SERVIANI IN VERGILII AENEIDOS LIBRVM NONVM COMMENTARII</title>
+      </titleStmt>
+      <publicationStmt>
+        <publisher>Digital Latin Library</publisher>
+        <date>2017</date>
+      </publicationStmt>
+      <sourceDesc>
+        <bibl/>
+      </sourceDesc>
+    </fileDesc>
+  </teiHeader>
+  <text>
+    <front>
+      <div type="introduction">
+        <listWit>
+          <witness xml:id="DS">Servius Auctus (<abbr type="siglum">DS</abbr>) <listWit>
+              <witness xml:id="F"><abbr type="siglum">F</abbr> = Bern. Burgerbibl. 172 (A. 1-5) + Paris. lat. 7929
+                (A. 6-12), s. IX</witness>
+              <witness xml:id="G"><abbr type="siglum">G</abbr> = Bern. Burgerbibl. 167, s. IX<hi
+                  rend="superscript">2</hi>2</witness>
+              <witness xml:id="T"><abbr type="siglum">T</abbr> = Bern. Burgerbibl. 165, s. IX<hi
+                  rend="superscript">1</hi>
+              </witness>
+              <witness xml:id="v"><abbr type="siglum">v</abbr> = Vat. BAV lat. 1570, s. X<hi rend="superscript"
+                  >1</hi></witness>
+              <witness xml:id="M3"><abbr type="siglum">M<hi rend="superscript">3</hi></abbr> = corrector cod. <ref
+                  target="#M">M</ref></witness>
+            </listWit>
+          </witness>
+          <witness xml:id="Σ">Servius (<abbr type="siglum">Σ</abbr>) = ΔΓ <listWit>
+            <witness xml:id="Δ"><abbr type="siglum">Δ</abbr><listWit>
+              <witness xml:id="J"><abbr type="siglum">J</abbr> = Metens. Bibl. mun. 292, s. IX </witness>
+             <witness xml:id="L"><abbr type="siglum">L</abbr> = Leid. Bibl. der Rijksuniv. B.P.L. 52, s. VIII / IX</witness>
+            </listWit></witness>
+            <witness xml:id="Γ"><abbr type="siglum">Γ</abbr><listWit>
+              <witness xml:id="θ"><abbr type="siglum">θ</abbr><listWit>
+                <witness xml:id="A"><abbr type="siglum">A</abbr> = Caroliruh. Bad. Landesbibl. Aug. CXVI, s. IX2 (Reichenau); de codice A derivati:
+                  <listWit>
+                    <witness xml:id="S"><abbr type="siglum">S</abbr> = Sangall. Stiftsbibl. 861 + 862, s. IX / X</witness>
+                    <witness xml:id="Guelf"><abbr type="siglum">Guelf.</abbr> = Guelf. HAB 2546 (44.23 Aug. fol.), s. XV</witness>
+                  </listWit>
+                </witness>
+                <witness xml:id="O"><abbr type="siglum">O</abbr> = Oxon. Bodl. Laud lat. 117, s. XI<hi rend="superscript">2</hi></witness>
+              </listWit></witness>
+              <witness xml:id="τ"><abbr type="siglum">τ</abbr>
+                <listWit>
+                  <witness xml:id="Pa"><abbr type="siglum">Pa</abbr> = Paris. BnF lat. 7959, s. IX (Tours)</witness>
+                  <witness xml:id="Pc"><abbr type="siglum">Pc</abbr> = Paris. BnF lat. 7961, s. X / XI</witness>
+                  <witness xml:id="Q"><abbr type="siglum">Q</abbr>	Flor. BML Plut. 45.14, s. IX</witness>
+                  <witness xml:id="Lb"><abbr type="siglum">Lb</abbr> = corrector cod. <ref target="#L">L</ref> (sup.)</witness>
+                </listWit>
+              </witness>
+              <witness xml:id="γ"><abbr type="siglum">γ</abbr> <listWit>
+                <witness xml:id="E"><abbr type="siglum">E</abbr> = Escorial. Bibl. S. Lorenzo T.II.17, s. IX2 (Ital. septentrion.) </witness>
+                <witness xml:id="Pb"><abbr type="siglum">Pb</abbr>	Paris. BnF lat. 16236, s. X / XI</witness>
+                <witness xml:id="Y"><abbr type="siglum">Y</abbr> = Trident. Bib. com. 3388 (olim Vind. 72), s.
+                  IX<hi rend="superscript">2</hi></witness>
+                <witness xml:id="M"><abbr type="siglum">M</abbr> = Monac. Bay. Staatsbibl. Clm 6394, s. XI
+                </witness>
+              </listWit></witness>
+              <witness xml:id="σ"><abbr type="siglum">σ</abbr> <listWit>
+                <witness xml:id="W"><abbr type="siglum">W</abbr> = Guelf. HAB 2091, s. XIII<hi rend="superscript">ex.</hi></witness>
+                <witness xml:id="N"><abbr type="siglum">N</abbr> = Neap. Bibl. naz. lat. 5 (olim Vind. 27), s.
+                  X<hi rend="superscript">1</hi></witness>
+                <witness xml:id="U"><abbr type="siglum">U</abbr> = Berolin. Staatsbibl. lat. quart. 219, s. XII</witness>
+              </listWit></witness>
+              <witness xml:id="o"><abbr type="siglum">º</abbr> classis codicum de Γ defluentium quibus lectiones faciliores in contextum contaminatione inferre valde placuit (= PaPcγσ in A. 9.1-10.190, 10.397-12.162; PaPcγU in A. 12.162-320; PaPcγ in A. 12.320-522); cf. praef. n. 30.</witness>
+            </listWit></witness>
+          </listWit></witness>
+        </listWit>
+        <listBibl>
+          <bibl xml:id="Dan"><abbr type="siglum">Dan.</abbr>: Pub. Virgilii Maronis Bucolicorum Eclogae X., Georgicorum Libri IIII., Aeneidos Libri XII., et in ea Mauri Servii Honorati . . . Commentarii ex antiquissimis exemplaribus longe meliores et auctiores ex bibliotheca Petri Danielis . . . Paris 1600.</bibl>
+        </listBibl>
+      </div>
+    </front>
+    <body>
+      <div type="edition">
+        <head>SERVIANI IN VERGILII AENEIDOS LIBRVM NONVM COMMENTARII</head>
+        <div type="textpart" n="1">
+          <ab n="1"><app><lem wit="#F #Γ"><quote type="lemma">atque ea <app><lem wit="#F #A #Pa
+            #N">diversa</lem><witDetail wit="#A"><hi rend="superscript">2</hi></witDetail><witDetail
+              wit="#Pa"><hi rend="superscript">2</hi></witDetail><note>d. <ref
+                target="#Pc">Pc</ref></note><rdg wit="#Γ"/></app> <app><lem wit="#Pa #γ #N">penitus dum p<supplied reason="omitted"
+                >arte</supplied> g<supplied reason="omitted">eruntur</supplied></lem><rdg wit="#θ
+                  #Pc #Q">Penitus dum <abbr>p<am>.</am></abbr> <abbr>g<am>.</am></abbr></rdg><wit>[Γ]</wit><rdg
+                    wit="#F">et
+                  reliqua</rdg></app></quote> in hoc libro
+            mutatio est rerum omnium: </lem><rdg wit="#W"/></app>nam et personae et loca alia sunt et aliud negotium incipitur;
+            ab Aenea enim <app><lem wit="#F #Pa #Pc #γ #W">transit</lem><rdg wit="#θ #Q
+              #σ">traxit</rdg><wit>[Γ]</wit></app> ad Turnum, a Tuscia ad Ardeam, a petitione auxiliorum ad bellum.
+            quem transitum quidam culpant, nescientes Vergilium prudenter iunxisse superioribus
+            negotiis sequentia per illam particulam, <q rend="italic">atque</q>. </ab>
+          <ab n="2"><quote type="lemma">Ea <app><lem>d<supplied reason="omitted">iversa</supplied>
+            penitus</lem><wit>Verg.</wit><rdg wit="#F #N">penitus</rdg><rdg wit="#θ #Pc">d.
+              p.</rdg><rdg wit="#Q #γ #W">p.</rdg></app> <app><lem wit="#F #N">dum parte
+                geruntur</lem><rdg wit="#θ #Pc #Q #W">d. parte geruntur</rdg><rdg wit="#Pa #γ">δ. π.
+                γ.</rdg><wit>[Γ]</wit></app></quote> scilicet dum offeruntur arma, dum dantur auxilia. <seg source="#DS"
+                  ><q rend="italic">dum</q> enim, cum sit coniunctio, hic tamen <app><lem
+                    wit="#Dan">adverbii vim</lem><rdg wit="#F">aduerbis</rdg></app> obtinet:
+                <bibl>Terentius (Eu. 320)</bibl>
+              <quote>mea nihil refert, dum potiar modo.</quote></seg> sane formatus est iste liber
+            ad <app><lem wit="#Γ">illud</lem><rdg wit="#F">illa</rdg></app> Homeri (Il. 10) ubi
+            dicit per noctem egressos esse <app><lem wit="#F #Pc #Pb #Y">Diomedem</lem><rdg
+              wit="#Γ">diomeden</rdg><note>sed cf. Serv. ad A. 11.243</note><rdg
+                wit="#N">diomede</rdg></app> et <app><lem wit="#Pc">Vlixem</lem><rdg
+                  wit="#Γ">ulixen</rdg><rdg wit="#F">tulixem</rdg></app> cum capto
+            Dolone castra penetrarunt: nam partem maximam et oeconomiae et negotiorum exinde
+            habet.</ab>
+          <ab n="3"><quote type="lemma">diversa penitus</quote> valde diversa, id est longius
+            remota, <seg source="#DS">vel apud Pallanteum vel in Etruria;</seg> unde paulo <app><lem
+              wit="#Γ">post</lem><rdg wit="#F">potest</rdg></app> <ref>(10)</ref>
+            dicit <quote>nec satis, extremas Corythi penetrauit ad urbes Lydorumque
+            manum.</quote></ab>
+        </div>
+        <div type="textpart" n="2">
+          <ab n="1"><quote>Irim</quote> Iris quasi ἔρις dicta est: numquam enim ad conciliationem
+            mittitur, sicut Mercurius, sed ad disturbationem. et est ministra non tantum dearum, sed
+            et deorum: nam praeter Homerum et Vergilius hoc probat, dicens <ref>(803)</ref>
+            <quote>aeriam caelo nam Iuppiter Irim demisit germanae haud mollia iussa
+              ferentem.</quote></ab>
+        </div>
+        <div type="textpart" n="3">
+          <ab n="1"><quote type="lemma">audacem ad turnum</quote> fortem sine felicitate, sicut de
+            Pallante diximus (8.110). <seg source="#DS">et modo audaciae laus oportuna, quia ad
+              audendum exhortandus est.</seg></ab>
+          <ab source="#Σ"><quote type="lemma">parentis pilumni</quote> Pilumnus et Pitumnus fratres
+            fuerunt di. horum Pitumnus usum stercorandorum invenit agrorum—unde et Sterculinius
+            dictus est—Pilumnus vero pinsendi frumenti: unde et a pistoribus colitur. ab ipso et
+            pilum dictum est.</ab>
+          <ab source="#DS"><supplied reason="omitted">quidam Pilumnum et Pitumnum Castorem et
+              Pollucem accipiunt; nonnulli laudum deos; Varro (VPR 2.82a) coniugales deos
+              suspicatur.</supplied></ab>
+        </div>
+        <div type="textpart" n="4">
+          <ab><quote type="lemma">sacrata valle</quote> ideo <quote>sacrata</quote> quia, ut diximus
+            supra <ref>(1.441)</ref>, numquam est lucus sine religione.</ab>
+          <ab><quote type="lemma">sedebat</quote> ut Asper dicit <ref>(fr. 38)</ref> ‘erat’, quae
+            clausula antiqua est et de usu remota. secundum Plautum <seg source="#DS">autem</seg>
+            <quote>sedere</quote> est consilium capere, qui inducit <seg source="#DS">in
+              Mostellaria</seg> servum dicentem <quote>sine iuxta aram sedeam, et dabo meliora
+              consilia</quote>. sed secundum augures sedere est augurium captare; namque post
+              designatas caeli partes a sedentibus captabantur auguria: quod et supra ipse ostendit
+              latenter, inducens Picum solum sedentem, ut <ref>(7.187)</ref> parvaque sedebat
+              succinctus trabea, quod est augurum, cum alios stantes induxerit. ergo sedebat aut
+              ‘erat’ aut ‘consilia capiebat’ aut ‘augurabatur’. <seg source="#DS">unde et hic lucus
+              vice aedis sacratae accipi debet: quod plenius illo loco dictum est <ref>(7.174)</ref>
+              <quote>hoc illius curia templum</quote>. aut quia in locis sacris sedentes consilia
+              habituri erant. * curiam in templo haberent: quod Numa cum sciret,Vestae aediculam,
+              non templum, statuit, ne ibi senatus haberi posset et ipsa necessitate vir introiret
+              locum. nam et ipsa consilia a sedendo quasi considia dicta sunt; sedentium enim animi
+              tranquilliores fiunt.</seg></ab>
+        </div>
+        <div type="textpart" n="5" source="#Σ">
+          <ab><quote type="lemma">thaumantias</quote> secundum poeticam Thaumantis filia. ceterum ex
+            admiratione hoc nomen accepit, quia admiratio de eius coloribus nascitur.</ab>
+        </div>
+        <div type="textpart" n="6">
+          <ab><quote type="lemma">divvm promittere nemo</quote> ‘nemo’ pro ‘nullus’ posuit. et est
+            acyrologia. nam ‘divum nemo’ non possumus dicere, cum proprie ‘nemo’ sit ‘ne homo’.</ab>
+        </div>
+        <div type="textpart" n="7">
+          <ab><quote type="lemma">avderet</quote> docet per transitum multa interdum temporum
+            ratione provenire, quae numina praestare non possunt. quod etiam paulo post in matris
+            deum petitione Iuppiter probat, dicens <ref>(97)</ref> cui tanta deo permissa
+            potestas.</ab>
+          <ab><quote type="lemma">volvenda</quote> pro ‘volubilis’.</ab>
+        </div>
+        <div type="textpart" n="8" source="#DS">
+          <ab><quote type="lemma">aeneas vrbe et sociis</quote> ab occasione. et ostendit quid illi
+            expugnandum sit, quia caret defensore.</ab>
+          <ab>VRBE urbs ista quae est in septimo <ref>(157)</ref>
+            <quote>ipse humili designat moenia fossa</quote>. hanc Castrum Laurens ait dici Varro
+              <ref>(ARH 2.14)</ref>, oppidum tacet. sed ubi primum Aeneas egressus sit, eum locum
+            Troiam nuncupari traditur.</ab>
+        </div>
+        <div type="textpart" n="9" source="#DS">
+          <ab><quote type="lemma">PALATINI</quote> prolepsis est.</ab>
+        </div>
+        <div type="textpart" n="10">
+          <ab><quote type="lemma">nec satis</quote> quia occurrebat ab Euandro eum facile posse
+            remeare.</ab>
+          <ab><seg source="#DS"><quote type="lemma">Corythi penetravit</quote> ut totam
+                <secl>in</secl> Etruriam peragrasse videatur.</seg>
+            <choice>
+              <seg source="#DS"><quote>Corythi</quote> autem</seg>
+              <seg source="#S"><quote type="lemma">Corythi</quote></seg>
+            </choice> montis Tusciae, qui, ut diximus (7.209), nomen accepit a Corytho rege, cum
+            cuius uxore concubuit Iuppiter, unde natus est Dardanus. <seg source="#DS"
+                ><quote>penetravit</quote> autem bene, quia supra <ref>(1)</ref> dixerat
+                <quote>penitus</quote>.</seg></ab>
+        </div>
+        <div type="textpart" n="11">
+          <ab source="#DS"><quote type="lemma">Lydorvmqve manvm</quote> omnia haec ad occasionem
+            faciendi| pertinent ex longinquitate, ut dictum est, regionis.</ab>
+          <ab><quote type="lemma">armat agrestes</quote> ne ei formidinem iniciat, agrestes esse
+            commemorat.</ab>
+        </div>
+        <div type="textpart" n="12" source="#DS">
+          <ab><quote type="lemma">nvnc tempvs</quote> a metu.</ab>
+        </div>
+
+      </div>
+    </body>
+  </text>
+</TEI>
