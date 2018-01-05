@@ -133,7 +133,7 @@ class appcrit {
 		let self = this;
 		return {
 			content: function() {
-				return "<div class=\"apparatus\">" + $("#copy-" + self.escapeID($(elt).attr("data-app"))).html() + "</div>";
+				return "<div class=\"apparatus hover\">" + $("#copy-" + self.escapeID($(elt).attr("data-app"))).html() + "</div>";
 			},
 			open: function(event, ui) {
 				let app = $("#" + self.escapeID($(this).attr("data-app")));
@@ -445,7 +445,7 @@ class appcrit {
 						lem.find("tei-lem").removeAttr("wit").removeAttr("source");
 					}
 					// turn phrases into first...last
-					if (lem.children(this.variantBlocks).length == 0) {
+					if (lem.children(self.variantBlocks).length == 0) {
 						lem.html(lem.text().replace(/\n/g, " ").replace(/^(\S+) .+ (\S+)/, "$1...$2"));
 					}
 					app.find("tei-lem,tei-rdg,tei-rdggrp").each(self.addSigla($(self.dom)));
@@ -529,8 +529,8 @@ class appcrit {
 					// tei-wit should have been put into the sigla, so remove it
 					app.find("tei-wit").remove();
 					app.find("tei-rdg:empty").each(function(i, elt) {
-						if (elt.nextElementSibling.nextElementSibling
-							&& elt.nextElementSibling.nextElementSibling.localName != "tei-note") {
+						if (!elt.nextElementSibling.nextElementSibling
+							|| elt.nextElementSibling.nextElementSibling.localName != "tei-note") {
 							// if the empty rdg is folllowed by a note, assume it explains it
 							$(elt.append("om. "));
 						}

@@ -112,6 +112,9 @@ div.apparatus {
   font-size: 80%;
   width: 700px;
 }
+div.hover {
+  width: 315px;
+}
 div.apparatus tei-app {
   display: inline;
 }
