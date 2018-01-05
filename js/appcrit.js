@@ -167,7 +167,7 @@ var appcrit = (function () {
   			var self = this;
   			return {
   				content: function content() {
-  					return "<div class=\"apparatus\">" + $("#copy-" + self.escapeID($(elt).attr("data-app"))).html() + "</div>";
+  					return "<div class=\"apparatus hover\">" + $("#copy-" + self.escapeID($(elt).attr("data-app"))).html() + "</div>";
   				},
   				open: function open(event, ui) {
   					var app = $("#" + self.escapeID($(this).attr("data-app")));
@@ -312,7 +312,7 @@ var appcrit = (function () {
   					}
   					return this.references[ref];
   				} catch (e) {
-  					//console.log("Unresolvable ref, " + ref);
+  					console.log("Unresolvable ref, " + ref);
   				}
   			}
   		}
@@ -506,7 +506,7 @@ var appcrit = (function () {
   								lem.find("tei-lem").removeAttr("wit").removeAttr("source");
   							}
   							// turn phrases into first...last
-  							if (lem.children(this.variantBlocks).length == 0) {
+  							if (lem.children(self.variantBlocks).length == 0) {
   								lem.html(lem.text().replace(/\n/g, " ").replace(/^(\S+) .+ (\S+)/, "$1...$2"));
   							}
   							app.find("tei-lem,tei-rdg,tei-rdggrp").each(self.addSigla($(self.dom)));
@@ -590,7 +590,7 @@ var appcrit = (function () {
   							// tei-wit should have been put into the sigla, so remove it
   							app.find("tei-wit").remove();
   							app.find("tei-rdg:empty").each(function (i, elt) {
-  								if (elt.nextElementSibling.nextElementSibling && elt.nextElementSibling.nextElementSibling.localName != "tei-note") {
+  								if (!elt.nextElementSibling.nextElementSibling || elt.nextElementSibling.nextElementSibling.localName != "tei-note") {
   									// if the empty rdg is folllowed by a note, assume it explains it
   									$(elt.append("om. "));
   								}
@@ -636,13 +636,13 @@ var appcrit = (function () {
   									var title = void 0;
   									switch (ref[0].localName) {
   										case "tei-handnote":
-  											title = $("<span>" + ref.parents("tei-witness,tei-bibl").find(">tei-title,tei-bibl>tei-title").first().html() + "</span>");
+  											title = $("<span>" + ref.parents("tei-witness,tei-bibl").first().find(">tei-abbr").first().html() + "</span>");
   											title.append("; ", ref.html());
   											break;
   										case "tei-listwit":
   											title = $("<span>" + ref.children("tei-head").html() + ": </span>");
   											title.append($.map(ref.children("tei-witness"), function (val) {
-  												return $(val).find(">tei-title").html();
+  												return $(val).html();
   											}).join(", "));
   											break;
   										case "tei-item":
@@ -653,7 +653,7 @@ var appcrit = (function () {
   										case "tei-person":
   											title = $("<span>" + ref.html() + "</span>");
   										default:
-  											title = $("<span>" + ref.find(">tei-title,tei-bibl>tei-title").first().html() + "</span>");
+  											title = $("<span>" + ref.html() + "</span>");
   									}
   									return "<div class=\"ref\">" + title.html() + "</div>";
   								}
