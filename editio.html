@@ -50,16 +50,24 @@
         }
       });
       data.then(function(TEI){
-        app.loadData(TEI);
-        $("#loading").remove();
         $("body").append(TEI);
+        app.loadData(TEI);
         if (window.location.hash) {
     			window.location = window.location;
     		}
+        $("#loading").remove();
         var morph = new morphlibrary(document);
         morph.activate("lat");
       })
     </script>
+    <style media="screen">
+      tei-div[type=textpart] tei-l {
+        width: 700px;
+      }
+      tei-l span.apps {
+        width: 200px;
+      }
+    </style>
   </head>
   <body>
     <svg class="svg-icon" style="display:none;">

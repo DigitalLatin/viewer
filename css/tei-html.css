@@ -108,13 +108,6 @@ div#editing button {
 
 
 /* Apparatus */
-div.apparatus {
-  font-size: 80%;
-  width: 700px;
-}
-div.hover {
-  width: 315px;
-}
 div.apparatus tei-app {
   display: inline;
 }
@@ -913,7 +906,7 @@ tei-div.textpart {
 }
 tei-div > tei-head {
   font-size: 170%;
-  padding-top: 1em;
+  text-indent: -0.5em;
 }
 tei-div > tei-div > tei-head {
   font-size: 155%;
@@ -2196,12 +2189,7 @@ a:link, a:visited, a:active {
   from {transform: rotate(0deg);}
   to {transform: rotate(360deg);}
 }
-div#loading {
-  position: fixed;
-  top: 0;
-  left: 0;
-  opacity: 75%;
-}
+
 #loading p {
   font-size: 128px;
   position: fixed;

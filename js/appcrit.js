@@ -30,7 +30,7 @@ var appcrit = (function () {
   		classCallCheck(this, appcrit);
 
   		this.ceteicean = c;
-  		this.variantBlocks = "tei-l,tei-speaker,tei-p,tei-ab,tei-seg";
+  		this.variantBlocks = "tei-l,tei-speaker,tei-p";
   		this.genId = 0;
   		this.dom = null;
   		this.references = {};
@@ -128,7 +128,7 @@ var appcrit = (function () {
   					oldapp = newrdg.parent("tei-app");
   					if (newlem.attr("require")) {
   						newlem.attr("require").split(/ /).forEach(function (val) {
-  							var req = $(self.escapeID(val));
+  							var req = $(val);
   							if (req[0].localName == "tei-rdg") {
   								self.swapLem(req);
   							}
@@ -137,7 +137,7 @@ var appcrit = (function () {
   				}
   				//give copies the same treatment, so we don't get out of sync.
   				if (copyfrom) {
-  					self.swapLem($(self.escapeID(copyfrom)));
+  					self.swapLem($("#" + self.escapeID(copyfrom)));
   				}
   				$("*[data-copyfrom=" + self.escapeID(oldrdgid) + "]").each(function (i, elt) {
   					self.swapLem($(elt));
@@ -148,12 +148,9 @@ var appcrit = (function () {
   		key: "undo",
   		value: function undo() {
   			var step = this.log.pop();
-  			var l = this.log.length;
   			this.swapLem($(document.getElementById(step.lem)));
   			this.redoLog.push(step);
-  			while (this.log.length > l) {
-  				this.log.pop(); // kill the undone step()
-  			}
+  			this.log.pop(); // kill the undone step
   		}
   	}, {
   		key: "redo",
@@ -167,7 +164,7 @@ var appcrit = (function () {
   			var self = this;
   			return {
   				content: function content() {
-  					return "<div class=\"apparatus hover\">" + $("#copy-" + self.escapeID($(elt).attr("data-app"))).html() + "</div>";
+  					return "<div class=\"apparatus\">" + $("#copy-" + self.escapeID($(elt).attr("data-app"))).html() + "</div>";
   				},
   				open: function open(event, ui) {
   					var app = $("#" + self.escapeID($(this).attr("data-app")));
@@ -240,18 +237,8 @@ var appcrit = (function () {
   							if ($(elt).find(this.variantBlocks).length > 0) {
   								d.find("tei-lem,tei-rdg,tei-rdgGrp").remove();
   							}
-  							// If an empty lem or rdg (indicating omission) is folllowed by a
-  							// note, assume it explains it, otherwise add "om.".
-  							d.find("tei-lem:empty").each(function (i, elt) {
-  								if (elt.nextElementSibling.localName != "tei-note") {
-  									$(elt.append("om. "));
-  								}
-  							});
-  							d.find("tei-rdg:empty").each(function (i, elt) {
-  								if (elt.nextElementSibling.localName != "tei-note") {
-  									$(elt.append("om. "));
-  								}
-  							});
+  							d.find("tei-lem:empty").append("om. ");
+  							d.find("tei-rdg:empty").append("om. ");
   							d.find("tei-rdg,tei-lem,tei-note[data-id],span[data-id]").each(function (i, elt) {
   								$(elt).click(function (evt) {
   									var rdg = $("#" + self.escapeID($(evt.currentTarget).attr("data-id")));
@@ -312,7 +299,7 @@ var appcrit = (function () {
   					}
   					return this.references[ref];
   				} catch (e) {
-  					console.log("Unresolvable ref, " + ref);
+  					//console.log("Unresolvable ref, " + ref);
   				}
   			}
   		}
@@ -343,7 +330,7 @@ var appcrit = (function () {
   						}
   						// Add witness sigla
   						if (e.attr("wit")) {
-  							e.attr("wit").split(/ +/).forEach(function (val) {
+  							e.attr("wit").split(/ /).forEach(function (val) {
   								wit += "<span class=\"ref\" data-id=\"" + e.attr("data-id") + "\" data-ref=\"" + val + "\">" + self.refLabel(val) + "</span>";
   								e.parents("tei-app").first().find("tei-witdetail[target=\"#" + e.attr("data-id") + "\"][wit=\"" + val + "\"]").each(function (i, elt) {
   									wit += elt.shadowRoot ? elt.shadowRoot.childNodes.item(1).outerHTML : elt.innerHTML;
@@ -366,24 +353,17 @@ var appcrit = (function () {
   				}
   			};
   		}
-
-  		// Makes and returns a button corresponding to the app element parameter elt.
-
   	}, {
   		key: "appButton",
   		value: function appButton(elt) {
   			var e = $(elt);
-  			if (e.children("tei-rdg").length > 0 || e.children("tei-rdgGrp").length > 0) {
+  			if (e.children("tei-rdg").length > 0 || e.children("tei-lem").length > 0) {
   				return "<button id=\"button-" + e.attr("id") + "\" title=\"\" class=\"app\" data-app=\"" + e.attr("id") + "\"><svg class=\"svg-icon\"><use xlink:href=\"#rdg-icon\"></use></svg></button>";
   			} else {
   				// it's a note
   				return "<button id=\"button-" + e.attr("id") + "\" title=\"\" class=\"app note\" data-app=\"" + e.attr("id") + "\"><svg class=\"svg-icon\"><use xlink:href=\"#note-icon\"></use></svg></button>";
   			}
   		}
-
-  		// Makes a "safe" copy of the node in the 'node' parameter, with rewritten ids
-  		// unless the 'keepIds' parameter is true.\
-
   	}, {
   		key: "makeCopy",
   		value: function makeCopy(node, keepIds) {
@@ -459,21 +439,17 @@ var appcrit = (function () {
   				//console.log("Can't resolve " + e.attr("copyof"));
   			}
   		}
-
-  		// Processes the contents of the jQuery-wrapped element in the 'section'
-  		// parameter, resolving @copyOf references, adding an apparatus,
-
   	}, {
   		key: "doSection",
   		value: function doSection(section) {
   			var self = this;
-  			//$("tei-text button").remove();
-  			//$("div.apparatus").remove();
+  			$("tei-text button").remove();
+  			$("div.apparatus").remove();
   			var sectionId = section.attr("id");
   			// Add Apparatus div
   			if (section.find("tei-app").length > 0) {
   				(function () {
-  					var appDiv = $("<div id=\"apparatus-" + sectionId + "\" class=\"apparatus\"></div>");
+  					var appDiv = $("<div id=\"apparatus-" + sectionId + "\" class=\"apparatus\"><h2>Apparatus</h2></div>");
   					section.after(appDiv);
   					// Pull content into @copyOf elements
   					section.find("*[copyof]").each(function (i, elt) {
@@ -506,7 +482,7 @@ var appcrit = (function () {
   								lem.find("tei-lem").removeAttr("wit").removeAttr("source");
   							}
   							// turn phrases into first...last
-  							if (lem.children(self.variantBlocks).length == 0) {
+  							if (lem.children(this.variantBlocks).length == 0) {
   								lem.html(lem.text().replace(/\n/g, " ").replace(/^(\S+) .+ (\S+)/, "$1...$2"));
   							}
   							app.find("tei-lem,tei-rdg,tei-rdggrp").each(self.addSigla($(self.dom)));
@@ -524,7 +500,7 @@ var appcrit = (function () {
   											blocks = "<span class=\"ref lineref\" data-id=\"" + _lem.attr("data-id") + "\">l. " + _lem.find(self.variantBlocks).attr("n") + "</span> ";
   										}
   									}
-  									if (unit == "tei-p" || unit == "tei-ab" || unit == "tei-seg") {
+  									if (unit == "tei-p") {
   										if (children.length > 1) {
   											blocks = "<span class=\"ref lineref\" data-id=\"" + _lem.attr("data-id") + "\">" + _lem.find(self.variantBlocks).first().attr("n") + "–" + _lem.find(self.variantBlocks).last().attr("n") + "</span> ";
   										} else {
@@ -537,9 +513,6 @@ var appcrit = (function () {
   									app.prepend(blocks);
   								}
   							}
-  							var appBtnContainer = void 0;
-  							// Find the right block element to append the button to. It could be
-  							// a descendent of the app or an ancestor.
   							if ((blocks = lem.find(self.variantBlocks)).length > 0) {
   								n = $(blocks[0]).attr("n");
   								if (!n && blocks[0].hasAttribute("copyof")) {
@@ -561,40 +534,30 @@ var appcrit = (function () {
   										n += "–" + section.find($(blocks[blocks.length - 1]).attr("copyOf")).attr("n");
   									}
   								}
-  								var block = $(elt).find("tei-lem").find(self.variantBlocks);
-  								if (block.length == 0) {
-  									block = $(elt).next(self.variantBlocks + ",tei-app");
+  								var l = $(elt).find("tei-lem").find(self.variantBlocks);
+  								if (l.length == 0) {
+  									l = $(elt).next(self.variantBlocks + ",tei-app");
   								}
-  								appBtnContainer = block.first().append(self.appButton(elt));
+  								l.first().append(self.appButton(elt));
   								// we don't want the full line showing up in the app., just its reference
   								app.find("tei-lem:not(:empty)").remove();
   								app.find("tei-rdg:not(:empty)").each(function (i, elt) {
   									var rdg = $(elt);
   									var children = rdg.find(self.variantBlocks);
-  									if (rdg.attr("rend") == "show") {
-  										rdg.html(children.text()); //TODO: If rend="show", we should strip out the lines/blocks in some smart way
-  									} else {
-  										rdg.html(children.toArray().reduce(function (result, elt) {
-  											return result + (result ? "," : "") + elt.getAttribute("n");
-  										}, ""));
-  									}
+  									rdg.html(children.toArray().reduce(function (result, elt) {
+  										return result + (result ? "," : "") + elt.getAttribute("n");
+  									}, ""));
   								});
   							} else {
   								n = $(elt).parents(self.variantBlocks).attr("n");
   								if (!n && elt.hasAttribute("copyof")) {
   									n = section.find(self.escapeID($(elt).parents(self.variantBlocks).attr("copyof"))).attr("n");
   								}
-  								appBtnContainer = $(elt).parents(self.variantBlocks).first().append(self.appButton(elt));
+  								$(elt).parents(self.variantBlocks).append(self.appButton(elt));
   							}
-
   							// tei-wit should have been put into the sigla, so remove it
   							app.find("tei-wit").remove();
-  							app.find("tei-rdg:empty").each(function (i, elt) {
-  								if (!elt.nextElementSibling.nextElementSibling || elt.nextElementSibling.nextElementSibling.localName != "tei-note") {
-  									// if the empty rdg is folllowed by a note, assume it explains it
-  									$(elt.append("om. "));
-  								}
-  							});
+  							app.find("tei-rdg:empty").append("om. ");
   							if (n && appDiv.find("#app-l" + n).length == 0 || blocks.length > 0) {
   								app.prepend("<span class=\"lem\" id=\"app-l" + n + "\">" + n + "</span>");
   							}
@@ -605,19 +568,12 @@ var appcrit = (function () {
   					});
 
   					// Add line numbers
-  					var parents = ["tei-sp", "tei-ab", "tei-p", "tei-div", "tei-lem", "tei-lg"];
-  					section.find("tei-l").each(function (i, elt) {
-  						// Do this only for lines?
+  					var parents = ["tei-sp", "tei-ab", "tei-div", "tei-lem", "tei-lg"];
+  					section.find(self.variantBlocks).each(function (i, elt) {
   						var e = $(elt);
   						if (Number(e.attr("n")) % 5 == 0 && parents.indexOf(elt.parentElement.localName) >= 0) {
   							e.attr("data-num", e.attr("n"));
   						}
-  						// Also wrap app buttons in a span, while we have the line
-  						e.find("button.app").wrapAll("<span class=\"apps\"></span>");
-  					});
-  					// Wrap app buttons in segments in a span, and set their position
-  					section.find("tei-l,tei-seg").each(function (i, elt) {
-  						var e = $(elt);
   						e.find("button.app").wrapAll("<span class=\"apps\"></span>");
   					});
 
@@ -636,13 +592,13 @@ var appcrit = (function () {
   									var title = void 0;
   									switch (ref[0].localName) {
   										case "tei-handnote":
-  											title = $("<span>" + ref.parents("tei-witness,tei-bibl").first().find(">tei-abbr").first().html() + "</span>");
+  											title = $("<span>" + ref.parents("tei-witness,tei-bibl").find(">tei-title,tei-bibl>tei-title").first().html() + "</span>");
   											title.append("; ", ref.html());
   											break;
   										case "tei-listwit":
   											title = $("<span>" + ref.children("tei-head").html() + ": </span>");
   											title.append($.map(ref.children("tei-witness"), function (val) {
-  												return $(val).html();
+  												return $(val).find(">tei-title").html();
   											}).join(", "));
   											break;
   										case "tei-item":
@@ -650,10 +606,8 @@ var appcrit = (function () {
   											break;
   										case "tei-bibl":
   											title = $("<span>" + ref.html() + "</span>");
-  										case "tei-person":
-  											title = $("<span>" + ref.html() + "</span>");
   										default:
-  											title = $("<span>" + ref.html() + "</span>");
+  											title = $("<span>" + ref.find(">tei-title,tei-bibl>tei-title").first().html() + "</span>");
   									}
   									return "<div class=\"ref\">" + title.html() + "</div>";
   								}
@@ -663,6 +617,7 @@ var appcrit = (function () {
   				})();
   			} else {
   				// View sources
+
   			}
   		}
   	}, {
@@ -731,30 +686,25 @@ var appcrit = (function () {
   			parts.each(function (i, elt) {
   				ul.append("<li><a href=\"#" + $(elt).attr("id") + "\">" + $(elt).find("tei-head").html() + "</a></li>");
   			});
+  			ul.append("<li><a href=\"#apparatus\">Apparatus</a></li>");
 
   			nav.find("a").click(function (e) {
   				$("a.selected").toggleClass("selected");
   				$(this).toggleClass("selected");
-  				var prose = $(self.dom).find("tei-div[type=textpart] tei-p").length > 0;
-  				if (!prose) {
+  				if ($(this).id != "apparatus") {
   					self.doSection($($(this).attr("href")));
   				}
   			});
   			$(":checkbox").change(this.toggleApps);
-
-  			// TODO: This only works for BAlex and Calpurnius. Need it to be smart
-  			// about choosing how to handle sections.
-  			var chunks = $(this.dom).find("tei-div[type=textpart] tei-p");
-  			if (chunks.length > 0) {
-  				chunks.each(function (i, elt) {
-  					self.doSection($(elt));
-  				});
+  			/*
+     $(this.dom).find("tei-div[type=textpart],tei-front").each(function(i, elt){
+     	self.doSection($(elt));
+     });
+     */
+  			if (window.location.hash) {
+  				self.doSection($(this.dom).find(window.location.hash));
   			} else {
-  				if (window.location.hash) {
-  					self.doSection($(this.dom).find(window.location.hash));
-  				} else {
-  					self.doSection($(this.dom).find("#front"));
-  				}
+  				self.doSection($(this.dom).find("#front"));
   			}
 
   			// cleanup
