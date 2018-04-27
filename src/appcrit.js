@@ -1,8 +1,13 @@
 class appcrit {
 
-	constructor(c) {
+	constructor(c, vb, sections) {
 		this.ceteicean = c;
-		this.variantBlocks = "tei-l,tei-speaker,tei-p,tei-ab,tei-seg";
+		if (vb) {
+			this.variantBlocks = vb;
+		} else {
+			this.variantBlocks = "tei-l,tei-speaker,tei-p,tei-ab,tei-seg";
+		}
+		this.sections = sections;
 		this.genId = 0;
 		this.dom = null;
 		this.references = {};
@@ -551,13 +556,11 @@ class appcrit {
 				if (Number(e.attr("n")) % 5 == 0 && (parents.indexOf(elt.parentElement.localName) >= 0)) {
 					e.attr("data-num",e.attr("n"));
 				}
-				// Also wrap app buttons in a span, while we have the line
-				e.find("button.app").wrapAll("<span class=\"apps\"></span>");
 			});
-			// Wrap app buttons in segments in a span, and set their position
-			section.find("tei-l,tei-seg").each(function(i,elt){
+			// Wrap app buttons in segments in a span
+			section.find(self.variantBlocks).each(function(i,elt){
 				let e = $(elt);
-				e.find("button.app").wrapAll("<span class=\"apps\"></span>");
+				e.children("button.app").wrapAll("<span class=\"apps\"></span>");
 			});
 
 
@@ -683,7 +686,7 @@ class appcrit {
 
 		// TODO: This only works for BAlex and Calpurnius. Need it to be smart
 		// about choosing how to handle sections.
-		let chunks = $(this.dom).find("tei-div[type=textpart] tei-p");
+		let chunks = $(this.dom).find(this.sections);
 		if (chunks.length > 0) {
 			chunks.each(function(i, elt){
 				self.doSection($(elt));
