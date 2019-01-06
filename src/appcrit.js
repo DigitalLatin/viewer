@@ -342,7 +342,7 @@ class appcrit {
 	makeCopy(node, keepIds) {
 		let newNode;
 		if (node.nodeType == Node.ELEMENT_NODE) {
-			newNode = node.cloneNode(false);
+			newNode = document.createElement(node.localName);
 
 			for (let i = 0; i < node.attributes.length; i++) {
 				// have to rewrite ids in copied content so there are no duplicates
@@ -370,13 +370,6 @@ class appcrit {
 				} else {
 					newNode.appendChild(n.cloneNode(false));
 				}
-			}
-			if (newNode.shadowRoot) {
-				newNode.shadowRoot.innerHTML = node.shadowRoot.innerHTML; //TODO: tei-ref keeps reduplicating content when created
-			}
-			if (node.shadowRoot && !newNode.shadowRoot) {
-				let s = newNode.attachShadow({mode:'open'});
-				s.innerHTML = node.shadowRoot.innerHTML;
 			}
 		} else {
 			newNode = node.cloneNode();
@@ -594,6 +587,8 @@ class appcrit {
 									break;
 								case "tei-bibl":
 									title = $("<span>" + ref.html() + "</span>");
+								case "tei-listBibl":
+									title = $("<span>" + ref.find("tei-abbr").first().html() + "</span>")
 								case "tei-person":
 									title = $("<span>" + ref.html() + "</span>");
 								default:
@@ -659,45 +654,50 @@ class appcrit {
 		// Add place notes
 		$(data).find("tei-add[place=margin]").append("<span class=\"note\"> (in mg.)</span>")
 
-		//Add navigation header
-		let nav = $("<div/>", {id:"navigation"});
-		nav.html("<h2>Contents:</h2><ul></ul>");
-		nav.appendTo("#controls");
-		let ul = nav.find("ul");
-		ul.append("<li><a href=\"#front\">Front Matter</a></li>");
-		let parts = $(data).find("tei-div[type=textpart]");
-		if (parts.length == 0) {
-			parts = $(data).find("tei-div[type=edition]");
-		}
-		parts.each(function(i, elt) {
-			ul.append("<li><a href=\"#" + $(elt).attr("id") + "\">" + $(elt).find("tei-head").html() + "</a></li>");
-
-		});
-
-		nav.find("a").click(function(e) {
-			$("a.selected").toggleClass("selected");
-			$(this).toggleClass("selected");
-			let prose = ($(self.dom).find("tei-div[type=textpart] tei-p").length > 0);
-			if (!prose) {
-				self.doSection($($(this).attr("href")));
+		//Add navigation header if we're in standalone viewer mode
+		if (document.querySelector("div#dllviewercontrols")) {
+			let nav = $("<div/>", {id:"navigation"});
+			nav.html("<h2>Contents:</h2><ul></ul>");
+			nav.appendTo("div#dllviewercontrols");
+			let ul = nav.find("ul");
+			ul.append("<li><a href=\"#front\">Front Matter</a></li>");
+			let parts = $(data).find("tei-div[type=textpart]");
+			if (parts.length == 0) {
+				parts = $(data).find("tei-div[type=edition]");
 			}
-		});
+			parts.each(function(i, elt) {
+				ul.append("<li><a href=\"#" + $(elt).attr("id") + "\">" + $(elt).find("tei-head").html() + "</a></li>");
+
+			});
+
+			nav.find("a").click(function(e) {
+				$("a.selected").toggleClass("selected");
+				$(this).toggleClass("selected");
+				let prose = ($(self.dom).find("tei-div[type=textpart] tei-p").length > 0);
+				if (!prose) {
+					self.doSection($($(this).attr("href")));
+				}
+			});
+
+			// TODO: This only works for BAlex and Calpurnius. Need it to be smart
+			// about choosing how to handle sections.
+			let chunks = $(this.dom).find(this.sections);
+			if (chunks.length > 0) {
+				chunks.each(function(i, elt){
+					self.doSection($(elt));
+				});
+			} else {
+				if (window.location.hash) {
+					self.doSection($(this.dom).find(window.location.hash));
+				} else {
+					self.doSection($(this.dom).find("#front"));
+				}
+			}
+		}
+		
 		$(":checkbox").change(this.toggleApps);
 
-		// TODO: This only works for BAlex and Calpurnius. Need it to be smart
-		// about choosing how to handle sections.
-		let chunks = $(this.dom).find(this.sections);
-		if (chunks.length > 0) {
-			chunks.each(function(i, elt){
-				self.doSection($(elt));
-			});
-		} else {
-			if (window.location.hash) {
-				self.doSection($(this.dom).find(window.location.hash));
-			} else {
-				self.doSection($(this.dom).find("#front"));
-			}
-		}
+		
 
 
 

@@ -1,12 +1,28 @@
 import babel from 'rollup-plugin-babel';
-import uglify from 'rollup-plugin-uglify';
+import { terser } from 'rollup-plugin-terser';
+
 
 export default {
-  entry: 'src/appcrit.js',
-  format: 'iife',
-  dest: 'js/appcrit.js',
-  sourceMap: false,
-  moduleName: 'appcrit',
+  input: 'src/appcrit.js',
+  output: {
+    file: 'js/appcrit.js',
+    format: 'iife',
+    name: 'appcrit',
+    sourcemap: false,
+  },
+
   plugins: [
-    babel({exclude: 'node_modules/**', "presets": ["es2015-rollup"]})  ]
+    babel({exclude: 'node_modules/**', 
+      "presets": [
+        ["env", {
+          "modules": false,
+          "targets": {
+            "chrome": 65,
+            "safari": 11,
+            "firefox": 60
+          }
+        }]
+      ]}),
+    terser()
+  ]
 }

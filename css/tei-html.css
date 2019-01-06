@@ -72,18 +72,18 @@ border-top:2px solid @border-color;
 }
 
 /* Controls */
-div#controls {
+div#dllviewercontrols {
   position: fixed;
   top: 1em;
   right: 1em;
   font-size: 80%;
   width: 18%
 }
-div#controls h2 {
+div#dllviewercontrols h2 {
   font-size: 120%;
   margin: 0;
 }
-div#controls ul {
+div#dllviewercontrols ul {
   list-style-type: none;
   margin:0;
   padding:0;
