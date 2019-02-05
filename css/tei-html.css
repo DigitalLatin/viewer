@@ -339,7 +339,7 @@ tei-choice tei-sic + tei-corr:before,
 tei-choice tei-corr + tei-sic:before,
 tei-choice tei-orig + tei-reg:before,
 tei-choice tei-reg + tei-orig:before {
-  content: " (";
+  content: "(";
 }
 tei-choice tei-abbr + tei-expan:after,
 tei-choice tei-expan + tei-abbr:after,
@@ -1936,8 +1936,11 @@ tei-summary {
 tei-superEntry {
   /* Block with space above and below, maybe have no block and space for <entry> when contained by this element */
 }
-tei-supplied {
-  /* not sure on this one, seems like we should indicate somehow. Is there a standard way to do this? */
+tei-supplied:before {
+  content: "⟨";
+}
+tei-supplied:after {
+  content: "⟩";
 }
 tei-support {
   /* Empty Set Rule */
@@ -1951,15 +1954,11 @@ tei-surface {
 tei-surname {
   /* Empty Set Rule */
 }
-tei-surplus {
+tei-surplus:before {
+  content: "[";
 }
-tei-surplus>*:first-child:before {
-  content: "\a[";
-  white-space: pre;
-}
-tei-surplus>*:last-child:after {
-  content: "]\a\a";
-  white-space: pre;
+tei-surplus:after {
+  content: "]";
 }
 tei-surrogates {
   /*Empty Rule Set */
