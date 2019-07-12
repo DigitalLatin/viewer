@@ -267,7 +267,7 @@ class appcrit {
 		} else {
 			try {
 				let elt = this.dom.querySelector(this.escapeID(ref));
-				let siglum = $(elt).children("abbr[type=siglum]").html();
+				let siglum = $(elt).find("tei-abbr[type=siglum]").first().html();
 				if (!siglum) {
 					this.references[ref] = elt.getAttribute("id")
 				} else {
@@ -587,7 +587,7 @@ class appcrit {
 									break;
 								case "tei-bibl":
 									title = $("<span>" + ref.html() + "</span>");
-								case "tei-listBibl":
+								case "tei-listbibl":
 									title = $("<span>" + ref.find("tei-abbr").first().html() + "</span>")
 								case "tei-person":
 									title = $("<span>" + ref.html() + "</span>");

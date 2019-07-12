@@ -12,15 +12,15 @@
     <script type="text/javascript">
       var c = new CETEI();
       c.shadowCSS = "css/tei-html.css";
-      var app = new appcrit(c);
+      var app = new appcrit(c, "tei-ab", "tei-div[type=textpart]");
       c.addBehaviors({"handlers":{
+        "ab": function(elt) {
+          if (elt.previousElementSibling.localName == "tei-head") {
+            elt.insertAdjacentHTML('afterbegin', "<span class=\"head\">" + elt.previousElementSibling.innerHTML + " </span>");
+          }
+        },
         "choice": function(elt) {
           elt.insertAdjacentHTML('afterend', "<br/>");
-        },
-        "div": function(elt) {
-          if (elt.hasAttribute("n")) {
-            elt.firstElementChild.insertAdjacentHTML('afterbegin', "<span class=\"num\">" + elt.getAttribute("n") + ".</span>");
-          }
         },
         // Overrides the default ptr behavior, displaying a short link
         "ptr": function(elt) {
@@ -64,6 +64,26 @@
     			window.location = window.location;
     		}
         $("#loading").remove();
+        var section = $("tei-div[type=edition]");
+        section.find("tei-ab").each(function(i,elt) {
+          var e = $(elt);
+          var btns = e.find("span.apps");
+          var top = 0;
+          var left = 0;
+          btns.each(function(i,elt){
+            $(elt).find("button").each(function(i,elt) {
+              var btn = $(elt);
+              var pos = $("#" + app.escapeID(btn.attr("data-app"))).position();
+              if (top < pos["top"]) {
+                top = pos["top"];
+                left = 0;
+              } else {
+                left++;
+              }
+              btn.css({"position":"absolute","top":top + "px","left":(left*25) + "px"});
+            });
+          });
+        });
         var morph = new morphlibrary(document);
         morph.activate("lat");
       })
@@ -71,8 +91,20 @@
     <style media="screen">
       *[source=\#DS] {
         width: 75%;
-        border-left: thin solid gray;
-        border-right: thin solid gray;
+        border-left: thin solid black;
+        border-right: thin solid black;
+      }
+      tei-ab[source=\#Σ] {
+        padding-left: 25%;
+        width: 75%;
+      }
+      tei-seg[source=\#Σ] {
+        padding-left: 25%;
+        width: 75%;
+      }
+      tei-div[source=\#Σ]>tei-ab {
+        padding-left: 25%;
+        width: 75%;
       }
       tei-choice {
         display:block;
@@ -83,17 +115,33 @@
       tei-choice>tei-seg[source=\#DS] {
         width: 50%;
       }
-      tei-div[type=textpart] {
+      tei-choice>tei-seg[source=\#Σ] {
+        padding-left: 0px;
+        width: 49%;
+      }
+      tei-div {
         display:block;
       }
+      tei-div[type=edition] {
+        text-align: justify;
+        width: 700px;
+      }
+      tei-div[type=textpart]>tei-head {
+        display: none;
+      }
       tei-quote[type=lemma] {
+        font-style: normal;
         text-transform: uppercase;
+      }
+      tei-quote {
+        font-style: italic;
       }
       tei-seg {
         display: block;
       }
-      tei-l span.apps {
-        width: 200px;
+      tei-ab span.apps {
+        width: 150px;
+        right: 250px;
       }
     </style>
   </head>

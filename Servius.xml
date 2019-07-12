@@ -79,13 +79,15 @@
         </listWit>
         <listBibl>
           <bibl xml:id="Dan"><abbr type="siglum">Dan.</abbr>: Pub. Virgilii Maronis Bucolicorum Eclogae X., Georgicorum Libri IIII., Aeneidos Libri XII., et in ea Mauri Servii Honorati . . . Commentarii ex antiquissimis exemplaribus longe meliores et auctiores ex bibliotheca Petri Danielis . . . Paris 1600.</bibl>
+          <bibl xml:id="Verg"><abbr type="siglum"></abbr>: Vergil, Aeneid</bibl>
         </listBibl>
       </div>
     </front>
     <body>
       <div type="edition">
         <head>SERVIANI IN VERGILII AENEIDOS LIBRVM NONVM COMMENTARII</head>
-        <div type="textpart" n="1">
+        <div type="textpart" n="1" xml:id="line1">
+          <head>1.</head>
           <ab n="1"><app><lem wit="#F #Γ"><quote type="lemma">atque ea <app><lem wit="#F #A #Pa
             #N">diversa</lem><witDetail wit="#A"><hi rend="superscript">2</hi></witDetail><witDetail
               wit="#Pa"><hi rend="superscript">2</hi></witDetail><note>d. <ref
@@ -121,16 +123,26 @@
             dicit <quote>nec satis, extremas Corythi penetrauit ad urbes Lydorumque
             manum.</quote></ab>
         </div>
-        <div type="textpart" n="2">
-          <ab n="1"><quote>Irim</quote> Iris quasi ἔρις dicta est: numquam enim ad conciliationem
+        <div type="textpart" n="2" xml:id="line2">
+          <head>2.</head>
+          <ab n="1"><quote>Irim</quote> <app><lem wit="#Γ">Iris</lem><rdg wit="#F"/></app> quasi
+            <app><lem>ἔρις</lem><rdg wit="#F #Γ">eris</rdg></app> dicta est: numquam enim ad conciliationem
             mittitur, sicut Mercurius, sed ad disturbationem. et est ministra non tantum dearum, sed
-            et deorum: nam praeter Homerum et Vergilius hoc probat, dicens <ref>(803)</ref>
-            <quote>aeriam caelo nam Iuppiter Irim demisit germanae haud mollia iussa
-              ferentem.</quote></ab>
+            et deorum: <app><lem wit="#F #Pa #Pc #W">nam praeter Homerum</lem><rdg wit="#Γ">nam
+              praeter deorum</rdg><rdg wit="#γ"/></app> et Vergilius hoc probat, dicens <ref>(803)</ref>
+            <quote><app><lem wit="#Γ #Verg">aeriam</lem><witDetail wit="#Γ">et hic et ad A.
+              5.606</witDetail><rdg wit="#F">erigam</rdg><witDetail wit="#F">eriam F ad A.
+                5.606</witDetail><rdg wit="#Q">aeriem</rdg></app> caelo nam Iuppiter Irim <app><lem
+                  wit="#F #γ #Verg">demisit</lem></app> <app><lem wit="#Γ">germanae</lem><rdg
+                    wit="#F">germani</rdg></app> haud mollia iussa
+              <app><lem wit="#Γ">ferentem</lem><rdg wit="#F">ferenti</rdg></app>.</quote></ab>
         </div>
-        <div type="textpart" n="3">
-          <ab n="1"><quote type="lemma">audacem ad turnum</quote> fortem sine felicitate, sicut de
-            Pallante diximus (8.110). <seg source="#DS">et modo audaciae laus oportuna, quia ad
+        <div type="textpart" n="3" xml:id="line3">
+          <head>3.</head>
+          <ab n="1"><quote type="lemma">audacem <app><lem wit="#F">ad</lem><rdg wit="#Γ"/></app>
+            turnum</quote> fortem sine felicitate, sicut <app><lem wit="#Γ">de</lem><rdg wit="#F">et</rdg></app>
+            Pallante diximus (8.110). <seg source="#DS">et modo <app><lem
+              wit="#T">audaciae</lem><rdg wit="#F">aut latio</rdg></app> laus oportuna, quia ad
               audendum exhortandus est.</seg></ab>
           <ab source="#Σ"><quote type="lemma">parentis pilumni</quote> Pilumnus et Pitumnus fratres
             fuerunt di. horum Pitumnus usum stercorandorum invenit agrorum—unde et Sterculinius
@@ -140,7 +152,8 @@
               Pollucem accipiunt; nonnulli laudum deos; Varro (VPR 2.82a) coniugales deos
               suspicatur.</supplied></ab>
         </div>
-        <div type="textpart" n="4">
+        <div type="textpart" n="4" xml:id="line4">
+          <head>4.</head>
           <ab><quote type="lemma">sacrata valle</quote> ideo <quote>sacrata</quote> quia, ut diximus
             supra <ref>(1.441)</ref>, numquam est lucus sine religione.</ab>
           <ab><quote type="lemma">sedebat</quote> ut Asper dicit <ref>(fr. 38)</ref> ‘erat’, quae
@@ -159,22 +172,26 @@
               locum. nam et ipsa consilia a sedendo quasi considia dicta sunt; sedentium enim animi
               tranquilliores fiunt.</seg></ab>
         </div>
-        <div type="textpart" n="5" source="#Σ">
+        <div type="textpart" n="5" source="#Σ" xml:id="line5">
+          <head>5.</head>
           <ab><quote type="lemma">thaumantias</quote> secundum poeticam Thaumantis filia. ceterum ex
             admiratione hoc nomen accepit, quia admiratio de eius coloribus nascitur.</ab>
         </div>
-        <div type="textpart" n="6">
+        <div type="textpart" n="6" xml:id="line6">
+          <head>6.</head>
           <ab><quote type="lemma">divvm promittere nemo</quote> ‘nemo’ pro ‘nullus’ posuit. et est
             acyrologia. nam ‘divum nemo’ non possumus dicere, cum proprie ‘nemo’ sit ‘ne homo’.</ab>
         </div>
-        <div type="textpart" n="7">
+        <div type="textpart" n="7" xml:id="line7">
+          <head>7.</head>
           <ab><quote type="lemma">avderet</quote> docet per transitum multa interdum temporum
             ratione provenire, quae numina praestare non possunt. quod etiam paulo post in matris
             deum petitione Iuppiter probat, dicens <ref>(97)</ref> cui tanta deo permissa
             potestas.</ab>
           <ab><quote type="lemma">volvenda</quote> pro ‘volubilis’.</ab>
         </div>
-        <div type="textpart" n="8" source="#DS">
+        <div type="textpart" n="8" source="#DS" xml:id="line8">
+          <head>8.</head>
           <ab><quote type="lemma">aeneas vrbe et sociis</quote> ab occasione. et ostendit quid illi
             expugnandum sit, quia caret defensore.</ab>
           <ab>VRBE urbs ista quae est in septimo <ref>(157)</ref>
@@ -182,29 +199,33 @@
               <ref>(ARH 2.14)</ref>, oppidum tacet. sed ubi primum Aeneas egressus sit, eum locum
             Troiam nuncupari traditur.</ab>
         </div>
-        <div type="textpart" n="9" source="#DS">
+        <div type="textpart" n="9" source="#DS" xml:id="line9">
+          <head>9.</head>
           <ab><quote type="lemma">PALATINI</quote> prolepsis est.</ab>
         </div>
-        <div type="textpart" n="10">
+        <div type="textpart" n="10" xml:id="line10">
+          <head>10.</head>
           <ab><quote type="lemma">nec satis</quote> quia occurrebat ab Euandro eum facile posse
             remeare.</ab>
           <ab><seg source="#DS"><quote type="lemma">Corythi penetravit</quote> ut totam
                 <secl>in</secl> Etruriam peragrasse videatur.</seg>
             <choice>
               <seg source="#DS"><quote>Corythi</quote> autem</seg>
-              <seg source="#S"><quote type="lemma">Corythi</quote></seg>
-            </choice> montis Tusciae, qui, ut diximus (7.209), nomen accepit a Corytho rege, cum
+              <seg source="#Σ"><quote type="lemma">Corythi</quote></seg>
+            </choice> montis Tusciae, qui, ut diximus <ref>(7.209)</ref>, nomen accepit a Corytho rege, cum
             cuius uxore concubuit Iuppiter, unde natus est Dardanus. <seg source="#DS"
                 ><quote>penetravit</quote> autem bene, quia supra <ref>(1)</ref> dixerat
                 <quote>penitus</quote>.</seg></ab>
         </div>
-        <div type="textpart" n="11">
+        <div type="textpart" n="11" xml:id="line11">
+          <head>11.</head>
           <ab source="#DS"><quote type="lemma">Lydorvmqve manvm</quote> omnia haec ad occasionem
             faciendi| pertinent ex longinquitate, ut dictum est, regionis.</ab>
           <ab><quote type="lemma">armat agrestes</quote> ne ei formidinem iniciat, agrestes esse
             commemorat.</ab>
         </div>
-        <div type="textpart" n="12" source="#DS">
+        <div type="textpart" n="12" source="#DS" xml:id="line12">
+          <head>12.</head>
           <ab><quote type="lemma">nvnc tempvs</quote> a metu.</ab>
         </div>
 
