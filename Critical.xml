@@ -20,17 +20,17 @@
         </availability>
       </publicationStmt>
       <sourceDesc default="false">
-        <p part="N">Born digital.</p>
+        <p>Born digital.</p>
       </sourceDesc>
     </fileDesc>
   </teiHeader>
   <text>
     <front xml:id="front">
-      <div xml:id="preface" type="section" part="N" org="uniform" sample="complete">
+      <div xml:id="preface" type="section">
         <head>Preface</head>
         <!-- C.4 d.init. -->
         <!-- C.4 q.2-3 d.p.c.3 -->
-        <p part="N">
+        <p>
         Perhaps the most interesting text in the case is Gratian's
         one and only <hi rend="italic">dictum</hi>, C.4 q.2-3
         d.p.c.3. "Set obicitur illud beati Bricii, qui uoce pueri
@@ -51,7 +51,7 @@
         are to be wondered at, not to be taken as a pattern for
         human action."
         </p>
-        <p part="N">
+        <p>
         Gratian is referring to a story from Gregory of Tours,
         <title level="m">History of the Franks</title>, II.1, about
         St. Brice (†.444), St. Martin's controversial immediate
@@ -75,7 +75,7 @@
         saint's miraculous intervention, the child spoke plainly,
         answering that Brice was not its father.
         </p>
-        <p part="N">
+        <p>
         The <hi rend="italic">dictum</hi> is relevant in its immediate
         context, since Gratian is concluding his treatment of the
         second question, whether someone under the age of fourteen
@@ -85,7 +85,7 @@
         and by extension implies a negative judgement on the validity
         of trial by ordeal.
         </p>
-        <p part="N">
+        <p>
         <note place="foot" anchored="true">"It is remarkable that in his dicta
         Gratian refers to sources that are not cited in the Decretum.
         Many biblical citations, for example, are found only in the
@@ -94,7 +94,7 @@
         </p>
         <!-- 4.4.1 -->
         <!-- 4.6.1 and 4.6.2 rubrics -->
-        <p part="N">The text of the rubrics for 4.6.1 and 4.6.2 is quite similar in all
+        <p>The text of the rubrics for 4.6.1 and 4.6.2 is quite similar in all
         four R1 mss., and substantially different from the readings reported in
         Fr. 4.6.1: "Qui in accusatione episcopi culpabilis inuenitur ad
         arguendum de cetero non admittatur nisi propriam causam ciuilem
@@ -108,21 +108,21 @@
           from the second recension in the main section of its two volumes."
           Winroth, The Making of Gratian's Decretum, 122.
         -->
-        <p part="N">There are two marginal glosses in the Aa text of C.4 that refer to
+        <p>There are two marginal glosses in the Aa text of C.4 that refer to
         Burchard's <title level="m">Decretum</title>: "B.xvi. Nemo ſimul ſit."
         (Burchard 16.15) at 4.4.1, and "B.i. Qͥſqͥs." (Burchard 1.160) at 4.6.1.
         A rubric in between C.4 and C.5 ("Explicit liber quintus, incipit liber
         sextus, de episcoporum accusationibus") indicates a non-standard
         division of Aa into books.</p>
         <!-- Barcelona (Bc) -->
-        <p part="N">The order of rubrics in C.4 q.4 is reversed in Bc. The rubric for
+        <p>The order of rubrics in C.4 q.4 is reversed in Bc. The rubric for
         4.4.2 ("Quilibet in causa duas personas gerere non valet") appears
         before 4.4.1, and the rubric for 4.4.1 ("Accusator, testis vel iudex
         aliquis simul esse non potest") appears before 4.4.2. Bc includes two
         canons — 4.6.3 and 4.6.4 — not listed in Winroth's appendix and not
         found in either Aa or P.</p>
         <!-- Paris (P) -->
-        <p part="N">The quality of scribal workmanship in P is visibly less professional
+        <p>The quality of scribal workmanship in P is visibly less professional
         than that in either Aa or Bc.</p>
         <!--
         cf. Mantello and Rigg
@@ -132,7 +132,7 @@
         except after <hi rend="italic">s</hi> and <hi rend="italic">x</hi>,
         e.g. <hi rend="italic">mixtio</hi>."
         -->
-        <p part="N">
+        <p>
         In addition to scribal errors, Aa, Bc, and P reflect divergence from
         Classical Latin orthography for
         <hi rend="italic">ci</hi> and <hi rend="italic">ti</hi>.
@@ -146,9 +146,9 @@
         <hi rend="italic">tercio</hi>.
         </p>
       </div>
-      <div xml:id="bibliography" type="section" part="N" org="uniform" sample="complete">
+      <div xml:id="bibliography" type="section">
         <head>Bibliography</head>
-        <div xml:id="bibliography-modern-editions" type="section" part="N" org="uniform" sample="complete">
+        <div xml:id="bibliography-modern-editions" type="section">
           <head>Modern Editions</head>
           <listBibl type="editions-sources" default="false">
             <bibl xml:id="Fr." default="false" status="draft">
@@ -162,7 +162,7 @@
             </bibl>
           </listBibl>
         </div>
-        <div xml:id="bibliography-secondary-sources" type="section" part="N" org="uniform" sample="complete">
+        <div xml:id="bibliography-secondary-sources" type="section">
           <head>Secondary Sources</head>
           <listBibl type="secondary-sources" default="false">
             <!-- CETEIcean cannot format <biblStruct> exported by Zotero -->
@@ -177,7 +177,7 @@
           </listBibl>
         </div>
       </div>
-      <div xml:id="conspectus" type="section" part="N" org="uniform" sample="complete">
+      <div xml:id="conspectus" type="section">
         <head>Conspectus</head>
         <listWit>
           <witness xml:id="Aa">
@@ -202,14 +202,14 @@
       </div>
     </front>
     <body>
-      <div xml:id="edition-text" type="edition" xml:space="preserve" part="N" org="uniform" sample="complete">
+      <div xml:id="edition-text" type="edition" xml:space="preserve">
         <head>Edition</head>
-        <div xml:id="d1e277" type="textpart" subtype="part" part="N" org="uniform" sample="complete">
-          <div xml:id="d1e279" type="textpart" subtype="case" n="C.4" part="N" org="uniform" sample="complete">
+        <div xml:id="d1e277" type="textpart" subtype="part">
+          <div xml:id="d1e279" type="textpart" subtype="case" n="C.4">
             <head>(C.4)</head>
-            <div xml:id="d1e284" type="textpart" subtype="dictum" n="C.4 d.init." part="N" org="uniform" sample="complete">
+            <div xml:id="d1e284" type="textpart" subtype="dictum" n="C.4 d.init.">
               <head>(C.4 d.init.)</head>
-              <ab part="N">
+              <ab>
                 <app>
                   <lem wit="#Aa #Bc">Quidam</lem>
                   <rdg wit="#P"/>
@@ -304,11 +304,11 @@
                 fuerit, an ad assertionem proprie cause de cetero sit admittenda?
               </ab>
             </div>
-            <div xml:id="d1e444" type="textpart" subtype="question" n="C.4 q.1" part="N" org="uniform" sample="complete">
+            <div xml:id="d1e444" type="textpart" subtype="question" n="C.4 q.1">
               <head>(C.4 q.1)</head>
-              <div xml:id="d1e449" type="textpart" subtype="dictum" n="C.4 q.1 d.a.c.1" part="N" org="uniform" sample="complete">
+              <div xml:id="d1e449" type="textpart" subtype="dictum" n="C.4 q.1 d.a.c.1">
                 <head>(C.4 q.1 d.a.c.1)</head>
-                <ab part="N">
+                <ab>
                   De prima questione sic statutum legitur in
                   <app>
                     <lem wit="#Aa #P">concilio</lem>
@@ -317,10 +317,10 @@
                   Cartaginensi .vii. cui interfuit Faustinus Romane ecclesie legatus:
                 </ab>
               </div>
-              <div xml:id="d1e467" type="textpart" subtype="chapter" n="C.4 q.1 c.1" part="N" org="uniform" sample="complete">
+              <div xml:id="d1e467" type="textpart" subtype="chapter" n="C.4 q.1 c.1">
                 <head>(C.4 q.1 c.1)</head>
-                <div xml:id="d1e472" type="textpart" subtype="rubric" part="N" org="uniform" sample="complete">
-                  <ab part="N">
+                <div xml:id="d1e472" type="textpart" subtype="rubric">
+                  <ab>
                     Ad accusandum non
                     <app>
                       <lem wit="#Aa #Bc">admittitur</lem>
@@ -329,7 +329,7 @@
                     qui in excommunicatione perseuerat.
                   </ab>
                 </div>
-                <div xml:id="d1e487" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
+                <div xml:id="d1e487" type="textpart" subtype="canon">
                   <!--
                     Clavis Canonum search for
                     Incipit = 'definimus eum rite ad accusationem non' and
@@ -344,7 +344,7 @@
                     (matches P) returns 1 result:
                     DS06.01.080
                   -->
-                  <ab part="N">
+                  <ab>
                     Diffinimus, eum rite ad accusationem non admitti, qui
                     posteaquam excommunicatus
                     <app>
@@ -370,11 +370,11 @@
                 </div>
               </div>
             </div>
-            <div xml:id="d1e526" type="textpart" subtype="question" n="C.4 q.2-3" part="N" org="uniform" sample="complete">
+            <div xml:id="d1e526" type="textpart" subtype="question" n="C.4 q.2-3">
               <head>(C.4 q.2-3)</head>
-              <div xml:id="d1e531" type="textpart" subtype="dictum" n="C.4 q.2-3 d.a.c.1" part="N" org="uniform" sample="complete">
+              <div xml:id="d1e531" type="textpart" subtype="dictum" n="C.4 q.2-3 d.a.c.1">
                 <head>(C.4 q.2-3 d.a.c.1)</head>
-                <ab part="N">
+                <ab>
                   Secunda autem et
                   <app>
                     <lem wit="#Aa #Bc #P">tercia</lem>
@@ -388,10 +388,10 @@
                   Illud uero est huiusmodi:
                 </ab>
               </div>
-              <div xml:id="d1e558" type="textpart" subtype="chapter" n="C.4 q.2-3 c.1" part="N" org="uniform" sample="complete">
+              <div xml:id="d1e558" type="textpart" subtype="chapter" n="C.4 q.2-3 c.1">
                 <head>(C.4 q.2-3 c.1)</head>
-                <div xml:id="d1e563" type="textpart" subtype="rubric" part="N" org="uniform" sample="complete">
-                  <ab part="N">
+                <div xml:id="d1e563" type="textpart" subtype="rubric">
+                  <ab>
                     Qui ab accusatione repelluntur,
                     <app>
                       <lem wit="#P #Fr.">aut</lem>
@@ -401,8 +401,8 @@
                     ad annum .xiiii. nondum peruenerunt, testes esse non possunt.
                   </ab>
                 </div>
-                <div xml:id="d1e580" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
-                  <ab part="N">
+                <div xml:id="d1e580" type="textpart" subtype="canon">
+                  <ab>
                     Testes autem ad testimonium
                     <app>
                       <lem wit="#Aa #Bc">non</lem>
@@ -429,10 +429,10 @@
                     annos .xiiii. etatis sue constituti non admittantur.
                   </ab>
                 </div>
-                <div xml:id="d1e617" type="textpart" subtype="dictum" n="C.4 q.2-3 d.p.c.3" part="N" org="uniform" sample="complete">
+                <div xml:id="d1e617" type="textpart" subtype="dictum" n="C.4 q.2-3 d.p.c.3">
                   <head>(C.4 q.2-3 d.p.c.3)</head>
                   <!-- "Set" or "Sed"? S; in Aa and P, S⁊ in Bc. -->
-                  <ab part="N">
+                  <ab>
                     Set obicitur illud beati
                     <app>
                       <lem wit="#Bc #P">Bricii</lem>
@@ -454,11 +454,11 @@
                 </div>
               </div>
             </div>
-            <div xml:id="d1e657" type="textpart" subtype="question" n="C.4 q.4" part="N" org="uniform" sample="complete">
+            <div xml:id="d1e657" type="textpart" subtype="question" n="C.4 q.4">
               <head>(C.4 q.4)</head>
-              <div xml:id="d1e662" type="textpart" subtype="dictum" n="C.4 q.4 d.a.c.1" part="N" org="uniform" sample="complete">
+              <div xml:id="d1e662" type="textpart" subtype="dictum" n="C.4 q.4 d.a.c.1">
                 <head>(C.4 q.4 d.a.c.1)</head>
-                <ab part="N">
+                <ab>
                   De
                   <app>
                     <lem wit="#Bc #P">quarta</lem>
@@ -467,18 +467,18 @@
                   uero questione Fabianus papa constituit, dicens:
                 </ab>
               </div>
-              <div xml:id="d1e680" type="textpart" subtype="chapter" n="C.4 q.4 c.1" part="N" org="uniform" sample="complete">
+              <div xml:id="d1e680" type="textpart" subtype="chapter" n="C.4 q.4 c.1">
                 <head>(C.4 q.4 c.1)</head>
-                <div xml:id="d1e685" type="textpart" subtype="rubric" part="N" org="uniform" sample="complete">
-                  <ab part="N">
+                <div xml:id="d1e685" type="textpart" subtype="rubric">
+                  <ab>
                     <app>
                       <lem wit="#Aa #P">Accusator, testis uel iudex aliquis simul esse non potest.</lem>
                       <rdg wit="#Bc">Quilibet duas personas in causa <sic>gegrere</sic> non ualet.</rdg>
                     </app>
                   </ab>
                 </div>
-                <div xml:id="d1e703" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
-                  <ab part="N">
+                <div xml:id="d1e703" type="textpart" subtype="canon">
+                  <ab>
                     Nullus umquam presumat accusator simul esse et iudex uel testis, quoniam in omni
                     <app>
                       <lem wit="#Aa #P">iudicio</lem>
@@ -513,7 +513,7 @@
                     </app>.
                   </ab>
                   <!-- Aa only, possible later addition, foot of 149v -->
-                  <ab part="N">
+                  <ab>
                     <app>
                       <lem wit="#Aa">
                       Iudices
@@ -542,21 +542,21 @@
                   </ab>
                 </div>
               </div>
-              <div xml:id="d1e855" type="textpart" subtype="chapter" n="C.4 q.4 c.2" part="N" org="uniform" sample="complete">
+              <div xml:id="d1e855" type="textpart" subtype="chapter" n="C.4 q.4 c.2">
                 <head>(C.4 q.4 c.2)</head>
-                <div xml:id="d1e860" type="textpart" subtype="inscription" part="N" org="uniform" sample="complete">
-                  <ab part="N">Item Damasus papa.</ab>
+                <div xml:id="d1e860" type="textpart" subtype="inscription">
+                  <ab>Item Damasus papa.</ab>
                 </div>
-                <div xml:id="d1e866" type="textpart" subtype="rubric" part="N" org="uniform" sample="complete">
-                  <ab part="N">
+                <div xml:id="d1e866" type="textpart" subtype="rubric">
+                  <ab>
                     <app>
                       <lem wit="#Aa #P">Quilibet in causa duas personas gerere non ualet.</lem>
                       <rdg wit="#Bc">Accusator, testis uel iudex aliquis simul esse non potest.</rdg>
                     </app>
                   </ab>
                 </div>
-                <div xml:id="d1e881" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
-                  <ab part="N">
+                <div xml:id="d1e881" type="textpart" subtype="canon">
+                  <ab>
                     Nullus introducatur personaliter
                     <app>
                       <lem wit="#Aa #Bc">ad causam</lem>
@@ -600,11 +600,11 @@
                 </div>
               </div>
             </div>
-            <div xml:id="d1e947" type="textpart" subtype="question" n="C.4 q.5" part="N" org="uniform" sample="complete">
+            <div xml:id="d1e947" type="textpart" subtype="question" n="C.4 q.5">
               <head>(C.4 q.5)</head>
-              <div xml:id="d1e952" type="textpart" subtype="dictum" n="C.4 q.5 d.a.c.1" part="N" org="uniform" sample="complete">
+              <div xml:id="d1e952" type="textpart" subtype="dictum" n="C.4 q.5 d.a.c.1">
                 <head>(C.4 q.5 d.a.c.1)</head>
-                <ab part="N">
+                <ab>
                   De .v. uero questione in concilio cartaginensi
                   <app>
                     <lem wit="#Bc">tertio</lem>
@@ -619,16 +619,16 @@
                   diffinitum.
                 </ab>
               </div>
-              <div xml:id="d1e983" type="textpart" subtype="chapter" n="C.4 q.5 c.1" part="N" org="uniform" sample="complete">
+              <div xml:id="d1e983" type="textpart" subtype="chapter" n="C.4 q.5 c.1">
                 <head>(C.4 q.5 c.1)</head>
-                <div xml:id="d1e988" type="textpart" subtype="rubric" part="N" org="uniform" sample="complete">
-                  <ab part="N">
+                <div xml:id="d1e988" type="textpart" subtype="rubric">
+                  <ab>
                     Non est a communione suspendendus, qui die statuta ad causam
                     peruenire non potuit.
                   </ab>
                 </div>
-                <div xml:id="d1e994" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
-                  <ab part="N">
+                <div xml:id="d1e994" type="textpart" subtype="canon">
+                  <ab>
                     Quisquis episcoporum accusatur, ad primates
                     <app>
                       <lem wit="#Aa #P">prouincie</lem>
@@ -719,22 +719,22 @@
                 </div>
               </div>
             </div>
-            <div xml:id="d1e1136" type="textpart" subtype="question" n="C.4 q.6" part="N" org="uniform" sample="complete">
+            <div xml:id="d1e1136" type="textpart" subtype="question" n="C.4 q.6">
               <head>(C.4 q.6)</head>
-              <div xml:id="d1e1141" type="textpart" subtype="dictum" n="C.4 q.6 d.a.c.1" part="N" org="uniform" sample="complete">
+              <div xml:id="d1e1141" type="textpart" subtype="dictum" n="C.4 q.6 d.a.c.1">
                 <head>(C.4 q.6 d.a.c.1)</head>
-                <ab part="N">
+                <ab>
                   Sexta uero questio eodem capitulo terminatur, in quo sequitur:
                 </ab>
               </div>
-              <div xml:id="d1e1150" type="textpart" subtype="chapter" n="C.4 q.6 c.1" part="N" org="uniform" sample="complete">
+              <div xml:id="d1e1150" type="textpart" subtype="chapter" n="C.4 q.6 c.1">
                 <head>(C.4 q.6 c.1)</head>
-                <div xml:id="d1e1155" type="textpart" subtype="rubric" part="N" org="uniform" sample="complete">
+                <div xml:id="d1e1155" type="textpart" subtype="rubric">
                   <!--
                     R2: "In ciuili et proprio dumtaxat negotio ad arguendum
                     admittitur, qui in episcopi accusatione culpabilis inuenitur."
                   -->
-                  <ab part="N">
+                  <ab>
                     Qui in accusatione episcopi culpabilis inuenitur ad
                     arguendum de cetero non admittatur nisi propriam causam
                     <app>
@@ -744,8 +744,8 @@
                     solummodo asserere uoluerit.
                   </ab>
                 </div>
-                <div xml:id="d1e1171" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
-                  <ab part="N">
+                <div xml:id="d1e1171" type="textpart" subtype="canon">
+                  <ab>
                     Illud uero placuit, ut cum agere ceperit in episcoporum
                     <app>
                       <lem wit="#Aa #P">iudicio</lem>
@@ -766,10 +766,10 @@
                   </ab>
                 </div>
               </div>
-              <div xml:id="d1e1204" type="textpart" subtype="chapter" n="C.4 q.6 c.2" part="N" org="uniform" sample="complete">
+              <div xml:id="d1e1204" type="textpart" subtype="chapter" n="C.4 q.6 c.2">
                 <head>(C.4 q.6 c.2)</head>
-                <div xml:id="d1e1209" type="textpart" subtype="inscription" part="N" org="uniform" sample="complete">
-                  <ab part="N">
+                <div xml:id="d1e1209" type="textpart" subtype="inscription">
+                  <ab>
                     Item ex
                     <app>
                       <lem wit="#Aa #P">concilio</lem>
@@ -785,9 +785,9 @@
                     </app>
                   </ab>
                 </div>
-                <div xml:id="d1e1242" type="textpart" subtype="rubric" part="N" org="uniform" sample="complete">
+                <div xml:id="d1e1242" type="textpart" subtype="rubric">
                   <!-- R2: "Propriam causam agere ualet cui accusare non licet." -->
-                  <ab part="N">
+                  <ab>
                     Non
                     <app>
                       <lem wit="#Aa #Bc">negatur</lem>
@@ -816,8 +816,8 @@
                     accusatio interdicitur.
                   </ab>
                 </div>
-                <div xml:id="d1e1290" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
-                  <ab part="N">
+                <div xml:id="d1e1290" type="textpart" subtype="canon">
+                  <ab>
                     Omnibus quibus accusatio denegatur in causis propriis
                     accusandi licentia
                     <app>
@@ -829,13 +829,13 @@
                 </div>
               </div>
               <!-- 4.6.3 Bc only -->
-              <div xml:id="d1e1309" type="textpart" subtype="chapter" n="C.4 q.6 c.3" part="N" org="uniform" sample="complete">
+              <div xml:id="d1e1309" type="textpart" subtype="chapter" n="C.4 q.6 c.3">
                 <head>(C.4 q.6 c.3)</head>
-                <div xml:id="d1e1314" type="textpart" subtype="inscription" part="N" org="uniform" sample="complete">
-                  <ab part="N">Item Felix episcopus omnibus episcopis</ab>
+                <div xml:id="d1e1314" type="textpart" subtype="inscription">
+                  <ab>Item Felix episcopus omnibus episcopis</ab>
                 </div>
-                <div xml:id="d1e1320" type="textpart" subtype="rubric" part="N" org="uniform" sample="complete">
-                  <ab part="N">
+                <div xml:id="d1e1320" type="textpart" subtype="rubric">
+                  <ab>
                     In episcoporum accusatione
                     <app>
                       <lem>deficiens</lem>
@@ -849,8 +849,8 @@
                     experiri poterit.
                   </ab>
                 </div>
-                <div xml:id="d1e1344" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
-                  <ab part="N">
+                <div xml:id="d1e1344" type="textpart" subtype="canon">
+                  <ab>
                     Si accusatorum persone in
                     <app>
                       <lem>iudicio</lem>
@@ -868,13 +868,13 @@
                 </div>
               </div>
               <!-- 4.6.4 Bc only -->
-              <div xml:id="d1e1374" type="textpart" subtype="chapter" n="C.4 q.6 c.4" part="N" org="uniform" sample="complete">
+              <div xml:id="d1e1374" type="textpart" subtype="chapter" n="C.4 q.6 c.4">
                 <head>(C.4 q.6 c.4)</head>
-                <div xml:id="d1e1379" type="textpart" subtype="inscription" part="N" org="uniform" sample="complete">
-                  <ab part="N">Item Adrianus papa</ab>
+                <div xml:id="d1e1379" type="textpart" subtype="inscription">
+                  <ab>Item Adrianus papa</ab>
                 </div>
-                <div xml:id="d1e1385" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
-                  <ab part="N">
+                <div xml:id="d1e1385" type="textpart" subtype="canon">
+                  <ab>
                     Quod si accusatorum persone in
                     <app>
                       <lem>iudicio</lem>
