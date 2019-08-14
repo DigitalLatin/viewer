@@ -3163,7 +3163,7 @@ eleventh to early thirteenth centuries.</p>
 <div type="edition" xml:lang="la-GB" xml:space="preserve">
 <pb n="1r"/>
 <cb n="a"/>
-<div type="textpart" subtype="prologus">
+<div type="textpart" subtype="prologus" xml:id="d1">
 <head rend="red">
 <lb/>Incipit prologus <app><lem>domni</lem><rdg source="#Acta">a Domini</rdg></app> <persName ref="https://wikidata.org/wiki/Q27455934">philippi</persName> prioris
 <lb/>de miraculis sancte <persName ref="https://wikidata.org/wiki/Q1314431">frideswide</persName>.

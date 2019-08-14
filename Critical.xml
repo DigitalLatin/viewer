@@ -1,0 +1,894 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-model href="https://digitallatin.github.io/guidelines/critical-editions.rng"
+            type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?><?xml-model href="https://digitallatin.github.io/guidelines/critical-editions.rng"
+            type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?><TEI xmlns="http://www.tei-c.org/ns/1.0">
+  <teiHeader>
+    <fileDesc>
+      <titleStmt>
+        <title>Decretum Gratiani</title>
+        <author>Gratian, active 12th century</author>
+        <editor role="Editor">Paul Evans</editor>
+        <editor role="Associate Editor">Emily Bolender</editor>
+        <editor role="Associate Editor">Paige Ferguson</editor>
+      </titleStmt>
+      <publicationStmt>
+        <publisher>Stephan Kuttner Institute</publisher>
+        <date instant="false">2020</date>
+        <availability default="false" status="unknown">
+          <licence target="https://creativecommons.org/licenses/by/4.0/">
+            Distributed under a Creative Commons Attribution 4.0 International License.
+          </licence>
+        </availability>
+      </publicationStmt>
+      <sourceDesc default="false">
+        <p part="N">Born digital.</p>
+      </sourceDesc>
+    </fileDesc>
+  </teiHeader>
+  <text>
+    <front xml:id="front">
+      <div xml:id="preface" type="section" part="N" org="uniform" sample="complete">
+        <head>Preface</head>
+        <!-- C.4 d.init. -->
+        <!-- C.4 q.2-3 d.p.c.3 -->
+        <p part="N">
+        Perhaps the most interesting text in the case is Gratian's
+        one and only <hi rend="italic">dictum</hi>, C.4 q.2-3
+        d.p.c.3. "Set obicitur illud beati Bricii, qui uoce pueri
+        xxx dies ab ortu habentis innocens probatus est. Set miracula
+        diuina sunt admiranda, non in exemplum humane actionis
+        trahenda." The Latin of the first sentence is somewhat
+        opaque. Taking the accusative plural <hi rend="italic">dies</hi>
+        as the object of <hi rend="italic">habentis</hi>, and
+        supplying <hi rend="italic">exemplum</hi> because it is
+        neuter and can be construed with <hi rend="italic">illud</hi>,
+        the sentence can be literally translated as "But that
+        [example] of blessed Brice is objected, who was proved
+        innocent by the voice of the child having thirty days from
+        its birth or origin." The <hi rend="italic">dictum</hi> can
+        be translated into more idiomatic English as "But a
+        counter-example is that of St. Brice, who was proved innocent
+        by the word of a thirty-day-old child. But divine miracles
+        are to be wondered at, not to be taken as a pattern for
+        human action."
+        </p>
+        <p part="N">
+        Gratian is referring to a story from Gregory of Tours,
+        <title level="m">History of the Franks</title>, II.1, about
+        St. Brice (†.444), St. Martin's controversial immediate
+        successor as bishop of Tours. This is the only mention of
+        Brice in the <title level="m">Decretum</title>, and
+        <title level="m">History of the Franks</title> falls outside
+        what we normally consider to be the boundaries of Gratian's
+        formal or material sources. (Friedberg attributes the story
+        to the <title level="m">Life of St. Martin</title> by
+        Sulpicius Severus, although he really seems to have had in
+        mind an unrelated story from the third book of Sulpicius's
+        <title level="m">Dialogues</title> in which Marin compares
+        Brice to Judas. In any event Friedberg was wrong, the proper
+        attribution is to Gregory.) Gregory relates the story of a
+        nun or consecrated virgin serving as a laundress for Brice's
+        episcopal household who became pregnant and delivered a
+        child. The people of Tours, with whom Brice was already
+        quite unpopular, suspected that he was the father. Brice
+        had the thirty-day-old infant brought to him, and questioned
+        the child publicly concerning his paternity. Through the
+        saint's miraculous intervention, the child spoke plainly,
+        answering that Brice was not its father.
+        </p>
+        <p part="N">
+        The <hi rend="italic">dictum</hi> is relevant in its immediate
+        context, since Gratian is concluding his treatment of the
+        second question, whether someone under the age of fourteen
+        is able to testify in a criminal case. But Gratian's reference
+        to this obscure story also seems intended to caution against
+        depending on miracles as a regular part of criminal procedure,
+        and by extension implies a negative judgement on the validity
+        of trial by ordeal.
+        </p>
+        <p part="N">
+        <note place="foot" anchored="true">"It is remarkable that in his dicta
+        Gratian refers to sources that are not cited in the Decretum.
+        Many biblical citations, for example, are found only in the
+        dicta. They are often tied to important theological reflections
+        ..." (Landau, "Gratian and the Decretum Gratiani", 41.)</note>
+        </p>
+        <!-- 4.4.1 -->
+        <!-- 4.6.1 and 4.6.2 rubrics -->
+        <p part="N">The text of the rubrics for 4.6.1 and 4.6.2 is quite similar in all
+        four R1 mss., and substantially different from the readings reported in
+        Fr. 4.6.1: "Qui in accusatione episcopi culpabilis inuenitur ad
+        arguendum de cetero non admittatur nisi propriam causam ciuilem
+        solummodo asserere uoluerit" in Aa Bc Fd P, and "In ciuili et proprio
+        dumtaxat negotio ad arguendum admittitur, qui in episcopi accusatione
+        culpabilis inuenitur" in Fr. 4.6.2: "Non negatur audientia in propria
+        causa cuius accusatio interdicitur" in Aa Bc Fd P, and "Propriam causam
+        agere ualet cui accusare non licet" in Fr.</p>
+        <!--
+          "(Admont) Aa contains the same text (as Bc Fd P) with interpolations
+          from the second recension in the main section of its two volumes."
+          Winroth, The Making of Gratian's Decretum, 122.
+        -->
+        <p part="N">There are two marginal glosses in the Aa text of C.4 that refer to
+        Burchard's <title level="m">Decretum</title>: "B.xvi. Nemo ſimul ſit."
+        (Burchard 16.15) at 4.4.1, and "B.i. Qͥſqͥs." (Burchard 1.160) at 4.6.1.
+        A rubric in between C.4 and C.5 ("Explicit liber quintus, incipit liber
+        sextus, de episcoporum accusationibus") indicates a non-standard
+        division of Aa into books.</p>
+        <!-- Barcelona (Bc) -->
+        <p part="N">The order of rubrics in C.4 q.4 is reversed in Bc. The rubric for
+        4.4.2 ("Quilibet in causa duas personas gerere non valet") appears
+        before 4.4.1, and the rubric for 4.4.1 ("Accusator, testis vel iudex
+        aliquis simul esse non potest") appears before 4.4.2. Bc includes two
+        canons — 4.6.3 and 4.6.4 — not listed in Winroth's appendix and not
+        found in either Aa or P.</p>
+        <!-- Paris (P) -->
+        <p part="N">The quality of scribal workmanship in P is visibly less professional
+        than that in either Aa or Bc.</p>
+        <!--
+        cf. Mantello and Rigg
+        A.G. Rigg, CB "Orthography and Punctuation", 79
+        "Before a vowel, -<hi rend="italic">ti</hi>- is usually spelled -<hi rend="italic">ci</hi>-,
+        e.g., <hi rend="italic">racio</hi> = <hi rend="italic">ratio</hi>,
+        except after <hi rend="italic">s</hi> and <hi rend="italic">x</hi>,
+        e.g. <hi rend="italic">mixtio</hi>."
+        -->
+        <p part="N">
+        In addition to scribal errors, Aa, Bc, and P reflect divergence from
+        Classical Latin orthography for
+        <hi rend="italic">ci</hi> and <hi rend="italic">ti</hi>.
+        Aa: <hi rend="italic">spacium</hi>;
+        Bc: <hi rend="italic">defitiens</hi>,
+        <hi rend="italic">iuditio</hi> and
+        <hi rend="italic">iuditium</hi>, and
+        <hi rend="italic">prouintie</hi>; and
+        P: <hi rend="italic">accionis</hi>,
+        <hi rend="italic">audiencia</hi>, and
+        <hi rend="italic">tercio</hi>.
+        </p>
+      </div>
+      <div xml:id="bibliography" type="section" part="N" org="uniform" sample="complete">
+        <head>Bibliography</head>
+        <div xml:id="bibliography-modern-editions" type="section" part="N" org="uniform" sample="complete">
+          <head>Modern Editions</head>
+          <listBibl type="editions-sources" default="false">
+            <bibl xml:id="Fr." default="false" status="draft">
+              <abbr type="siglum">Fr.</abbr>
+              = Friedberg, Emil, ed.,
+              <title level="m">Corpus iuris canonici</title>.
+              I,
+              <title level="m">Decretum magistri Gratiani</title>.
+              Leipzig, 1879.
+              <!-- 536-544 -->
+            </bibl>
+          </listBibl>
+        </div>
+        <div xml:id="bibliography-secondary-sources" type="section" part="N" org="uniform" sample="complete">
+          <head>Secondary Sources</head>
+          <listBibl type="secondary-sources" default="false">
+            <!-- CETEIcean cannot format <biblStruct> exported by Zotero -->
+            <bibl default="false" status="draft">Landau, Peter. “Gratian and the Decretum Gratiani.” In <title level="m">The History of Medieval Canon Law in the Classical Period,
+            1140-1234: From Gratian to the Decretals of Pope Gregory IX</title>,
+            edited by Wilfried Hartmann and Kenneth Pennington, 22–54. History
+            of Medieval Canon Law. Washington, D.C: Catholic University of
+            America Press, 2008.</bibl>
+            <bibl default="false" status="draft">Winroth, Anders. <title level="m">The Making of Gratian’s
+            Decretum.</title> Cambridge: Cambridge University Press,
+            2000.</bibl>
+          </listBibl>
+        </div>
+      </div>
+      <div xml:id="conspectus" type="section" part="N" org="uniform" sample="complete">
+        <head>Conspectus</head>
+        <listWit>
+          <witness xml:id="Aa">
+            <abbr type="siglum">Aa</abbr>
+            = Admont, Stiftsbibliothek 23 and 43.
+            <!-- 149r-150r -->
+          </witness>
+          <witness xml:id="Bc">
+            <abbr type="siglum">Bc</abbr>
+            = Barcelona, Arxiu de la Corona d'Aragó, Santa Maria de Ripoll 78.
+            <!-- 142v-143v -->
+          </witness>
+          <witness xml:id="Fd">
+            <abbr type="siglum">Fd</abbr>
+            = Florence, Biblioteca Nazionale, Conv. Soppr. A I.402.
+          </witness>
+          <witness xml:id="P">
+            <abbr type="siglum">P</abbr>
+            = Paris, Bibliothèque nationale de France, nouvelles acquisitions latines 1761.
+          </witness>
+        </listWit>
+      </div>
+    </front>
+    <body>
+      <div xml:id="edition-text" type="edition" xml:space="preserve" part="N" org="uniform" sample="complete">
+        <head>Edition</head>
+        <div xml:id="d1e277" type="textpart" subtype="part" part="N" org="uniform" sample="complete">
+          <div xml:id="d1e279" type="textpart" subtype="case" n="C.4" part="N" org="uniform" sample="complete">
+            <head>(C.4)</head>
+            <div xml:id="d1e284" type="textpart" subtype="dictum" n="C.4 d.init." part="N" org="uniform" sample="complete">
+              <head>(C.4 d.init.)</head>
+              <ab part="N">
+                <app>
+                  <lem wit="#Aa #Bc">Quidam</lem>
+                  <rdg wit="#P"/>
+                </app>
+                in
+                <app>
+                  <lem wit="#Aa #Bc">excommunicatione</lem>
+                  <rdg wit="#P">excomunicatione</rdg>
+                </app>
+                constitutus episcopum accusare disponit;
+                <app>
+                  <lem wit="#Aa #P">adolescentem</lem>
+                  <rdg wit="#Bc">adulescentem</rdg>
+                </app>
+                infra xiiiium
+                <app>
+                  <lem wit="#Bc #P">etatis sue annum</lem>
+                  <rdg wit="#Aa">annum etatis sue</rdg>
+                </app>
+                ad assertionem sue cause adducit. Prohibitus ab accusatione
+                adolescentem accusatorem et se testem facit. Adolescens personam
+                accusatoris et testis gerere cupit;
+                <app>
+                  <lem wit="#Aa #Bc">die</lem>
+                  <rdg wit="#P">di</rdg>
+                </app>
+                statuta ad
+                <app>
+                  <lem wit="#Aa #P">iudicium</lem>
+                  <rdg wit="#Bc">iuditium</rdg>
+                </app>
+                electorum
+                <app>
+                  <lem wit="#Aa #Bc">iudicum</lem>
+                  <rdg wit="#P">iudicium</rdg>
+                </app>
+                episcopus minime
+                <app>
+                  <lem wit="#Aa #Bc #P">concurrit</lem>
+                  <rdg wit="#Fr.">occurrit</rdg>
+                </app>;
+                a communione
+                <app>
+                  <lem wit="#Aa #Bc">suspenditur</lem>
+                  <rdg wit="#P">suspendere</rdg>
+                </app>;
+                tandem renouato
+                <app>
+                  <lem wit="#Aa #P">iudicio</lem>
+                  <rdg wit="#Bc">iuditio</rdg>
+                </app>
+                accusator culpabilis in accusatione
+                inuenitur; demum ad assertionem proprie cause procedit. Hic primum
+                queritur, an in excommunicatione constitutus alium accusare ualeat?
+                Secundo,
+                <app>
+                  <lem wit="#Aa #Bc">an</lem>
+                  <rdg wit="#P">autem</rdg>
+                </app>
+                infra
+                <app>
+                  <lem wit="#Aa #Bc"/>
+                  <rdg wit="#P">infra</rdg>
+                </app>
+                xiiiium annum in
+                <app>
+                  <lem wit="#Aa #Bc">criminali</lem>
+                  <rdg wit="#P">criminari</rdg>
+                </app>
+                causa testari quis possit? Tercio, utrum
+                <app>
+                  <lem wit="#Aa #Bc">ab</lem>
+                  <rdg wit="#P"/>
+                </app>
+                accusatione prohibitus personam testificantis possit assumere?
+                Quarto,
+                <app>
+                  <lem wit="#Aa #Bc">an idem possit esse accusator et testis? Quinto,</lem>
+                  <rdg wit="#P"/>
+                </app>
+                <app>
+                  <lem wit="#Aa #Bc">an</lem>
+                  <rdg wit="#P">aut</rdg>
+                </app>
+                die constituta non occurrens a communione sit remouendus? Sexto, si
+                in episcoporum
+                <app>
+                  <lem wit="#Aa #P">iudicio</lem>
+                  <rdg wit="#Bc">iuditio</rdg>
+                </app>
+                accusatoris persona culpabilis inuenta
+                fuerit, an ad assertionem proprie cause de cetero sit admittenda?
+              </ab>
+            </div>
+            <div xml:id="d1e444" type="textpart" subtype="question" n="C.4 q.1" part="N" org="uniform" sample="complete">
+              <head>(C.4 q.1)</head>
+              <div xml:id="d1e449" type="textpart" subtype="dictum" n="C.4 q.1 d.a.c.1" part="N" org="uniform" sample="complete">
+                <head>(C.4 q.1 d.a.c.1)</head>
+                <ab part="N">
+                  De prima questione sic statutum legitur in
+                  <app>
+                    <lem wit="#Aa #P">concilio</lem>
+                    <rdg wit="#Bc">comcilio</rdg>
+                  </app>
+                  Cartaginensi .vii. cui interfuit Faustinus Romane ecclesie legatus:
+                </ab>
+              </div>
+              <div xml:id="d1e467" type="textpart" subtype="chapter" n="C.4 q.1 c.1" part="N" org="uniform" sample="complete">
+                <head>(C.4 q.1 c.1)</head>
+                <div xml:id="d1e472" type="textpart" subtype="rubric" part="N" org="uniform" sample="complete">
+                  <ab part="N">
+                    Ad accusandum non
+                    <app>
+                      <lem wit="#Aa #Bc">admittitur</lem>
+                      <rdg wit="#P">admittatur</rdg>
+                    </app>
+                    qui in excommunicatione perseuerat.
+                  </ab>
+                </div>
+                <div xml:id="d1e487" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
+                  <!--
+                    Clavis Canonum search for
+                    Incipit = 'definimus eum rite ad accusationem non' and
+                    Explicit = 'voluerit accusare laicus'
+                    (matches Aa, Bc) returns 7 results:
+                    AE03.117, CA05.077, DR02.32.126, ID14.069,
+                    LP0647, PX05.01.51, and RM222.
+
+                    Clavis Canonum search for
+                    Incipit = 'definimus eum rite ad accusationem non' and
+                    Explicit = 'voluerit accusare clericus'
+                    (matches P) returns 1 result:
+                    DS06.01.080
+                  -->
+                  <ab part="N">
+                    Diffinimus, eum rite ad accusationem non admitti, qui
+                    posteaquam excommunicatus
+                    <app>
+                      <lem wit="#Aa #Bc">fuerit</lem>
+                      <rdg wit="#P">fuit</rdg>
+                    </app>,
+                    in ipsa adhuc excommunicatione constitutus, siue sit
+                    clericus
+                    <app>
+                      <lem wit="#Aa #Bc">siue laicus</lem>
+                      <rdg wit="#P"/>
+                    </app>,
+                    accusare uoluerit. Omnes etiam infamie maculis aspersi, id
+                    est
+                    <app>
+                      <lem wit="#Bc #P">istriones</lem>
+                      <rdg wit="#Aa">hystriones</rdg>
+                      <rdg wit="#Fr.">histriones</rdg>
+                    </app>
+                    aut turpitudinibus subiecte persone, heretici etiam, siue
+                    pagani siue Iudei, ab accusatione prohibentur.
+                  </ab>
+                </div>
+              </div>
+            </div>
+            <div xml:id="d1e526" type="textpart" subtype="question" n="C.4 q.2-3" part="N" org="uniform" sample="complete">
+              <head>(C.4 q.2-3)</head>
+              <div xml:id="d1e531" type="textpart" subtype="dictum" n="C.4 q.2-3 d.a.c.1" part="N" org="uniform" sample="complete">
+                <head>(C.4 q.2-3 d.a.c.1)</head>
+                <ab part="N">
+                  Secunda autem et
+                  <app>
+                    <lem wit="#Aa #Bc #P">tercia</lem>
+                    <rdg wit="#Fr.">tertia</rdg>
+                  </app>
+                  questio eodem concilio, uno eodemque capitulo
+                  <app>
+                    <lem wit="#Bc #P">terminatur</lem>
+                    <rdg wit="#Aa">terminantur</rdg>
+                  </app>.
+                  Illud uero est huiusmodi:
+                </ab>
+              </div>
+              <div xml:id="d1e558" type="textpart" subtype="chapter" n="C.4 q.2-3 c.1" part="N" org="uniform" sample="complete">
+                <head>(C.4 q.2-3 c.1)</head>
+                <div xml:id="d1e563" type="textpart" subtype="rubric" part="N" org="uniform" sample="complete">
+                  <ab part="N">
+                    Qui ab accusatione repelluntur,
+                    <app>
+                      <lem wit="#P #Fr.">aut</lem>
+                      <rdg wit="#Aa">et</rdg>
+                      <rdg wit="#Bc"/>
+                    </app>
+                    ad annum .xiiii. nondum peruenerunt, testes esse non possunt.
+                  </ab>
+                </div>
+                <div xml:id="d1e580" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
+                  <ab part="N">
+                    Testes autem ad testimonium
+                    <app>
+                      <lem wit="#Aa #Bc">non</lem>
+                      <rdg wit="#P"/>
+                    </app>
+                    <app>
+                      <lem wit="#Aa #P">admittendos</lem>
+                      <rdg wit="#Bc">admttendos</rdg>
+                      <rdg wit="#Fr.">admittendos esse</rdg>
+                    </app>
+                    <!-- esse add. Fr.
+                      <app>
+                        <lem wit="#Aa #Bc #P"/>
+                        <rdg wit="#Fr.">esse</rdg>
+                      </app>
+                    -->
+                    censemus, qui nec ad accusationem admitti iussi sunt, uel
+                    etiam quos ipse accusator de domo sua produxerit. Ad
+                    testimonium autem
+                    <app>
+                      <lem wit="#Aa #P">intra</lem>
+                      <rdg wit="#Bc">infra</rdg>
+                    </app>
+                    annos .xiiii. etatis sue constituti non admittantur.
+                  </ab>
+                </div>
+                <div xml:id="d1e617" type="textpart" subtype="dictum" n="C.4 q.2-3 d.p.c.3" part="N" org="uniform" sample="complete">
+                  <head>(C.4 q.2-3 d.p.c.3)</head>
+                  <!-- "Set" or "Sed"? S; in Aa and P, S⁊ in Bc. -->
+                  <ab part="N">
+                    Set obicitur illud beati
+                    <app>
+                      <lem wit="#Bc #P">Bricii</lem>
+                      <rdg wit="#Aa">Brichi</rdg>
+                    </app>,
+                    qui uoce pueri .xxx. dies ab
+                    <app>
+                      <lem wit="#Aa #Bc">ortu</lem>
+                      <rdg wit="#P">hortu</rdg>
+                    </app>
+                    habentis innocens probatus est. Set miracula diuina sunt
+                    admiranda, non in exemplum humane
+                    <app>
+                      <lem wit="#Aa #Bc">actionis</lem>
+                      <rdg wit="#P">accionis</rdg>
+                    </app>
+                    trahenda.
+                  </ab>
+                </div>
+              </div>
+            </div>
+            <div xml:id="d1e657" type="textpart" subtype="question" n="C.4 q.4" part="N" org="uniform" sample="complete">
+              <head>(C.4 q.4)</head>
+              <div xml:id="d1e662" type="textpart" subtype="dictum" n="C.4 q.4 d.a.c.1" part="N" org="uniform" sample="complete">
+                <head>(C.4 q.4 d.a.c.1)</head>
+                <ab part="N">
+                  De
+                  <app>
+                    <lem wit="#Bc #P">quarta</lem>
+                    <rdg wit="#Aa">.iiii.</rdg>
+                  </app>
+                  uero questione Fabianus papa constituit, dicens:
+                </ab>
+              </div>
+              <div xml:id="d1e680" type="textpart" subtype="chapter" n="C.4 q.4 c.1" part="N" org="uniform" sample="complete">
+                <head>(C.4 q.4 c.1)</head>
+                <div xml:id="d1e685" type="textpart" subtype="rubric" part="N" org="uniform" sample="complete">
+                  <ab part="N">
+                    <app>
+                      <lem wit="#Aa #P">Accusator, testis uel iudex aliquis simul esse non potest.</lem>
+                      <rdg wit="#Bc">Quilibet duas personas in causa <sic>gegrere</sic> non ualet.</rdg>
+                    </app>
+                  </ab>
+                </div>
+                <div xml:id="d1e703" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
+                  <ab part="N">
+                    Nullus umquam presumat accusator simul esse et iudex uel testis, quoniam in omni
+                    <app>
+                      <lem wit="#Aa #P">iudicio</lem>
+                      <rdg wit="#Bc">iuditio</rdg>
+                    </app>
+                    <app>
+                      <lem>quatuor</lem>
+                      <rdg wit="#Aa">iiii</rdg>
+                      <rdg wit="#Bc">iiii<add place="above" instant="false" status="unremarkable">o</add></rdg>
+                      <rdg wit="#P">iiii<add place="above" instant="false" status="unremarkable">or</add></rdg>
+                    </app> personas semper
+                    <app>
+                      <lem wit="#Aa #Bc #P">necesse est esse</lem>
+                      <rdg wit="#Fr.">esse necesse est</rdg>
+                    </app>, id
+                    <app>
+                      <lem wit="#Aa #Bc">est</lem>
+                      <rdg wit="#P"/>
+                    </app>
+                    iudices electos, et
+                    <app>
+                      <lem wit="#Bc #P">accusatores</lem>
+                      <rdg wit="#Aa"><add place="above" instant="false" status="unremarkable">idoneos</add>accusatores</rdg>
+                    </app>, ac
+                    <app>
+                      <lem wit="#Bc #P">defensores</lem>
+                      <rdg wit="#Aa">defensores<add place="above" instant="false" status="unremarkable">congruos</add></rdg>
+                    </app> atque
+                    <app>
+                      <lem wit="#Bc #P">testes</lem>
+                      <rdg wit="#Aa"><add place="above" instant="false" status="unremarkable">legitimos</add>testes</rdg>
+                    </app>.
+                  </ab>
+                  <!-- Aa only, possible later addition, foot of 149v -->
+                  <ab part="N">
+                    <app>
+                      <lem wit="#Aa">
+                      Iudices
+                      <expan instant="false">aut<ex instant="false">em</ex></expan>
+                      debent uti
+                      <expan instant="false">eq<ex instant="false">ui</ex>tate</expan>,
+                      testes
+                      <expan instant="false">u<ex instant="false">er</ex>itate</expan>,
+                      accusatores
+                      <!-- nested <app> element -->
+                      <app>
+                        <lem wit="#Aa" xml:id="lem-intentione">intentione</lem>
+                        <witDetail wit="#Aa" target="#lem-intentione" type="correction-original"/>
+                        <rdg wit="#Aa" xml:id="rdg-intensione">intensione</rdg>
+                        <witDetail wit="#Aa" target="#lem-intensione" type="correction-altered"/>
+                      </app>
+                      ad
+                      <expan instant="false">amplificanda<ex instant="false">m</ex></expan>
+                      <expan instant="false">causa<ex instant="false">m</ex></expan>,
+                      defensores extenuatione ad
+                      <expan instant="false">minuenda<ex instant="false">m</ex></expan>
+                      <expan instant="false">causa<ex instant="false">m</ex></expan>.
+                      </lem>
+                      <rdg wit="#Bc #P"/>
+                    </app>
+                  </ab>
+                </div>
+              </div>
+              <div xml:id="d1e855" type="textpart" subtype="chapter" n="C.4 q.4 c.2" part="N" org="uniform" sample="complete">
+                <head>(C.4 q.4 c.2)</head>
+                <div xml:id="d1e860" type="textpart" subtype="inscription" part="N" org="uniform" sample="complete">
+                  <ab part="N">Item Damasus papa.</ab>
+                </div>
+                <div xml:id="d1e866" type="textpart" subtype="rubric" part="N" org="uniform" sample="complete">
+                  <ab part="N">
+                    <app>
+                      <lem wit="#Aa #P">Quilibet in causa duas personas gerere non ualet.</lem>
+                      <rdg wit="#Bc">Accusator, testis uel iudex aliquis simul esse non potest.</rdg>
+                    </app>
+                  </ab>
+                </div>
+                <div xml:id="d1e881" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
+                  <ab part="N">
+                    Nullus introducatur personaliter
+                    <app>
+                      <lem wit="#Aa #Bc">ad causam</lem>
+                      <rdg wit="#P">adusam</rdg>
+                    </app>,
+                    <!-- "sed" or "set"? ſ; in Aa and P, ſ⁊ in Bc. -->
+                    set accusatores et accusati equa audiantur ratione, iuxta
+                    quod ordo exigit. Accusatores uero et iudices non
+                    <app>
+                      <lem wit="#Aa #Bc #P">idem</lem>
+                      <!--
+                        "iidem" Fr. 541
+                        "idem" Ka 112rb and Kb 115rb
+                      -->
+                      <rdg wit="#Fr.">iidem</rdg>
+                    </app>
+                    sint, set
+                    <app>
+                      <lem wit="#Aa #Bc">per se accusatores,</lem>
+                      <rdg wit="#P"/>
+                    </app>
+                    per se iudices, per
+                    <app>
+                      <lem wit="#Aa #Bc">se</lem>
+                      <rdg wit="#P">re</rdg>
+                    </app>
+                    testes, per se accusati, unusquisque
+                    in suo ordine. Inscriptio
+                    <app>
+                      <lem wit="#Bc #P"/>
+                      <rdg wit="#Aa">uero</rdg>
+                    </app>
+                    semper fiat ut
+                    <app>
+                      <lem wit="#Bc #P">talionem calumpniator</lem>
+                      <rdg wit="#Aa">calumpniator talionem</rdg>
+                    </app>
+                    recipiat, quia ante inscriptionem nemo debet iudicari uel
+                    dampnari, cum et seculi leges hec eadem retineant.
+                  </ab>
+                </div>
+              </div>
+            </div>
+            <div xml:id="d1e947" type="textpart" subtype="question" n="C.4 q.5" part="N" org="uniform" sample="complete">
+              <head>(C.4 q.5)</head>
+              <div xml:id="d1e952" type="textpart" subtype="dictum" n="C.4 q.5 d.a.c.1" part="N" org="uniform" sample="complete">
+                <head>(C.4 q.5 d.a.c.1)</head>
+                <ab part="N">
+                  De .v. uero questione in concilio cartaginensi
+                  <app>
+                    <lem wit="#Bc">tertio</lem>
+                    <rdg wit="#Aa">.iii.</rdg>
+                    <rdg wit="#P">tercio</rdg>
+                  </app>
+                  sic
+                  <app>
+                    <lem wit="#Aa #Bc">inuenitur</lem>
+                    <rdg wit="#P"><sic>inueuenitur</sic></rdg>
+                  </app>
+                  diffinitum.
+                </ab>
+              </div>
+              <div xml:id="d1e983" type="textpart" subtype="chapter" n="C.4 q.5 c.1" part="N" org="uniform" sample="complete">
+                <head>(C.4 q.5 c.1)</head>
+                <div xml:id="d1e988" type="textpart" subtype="rubric" part="N" org="uniform" sample="complete">
+                  <ab part="N">
+                    Non est a communione suspendendus, qui die statuta ad causam
+                    peruenire non potuit.
+                  </ab>
+                </div>
+                <div xml:id="d1e994" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
+                  <ab part="N">
+                    Quisquis episcoporum accusatur, ad primates
+                    <app>
+                      <lem wit="#Aa #P">prouincie</lem>
+                      <rdg wit="#Bc">prouintie</rdg>
+                    </app>
+                    ipsius causam deferat accusator. Nec a communione
+                    suspendatur cui crimen intenditur, nisi ad causam suam
+                    dicendam electorum
+                    <app>
+                      <lem wit="#Aa #Bc">iudicum</lem>
+                      <rdg wit="#P">iudicium</rdg>
+                    </app>,
+                    die statuta,
+                    <app>
+                      <lem wit="#Aa #Bc">litteris</lem>
+                      <rdg wit="#P">litteras</rdg>
+                    </app>
+                    euocatus minime occurrerit, hoc est
+                    <app>
+                      <lem wit="#Bc">infra spatium</lem>
+                      <rdg wit="#Aa">intra spacium</rdg>
+                      <rdg wit="#P">infra infra spatium</rdg>
+                    </app>
+                    mensis ex ea die, qua eum litteras accepisse constiterit.
+                    Quod si aliquas ueras necessitatis causas
+                    <app>
+                      <lem wit="#Aa #Bc">probauerit</lem>
+                      <rdg wit="#P">propriauerit</rdg>
+                    </app>,
+                    quibus occurrere non potuisse manifestum sit,
+                    <app>
+                      <lem wit="#Aa #Bc #P">cause sue</lem>
+                      <rdg wit="#Fr.">sue cause</rdg>
+                    </app>
+                    dicende intra alterum mensem integram habeat facultatem.
+                    Verum tamdiu post mensem secundum non communicet, donec
+                    purgetur. Si autem ad uniuersale concilium
+                    <app>
+                      <lem wit="#Aa #Bc">anniuersarium</lem>
+                      <rdg wit="#P">anniuersalium</rdg>
+                      <rdg wit="#Fr."/>
+                    </app>
+                    occurrere
+                    <app>
+                      <lem wit="#Aa #Bc">noluerit</lem>
+                      <rdg wit="#P">uoluerit</rdg>
+                    </app>,
+                    ut uel ibi causa eius terminetur, ipse in se dampnationis
+                    sententiam dixisse iudicetur. Tempore sane, quo non
+                    communicat, nec in sua ecclesia uel parrochia communicet.
+                    Accusator autem eius, si numquam diebus cause dicende
+                    <app>
+                      <lem wit="#Aa #P">defuerit</lem>
+                      <rdg wit="#Bc">affuerit</rdg>
+                    </app>
+                    <!--
+                      '^' after "defuerti" in Aa, indicating addition
+                      "ſubt[ra]hens ſe" in right margin of 150r.
+                    -->
+                    <app>
+                      <!-- lemma uncertain, check Fd -->
+                      <rdg wit="#Aa">non remoueatur a communione. Si uero aliquando defuerit</rdg>
+                      <rdg wit="#Bc #P"/>
+                    </app>
+                    subtrahens se, restituto in
+                    <app>
+                      <lem wit="#Bc #P">communione</lem>
+                      <rdg wit="#Aa">communionem</rdg>
+                    </app>
+                    episcopo, remoueatur a communione accusator, ita tamen, ut
+                    nec ipsi adimatur facultas cause peragende,
+                    <!-- "set" or "sed"? ſ; in Aa and P, ſet in Bc. -->
+                    si se ad diem
+                    <app>
+                      <lem wit="#Bc #P"/>
+                      <rdg wit="#Aa">constitutam</rdg>
+                    </app>
+                    non
+                    <app>
+                      <!-- lemma uncertain, check Fd -->
+                      <lem wit="#Aa #P" xml:id="rdg-uoluisse">uoluisse</lem>
+                      <witDetail wit="#Aa" target="#rdg-uoluisse" type="correction-original"/>
+                      <rdg wit="#Aa #Bc" xml:id="rdg-noluisse">noluisse</rdg>
+                      <witDetail wit="#Aa" target="#rdg-noluisse" type="correction-altered"/>
+                    </app>
+                    set non potuisse occurrere probauerit.
+                  </ab>
+                </div>
+              </div>
+            </div>
+            <div xml:id="d1e1136" type="textpart" subtype="question" n="C.4 q.6" part="N" org="uniform" sample="complete">
+              <head>(C.4 q.6)</head>
+              <div xml:id="d1e1141" type="textpart" subtype="dictum" n="C.4 q.6 d.a.c.1" part="N" org="uniform" sample="complete">
+                <head>(C.4 q.6 d.a.c.1)</head>
+                <ab part="N">
+                  Sexta uero questio eodem capitulo terminatur, in quo sequitur:
+                </ab>
+              </div>
+              <div xml:id="d1e1150" type="textpart" subtype="chapter" n="C.4 q.6 c.1" part="N" org="uniform" sample="complete">
+                <head>(C.4 q.6 c.1)</head>
+                <div xml:id="d1e1155" type="textpart" subtype="rubric" part="N" org="uniform" sample="complete">
+                  <!--
+                    R2: "In ciuili et proprio dumtaxat negotio ad arguendum
+                    admittitur, qui in episcopi accusatione culpabilis inuenitur."
+                  -->
+                  <ab part="N">
+                    Qui in accusatione episcopi culpabilis inuenitur ad
+                    arguendum de cetero non admittatur nisi propriam causam
+                    <app>
+                      <lem wit="#Aa #Bc">ciuilem</lem>
+                      <rdg wit="#P"/>
+                    </app>
+                    solummodo asserere uoluerit.
+                  </ab>
+                </div>
+                <div xml:id="d1e1171" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
+                  <ab part="N">
+                    Illud uero placuit, ut cum agere ceperit in episcoporum
+                    <app>
+                      <lem wit="#Aa #P">iudicio</lem>
+                      <rdg wit="#Bc">iuditio</rdg>
+                    </app>,
+                    si fuerit
+                    <app>
+                      <lem wit="#Aa #P">accusatoris</lem>
+                      <rdg wit="#Bc">accusator</rdg>
+                    </app>
+                    <app>
+                      <lem wit="#Aa">persona</lem>
+                      <rdg wit="#Bc #P"/>
+                    </app>
+                    dampnabilis de cetero ad arguendum non admittatur, nisi
+                    proprias causas, non tamen ecclesiasticas uel criminales,
+                    asserere uoluerit.
+                  </ab>
+                </div>
+              </div>
+              <div xml:id="d1e1204" type="textpart" subtype="chapter" n="C.4 q.6 c.2" part="N" org="uniform" sample="complete">
+                <head>(C.4 q.6 c.2)</head>
+                <div xml:id="d1e1209" type="textpart" subtype="inscription" part="N" org="uniform" sample="complete">
+                  <ab part="N">
+                    Item ex
+                    <app>
+                      <lem wit="#Aa #P">concilio</lem>
+                      <rdg wit="#Bc">comcilio</rdg>
+                    </app>
+                    <app>
+                      <lem wit="#Aa #Bc">cartaginensi</lem>
+                      <rdg wit="#P">cartaginesi</rdg>
+                    </app>
+                    <app>
+                      <lem wit="#Aa #Bc">.vii.</lem>
+                      <rdg wit="#P">.viio.</rdg>
+                    </app>
+                  </ab>
+                </div>
+                <div xml:id="d1e1242" type="textpart" subtype="rubric" part="N" org="uniform" sample="complete">
+                  <!-- R2: "Propriam causam agere ualet cui accusare non licet." -->
+                  <ab part="N">
+                    Non
+                    <app>
+                      <lem wit="#Aa #Bc">negatur</lem>
+                      <rdg wit="#P">negant</rdg>
+                    </app>
+                    <app>
+                      <!--
+                        <lem wit="#Aa">audientia in</lem>
+                        <rdg wit="#P">audiencia in</rdg>
+                      -->
+                      <lem wit="#Aa #P">
+                        <!-- nested <app> element -->
+                        <app>
+                          <lem wit="#Aa">audientia</lem>
+                          <rdg wit="#P">audiencia</rdg>
+                        </app>
+                      in
+                      </lem>
+                      <rdg wit="#Bc">in audientia</rdg>
+                    </app>
+                    propria causa
+                    <app>
+                      <lem wit="#Aa #Bc">cuius</lem>
+                      <rdg wit="#P">cui</rdg>
+                    </app>
+                    accusatio interdicitur.
+                  </ab>
+                </div>
+                <div xml:id="d1e1290" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
+                  <ab part="N">
+                    Omnibus quibus accusatio denegatur in causis propriis
+                    accusandi licentia
+                    <app>
+                      <lem wit="#Bc #P">non est</lem>
+                      <rdg wit="#Aa">est non</rdg>
+                    </app>
+                    neganda.
+                  </ab>
+                </div>
+              </div>
+              <!-- 4.6.3 Bc only -->
+              <div xml:id="d1e1309" type="textpart" subtype="chapter" n="C.4 q.6 c.3" part="N" org="uniform" sample="complete">
+                <head>(C.4 q.6 c.3)</head>
+                <div xml:id="d1e1314" type="textpart" subtype="inscription" part="N" org="uniform" sample="complete">
+                  <ab part="N">Item Felix episcopus omnibus episcopis</ab>
+                </div>
+                <div xml:id="d1e1320" type="textpart" subtype="rubric" part="N" org="uniform" sample="complete">
+                  <ab part="N">
+                    In episcoporum accusatione
+                    <app>
+                      <lem>deficiens</lem>
+                      <rdg wit="#Bc">defitiens</rdg>
+                    </app>,
+                    ciuiliter
+                    <app>
+                      <lem>tantum</lem>
+                      <rdg wit="#Bc">tatum</rdg>
+                    </app>
+                    experiri poterit.
+                  </ab>
+                </div>
+                <div xml:id="d1e1344" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
+                  <ab part="N">
+                    Si accusatorum persone in
+                    <app>
+                      <lem>iudicio</lem>
+                      <rdg wit="#Bc">iuditio</rdg>
+                    </app>
+                    episcoporum culpabiles
+                    <app>
+                      <lem wit="#Bc">apparuerint</lem>
+                      <!-- Friedberg typo -->
+                      <rdg wit="#Fr."><sic>aparuerint</sic></rdg>
+                    </app>,
+                    ad arguendum non admittantur, nisi proprias causas asserere,
+                    non tamen criminales uel ecclesiasticas, uoluerint.
+                  </ab>
+                </div>
+              </div>
+              <!-- 4.6.4 Bc only -->
+              <div xml:id="d1e1374" type="textpart" subtype="chapter" n="C.4 q.6 c.4" part="N" org="uniform" sample="complete">
+                <head>(C.4 q.6 c.4)</head>
+                <div xml:id="d1e1379" type="textpart" subtype="inscription" part="N" org="uniform" sample="complete">
+                  <ab part="N">Item Adrianus papa</ab>
+                </div>
+                <div xml:id="d1e1385" type="textpart" subtype="canon" part="N" org="uniform" sample="complete">
+                  <ab part="N">
+                    Quod si accusatorum persone in
+                    <app>
+                      <lem>iudicio</lem>
+                      <rdg wit="#Bc">iuditio</rdg>
+                    </app>
+                    episcoporum et cetera, ut supra eisdem uerbis.
+                  </ab>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </body>
+    <back/>
+  </text>
+</TEI>

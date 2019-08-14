@@ -91,6 +91,8 @@ div#controls ul {
 div#navigation {
   border: thin solid gray;
   padding: 0.5em;
+  height: 40em;
+  overflow: auto;
 }
 div#navigation a.selected {
   font-weight: bold;
@@ -198,7 +200,6 @@ tei-p span.apps {
   position: absolute;
   right: -15%;
   top: 0px;
-  width: 80px;
 }
 
 /* Apparatus tooltips */
@@ -374,7 +375,7 @@ tei-actor {
 }
 /* add */
 /* Could add other [place=] variations */
-tei-add[place=above] {
+/*tei-add[place=above] {
   vertical-align: super;
 }
 tei-add[place=inline]:before {
@@ -392,6 +393,7 @@ tei-add[place=inRas]:after {
 tei-add[place=below] {
   vertical-align: sub;
 }
+*/
 tei-addName {
   /* Empty Rule Set */
 }
@@ -447,6 +449,7 @@ tei-anchor {
   /* Empty Rule Set */
 }
 tei-app {
+  display: inline;
 }
 tei-app tei-note {
   display: none;
@@ -614,12 +617,10 @@ tei-category {
   /* Empty Rule Set */
 }
 tei-cb {
-  display: block;
-  margin-top: 1em;
-  margin-bottom: 1em;
+  display: inline;
 }
 tei-cb:before {
-  content: "[column break]";
+  content: " | ";
 }
 tei-certainty {
   /* Empty Rule Set */
@@ -1109,8 +1110,9 @@ tei-lbl {
 tei-leaf {
   /* Empty Rule Set */
 }
-tei-app[data-tei-type=inline] tei-lem {
-}
+tei-lem:empty {
+  display: inline-block;
+  }
 tei-lg {
   display: block;
   margin-top: 1em;
@@ -1945,14 +1947,7 @@ tei-surname {
   /* Empty Set Rule */
 }
 tei-surplus {
-}
-tei-surplus>*:first-child:before {
-  content: "\a[";
-  white-space: pre;
-}
-tei-surplus>*:last-child:after {
-  content: "]\a\a";
-  white-space: pre;
+  display: none;
 }
 tei-surrogates {
   /*Empty Rule Set */
@@ -2211,12 +2206,13 @@ SVG Icons - svgicons.sparkk.fr
 .svg-icon {
   width: 1em;
   height: 1em;
+  color: black;
 }
 
 .svg-icon path,
 .svg-icon polygon,
 .svg-icon rect {
-  fill: #005cb9;
+  fill: black;
 }
 
 .svg-icon circle {
