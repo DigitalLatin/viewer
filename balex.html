@@ -4,15 +4,22 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="css/tei-html.css">
     <link rel="stylesheet" href="js/jquery-ui-1.11.4.custom/jquery-ui.css">
+    <style>
+      tei-app[from]>tei-rdg {
+        display:inline;
+      }
+    </style>
     <script type="text/javascript" src="js/CETEI.js"></script>
     <script type="text/javascript" src="js/jquery/jquery-1.11.3.js"></script>
     <script type="text/javascript" src="js/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
     <script type="text/javascript" src="js/appcrit.js"></script>
     <script src="js/alpheios-morphlib.js" charset="utf-8"></script>
+    <script src="js/rangy/rangy-core.js"></script>
+    <script src="js/xpointer.js"></script>
     <script type="text/javascript">
       var c = new CETEI();
-      c.shadowCSS = "css/tei-html.css";
-      var app = new appcrit(c);
+      var app = new appcrit(c, "tei-seg", "tei-div[type=textpart]>tei-p");
+      //app.processAll = false;
       c.addBehaviors({"handlers":{
         // Overrides the default ptr behavior, displaying a short link
         "ptr": function(elt) {
@@ -25,11 +32,15 @@
         "seg": function(elt) {
           elt.insertAdjacentHTML('beforebegin', "<sup>" + elt.getAttribute("n") + " </sup>");
         },
+        "supplied": ["<",">"],
         "p": function(elt) {
           if (elt.hasAttribute("n")) {
             elt.insertAdjacentHTML('afterbegin', "<span class=\"pnum\">" + elt.getAttribute("n") + ".</span>");
           }
         },
+        "placeName": [
+          ["[ref]", ["<a href=\"$rw@ref\">","</a>"]]
+        ],
         "witDetail": function(elt) {
           var content = document.createElement("span");
           if (elt.hasAttribute("data-empty")) {
@@ -58,35 +69,26 @@
         }
       });
       data.then(function(TEI){
-        app.loadData(TEI);
         $("#loading").remove();
         $("body").append(TEI);
-        var section = $("tei-div[type=edition]");
-        section.find("tei-p").each(function(i,elt) {
-          var e = $(elt);
-          var btns = e.find("span.apps");
-          var top = 0;
-          var left = 0;
-          btns.each(function(i,elt){
-            $(elt).find("button").each(function(i,elt) {
-              var btn = $(elt);
-              var pos = $("#" + app.escapeID(btn.attr("data-app"))).position();
-              if (top < pos["top"]) {
-                top = pos["top"];
-                left = 0;
-              } else {
-                left++;
-              }
-              btn.css({"position":"absolute","top":top + "px","left":(left*25) + "px"});
-            });
-          });
-        });
+        app.loadData(TEI);
         if (window.location.hash) {
     			window.location = window.location;
     		}
 
         var morph = new morphlibrary(document);
         morph.activate("lat");
+
+        $("tei-back tei-app").each(function(i,elt){
+          let app = $(elt);
+          let range = XPointer.resolve(XPointer.parsePointer(app.attr("from")));
+          if (range.canSurroundContents()) {
+            range.deleteContents();
+            app.find("tei-rdg").children().clone().each(function(i, elt){
+              range.insertNode(elt);
+            });
+          }
+        });
       })
     </script>
     <style media="screen">
@@ -94,8 +96,7 @@
         width: 700px;
       }
       tei-seg span.apps {
-        width: 150px;
-        right: -170px
+       position: static;
       }
     </style>
   </head>
