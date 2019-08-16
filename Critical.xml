@@ -26,6 +26,27 @@
   </teiHeader>
   <text>
     <front xml:id="front">
+      <div xml:id="toc" type="section">
+        <head>Contents</head>
+        <list>
+          <item><ref target="#preface">Preface</ref></item>
+          <item><ref target="#bibliography">Bibliography</ref></item>
+          <item><ref target="#edition-text">Edition</ref>
+            <list>
+              <item><ref target="#d1e279">(C.4)</ref>
+                <list>
+                  <item><ref target="#d1e284">(C.4 d.init)</ref></item>
+                  <item><ref target="#d1e444">(C.4 q.1)</ref></item>
+                  <item><ref target="#d1e526">(C.4 q.2-3)</ref></item>
+                  <item><ref target="#d1e657">(C.4 q.4)</ref></item>
+                  <item><ref target="#d1e947">(C.4 q.5)</ref></item>
+                  <item><ref target="#d1e1136">(C.4 q.6)</ref></item>
+                </list>
+              </item>
+            </list>
+          </item>
+        </list>
+      </div>
       <div xml:id="preface" type="section">
         <head>Preface</head>
         <!-- C.4 d.init. -->
